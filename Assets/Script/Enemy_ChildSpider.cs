@@ -42,7 +42,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
     {
         startScale = transform.localScale;
         PatrolPointPosition = new Vector3[PatrolPoint.Length];
-        Debug.Log(PatrolPoint.Length);
         for (int i = 0; i < PatrolPoint.Length; i++)
         {
             PatrolPointPosition[i] = PatrolPoint[i].gameObject.transform.position;
@@ -123,8 +122,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 if (PointCount++ > PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
 
                 Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
-                Debug.Log(PointCount);
-                Debug.Log(Point_Position.x);
                 if (gameObject.transform.position.x >= Point_Position.x)     //現在のポジションからポイントの座標を見て　設定する
                 {
                     if(_direction == 1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
@@ -167,9 +164,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
                 // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
                 myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
-                Debug.Log(_direction);
-
-                
 
                 //パトロールポイントを超えたら待機タイプに変える
                 if(_direction == -1 && gameObject.transform.position.x <= Point_Position.x)
