@@ -64,8 +64,8 @@ public class PlayerController : MonoBehaviour
         inputManager = InputManager.Instance;
         playerManager = PlayerManager.Instance;
         jumpTimeCounter = playerManager.JumpTime;
-        Renderer = gameObject.GetComponent<SpriteRenderer>();
-        forwardShotImage = Renderer.sprite;
+        //Renderer = gameObject.GetComponent<SpriteRenderer>();
+        //forwardShotImage = Renderer.sprite;
         rb = GetComponent<Rigidbody2D>();
         startMoveSpeed = playerManager.MoveSpeed;
         HP = _maxHP;
@@ -82,16 +82,16 @@ public class PlayerController : MonoBehaviour
 
         // 上に発射
         if (_YStickUpThreshold < inputManager.UpMoveKey && isGetGun) {
-            Renderer.sprite = _upShotImage;
+            //Renderer.sprite = _upShotImage;
             mainThrowPoint = transform.GetChild(0).transform.position;
             
             // 下に発射
         } else if (inputManager.UpMoveKey < _YStickDownThreshold && isGetGun) {
-            Renderer.sprite = _downShotImage;
+            //Renderer.sprite = _downShotImage;
             mainThrowPoint = transform.GetChild(2).transform.position;
             // 正面に発射
         } else {
-            Renderer.sprite = forwardShotImage;
+            //Renderer.sprite = forwardShotImage;
             mainThrowPoint = transform.GetChild(1).transform.position;
         }
 

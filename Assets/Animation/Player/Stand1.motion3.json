@@ -1,0 +1,64 @@
+{
+	"Version": 3,
+	"Meta": {
+		"Duration": 0.333,
+		"Fps": 30.0,
+		"Loop": true,
+		"AreBeziersRestricted": true,
+		"CurveCount": 4,
+		"TotalSegmentCount": 4,
+		"TotalPointCount": 10,
+		"UserDataCount": 0,
+		"TotalUserDataSize": 0
+	},
+	"Curves": [
+		{
+			"Target": "Parameter",
+			"Id": "eyeParam",
+			"Segments": [
+				0,
+				1,
+				1,
+				0.111,
+				1,
+				0.222,
+				1,
+				0.333,
+				1
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "AxisParam",
+			"Segments": [
+				0,
+				10,
+				0,
+				0.333,
+				10
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "LeftLegParam2",
+			"Segments": [
+				0,
+				-30,
+				0,
+				0.333,
+				-30
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "RightLegParam2",
+			"Segments": [
+				0,
+				-30,
+				0,
+				0.333,
+				-30
+			]
+		}
+	]
+}
