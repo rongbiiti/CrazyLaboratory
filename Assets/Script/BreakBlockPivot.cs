@@ -6,11 +6,19 @@ public class BreakBlockPivot : MonoBehaviour
 {
 
     private bool isEnterAcid;
+    private bool isPlayerStay;
     [SerializeField] private float destroyTime = 2f;
+    [SerializeField] private float restorTime = 5f;
     private Vector2 startScale;
     private Vector2 Startposition;
     private GameObject parent1;
     private SpriteRenderer spriteRenderer;
+    private enum Status
+    {
+        Normal,
+        Restoring
+    }
+    private Status status;
 
     void Start()
     {
@@ -22,15 +30,36 @@ public class BreakBlockPivot : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isEnterAcid) {
-            //transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
-            parent1.transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
-            if (parent1.transform.localScale.x <= 0) {
-                Destroy(parent1);
-                Destroy(gameObject);
-
+        if (status == Status.Normal) {
+            if (isEnterAcid) {
+                parent1.transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+                if (parent1.transform.localScale.x <= 0) {
+                    SetRestoring();
+                }
+            }
+        } else if(status == Status.Restoring) {
+            if (!isPlayerStay) {
+                parent1.transform.localScale += new Vector3(startScale.x / restorTime * Time.deltaTime, startScale.y / restorTime * Time.deltaTime);
+                if (startScale.x <= parent1.transform.localScale.x) {
+                    UnSetRestoring();
+                }
             }
         }
+    }
+
+    private void SetRestoring()
+    {
+        isEnterAcid = false;
+        status = Status.Restoring;
+        spriteRenderer.color -= new Color(0, 0, 0, 0.6f);
+        GetComponent<BoxCollider2D>().isTrigger = true;
+    }
+
+    private void UnSetRestoring()
+    {
+        status = Status.Normal;
+        spriteRenderer.color += new Color(0, 0, 0, 0.6f);
+        GetComponent<BoxCollider2D>().isTrigger = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -40,12 +69,26 @@ public class BreakBlockPivot : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player")) {
+            isPlayerStay = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player")) {
+            isPlayerStay = false;
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (isEnterAcid == true)
             return;
 
-        if (collision.gameObject.CompareTag("AcidFlask")) {
+        if (collision.gameObject.CompareTag("AcidFlask") && status == Status.Normal) {
 
             // transformを取得 親
             Transform myTransform = parent1.transform;
