@@ -3,37 +3,98 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
+
 
 public class PlayerController : MonoBehaviour
 {
-    SpriteRenderer Renderer;
-    GameObject cam;
-    [SerializeField] private Sprite _upShotImage;
-    [SerializeField] private Sprite _downShotImage;
-    [SerializeField] private Slider _HPbar;
-    [SerializeField] private Text _bulletsRemain;
-    private Sprite forwardShotImage;
+    private GameObject cam;
+    private Rigidbody2D rb;
+    [SerializeField, CustomLabel("HPバー")] private Slider _HPbar;
+    [SerializeField, CustomLabel("残弾数UI")] private Text _bulletsRemain;
 
     private bool flip = true;
-    private Rigidbody2D rb;
-    [SerializeField] private LayerMask platformLayer;
-    [SerializeField] private ContactFilter2D filter2d;
-    Vector2 groundedStart;
-    Vector2 groundedEnd;
+    
+    [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
-    //private GameObject acid;
 
-    [SerializeField] private GameObject _acidbulletPrefab;
-    [SerializeField, Range(0.001f, 9999f)] private float _maxHP;
-    [SerializeField, Range(0f, 9999f)] private float _acidDamage;
-    [SerializeField, Range(0.0167f, 10f)] private float _acidDamageRate;
-    [SerializeField, Range(0, 999)] private int _bulletCapacity = 10;
-    [SerializeField, Range(0f, 5f)] private float _fireRate = 0f;
-    [SerializeField] private float _thorwPower = 5f;
-    [SerializeField, Range(10f, 80f), Tooltip("真正面が0、真上が90、真下が180です")] private float _upFireAngle = 45f;
-    [SerializeField, Range(-10f, -80f), Tooltip("真正面が0、真上が90、真下が180です")] private float _downFireAngle = -45f;
-    [SerializeField, Range(0.001f, 1f), Tooltip("スティック上向きの閾値")] private float _YStickUpThreshold = 0.4f;
-    [SerializeField, Range(-0.001f, -1f), Tooltip("スティック下向きの閾値")] private float _YStickDownThreshold = -0.4f;
+    [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
+    [SerializeField, Range(0.001f, 9999f), CustomLabel("最大HP")] private float _maxHP = 9999f;
+    [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
+    [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
+    [SerializeField, Range(0, 999), CustomLabel("弾の最大所持数")] private int _bulletCapacity = 10;
+    [SerializeField, Range(0f, 5f), CustomLabel("弾の発射間隔")] private float _fireRate = 0f;
+
+    [SerializeField, Range(0.001f, 1f), CustomLabel("スティック上向きの閾値")] private float YStickUpDeadZone = 0.4f;
+    [SerializeField, Range(-0.001f, -1f), CustomLabel("スティック下向きの閾値")] private float _YStickDownDeadZone = -0.4f;
+
+    [Serializable]
+    private class UpShot
+    {
+        [SerializeField, Range(0f, 100f), CustomLabel("砲口初速・上")] private float _muzzleVelocity = 15f;
+        [SerializeField, Range(0f, 30f), CustomLabel("弾の落下しやすさ・上")] private float _gravityScale = 2f;
+        [SerializeField, Range(0f, 90f), CustomLabel("発射角度・上")] private float _fireAngle = 45f;
+
+        public float MuzzleVelocity
+        {
+            get { return _muzzleVelocity; }
+        }
+        public float GravityScale
+        {
+            get { return _gravityScale; }
+        }
+        public float FireAngle
+        {
+            get { return _fireAngle; }
+        }
+    }
+    [SerializeField, CustomLabel("上へ発射")] UpShot upShot;
+
+    [Serializable]
+    private class HorizontalShot
+    {
+        [SerializeField, Range(0f, 100f), CustomLabel("砲口初速・水平")] private float _muzzleVelocity = 15f;
+        [SerializeField, Range(0f, 30f), CustomLabel("弾の落下しやすさ・水平")] private float _gravityScale = 2f;
+        [SerializeField, Range(-45f, 45f), CustomLabel("発射角度・水平")] private float _fireAngle = 0f;
+
+        public float MuzzleVelocity
+        {
+            get { return _muzzleVelocity; }
+        }
+        public float GravityScale
+        {
+            get { return _gravityScale; }
+        }
+        public float FireAngle
+        {
+            get { return _fireAngle; }
+        }
+    }
+    [SerializeField, CustomLabel("水平に発射")] HorizontalShot horizontalShot;
+
+    [Serializable]
+    private class DownShot
+    {
+        [SerializeField, Range(0f, 100f), CustomLabel("砲口初速・下")] private float _muzzleVelocity = 15f;
+        [SerializeField, Range(0f, 30f), CustomLabel("弾の落下しやすさ・下")] private float _gravityScale = 2f;
+        [SerializeField, Range(0f, -90f), CustomLabel("発射角度・下")] private float _fireAngle = -45f;
+
+        public float MuzzleVelocity
+        {
+            get { return _muzzleVelocity; }
+        }
+        public float GravityScale
+        {
+            get { return _gravityScale; }
+        }
+        public float FireAngle
+        {
+            get { return _fireAngle; }
+        }
+    }
+    [SerializeField, CustomLabel("下へ発射")] DownShot downShot;
+
+    private float muzzleVelocity = 5f;
     private bool isGetGun = false;
     private Vector3 mainThrowPoint;
     private float HP;
@@ -64,8 +125,6 @@ public class PlayerController : MonoBehaviour
         inputManager = InputManager.Instance;
         playerManager = PlayerManager.Instance;
         jumpTimeCounter = playerManager.JumpTime;
-        //Renderer = gameObject.GetComponent<SpriteRenderer>();
-        //forwardShotImage = Renderer.sprite;
         rb = GetComponent<Rigidbody2D>();
         startMoveSpeed = playerManager.MoveSpeed;
         HP = _maxHP;
@@ -81,17 +140,14 @@ public class PlayerController : MonoBehaviour
     {
 
         // 上に発射
-        if (_YStickUpThreshold < inputManager.UpMoveKey && isGetGun) {
-            //Renderer.sprite = _upShotImage;
+        if (YStickUpDeadZone < inputManager.UpMoveKey && isGetGun) {
             mainThrowPoint = transform.GetChild(0).transform.position;
             
             // 下に発射
-        } else if (inputManager.UpMoveKey < _YStickDownThreshold && isGetGun) {
-            //Renderer.sprite = _downShotImage;
+        } else if (inputManager.UpMoveKey < _YStickDownDeadZone && isGetGun) {
             mainThrowPoint = transform.GetChild(2).transform.position;
             // 正面に発射
         } else {
-            //Renderer.sprite = forwardShotImage;
             mainThrowPoint = transform.GetChild(1).transform.position;
         }
 
@@ -100,11 +156,6 @@ public class PlayerController : MonoBehaviour
         } else {
             playerManager.MoveSpeed = startMoveSpeed;
         }
-
-        //groundedStart = transform.position - transform.up * 2.2f - transform.right * -0.65f;
-        //groundedEnd = transform.position - transform.up * 2.2f - transform.right * 0.65f;
-        //isGrounded = Physics2D.Linecast(groundedStart, groundedEnd, platformLayer);
-        //Debug.DrawLine(groundedStart, groundedEnd, Color.red);
 
         // 地面と当たり判定をしている。
         isGrounded = rb.IsTouching(filter2d);
@@ -116,9 +167,6 @@ public class PlayerController : MonoBehaviour
             _jumpPower = playerManager.JumpPower;
             SoundManagerV2.Instance.PlaySE(9);
         }
-
-        // 子要素にセットしてある酸の攻撃範囲をアクティブにする
-        //acid.SetActive(inputManager.ShotKey);
 
         if (inputManager.MoveKey >= 0.3 && !flip) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
@@ -132,18 +180,25 @@ public class PlayerController : MonoBehaviour
         if (inputManager.ShotKey == 1 && fireTime <= 0 && 0 == bullets && isGetGun) {
 
             GameObject bullet = Instantiate(_acidbulletPrefab, mainThrowPoint, Quaternion.identity) as GameObject;
+            Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
             float rad = 0;
 
             // 上に発射
-            if(_YStickUpThreshold < inputManager.UpMoveKey) {
-                rad = _upFireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
+            if(YStickUpDeadZone < inputManager.UpMoveKey) {
+                rad = upShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
+                muzzleVelocity = upShot.MuzzleVelocity; //上へ発射時の初速を代入
+                bRb.gravityScale = upShot.GravityScale; //上へ発射時の弾の重量を代入
             // 下に発射
-            } else if (inputManager.UpMoveKey < _YStickDownThreshold) {
-                rad = _downFireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
-            // 正面に発射
+            } else if (inputManager.UpMoveKey < _YStickDownDeadZone) {
+                rad = downShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
+                muzzleVelocity = downShot.MuzzleVelocity; //下へ発射時の初速を代入
+                bRb.gravityScale = downShot.GravityScale; //下へ発射時の弾の重量を代入
+                // 正面に発射
             } else {
-                rad = 0 * Mathf.Deg2Rad;
+                rad = horizontalShot.FireAngle * Mathf.Deg2Rad;　//角度をラジアン角に変換
+                muzzleVelocity = horizontalShot.MuzzleVelocity;  //正面へ発射時の初速を代入
+                bRb.gravityScale = horizontalShot.GravityScale;  //正面へ発射時の弾の重量を代入
             }
             
             //rad(ラジアン角)から発射用ベクトルを作成
@@ -163,7 +218,7 @@ public class PlayerController : MonoBehaviour
             bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
             //　で、でますよ
-            bullet.GetComponent<Rigidbody2D>().AddForce(shotangle * _thorwPower, ForceMode2D.Force);
+            bRb.AddForce(shotangle * muzzleVelocity, ForceMode2D.Force);
             SoundManagerV2.Instance.PlaySE(6);
             //--bullets;
             _bulletsRemain.text = " ∞ ";

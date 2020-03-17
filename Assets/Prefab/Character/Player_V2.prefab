@@ -2497,7 +2497,7 @@ Animator:
   m_GameObject: {fileID: 1673227826395028}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0aa62749dfa609947855e02566df689d, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3329,13 +3329,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd2ed085d85b3f43b24486e83883113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _upShotImage: {fileID: 21300000, guid: 45ff9a7465c96d94a8193512e3117116, type: 3}
-  _downShotImage: {fileID: 21300000, guid: c126fede92af257419d17b172172f5b3, type: 3}
   _HPbar: {fileID: 0}
   _bulletsRemain: {fileID: 0}
-  platformLayer:
-    serializedVersion: 2
-    m_Bits: 1
   filter2d:
     useTriggers: 0
     useLayerMask: 1
@@ -3357,11 +3352,20 @@ MonoBehaviour:
   _acidDamageRate: 0.2
   _bulletCapacity: 10
   _fireRate: 0.5
-  _thorwPower: 15
-  _upFireAngle: 45
-  _downFireAngle: -45
-  _YStickUpThreshold: 0.4
-  _YStickDownThreshold: -0.4
+  YStickUpDeadZone: 0.4
+  _YStickDownDeadZone: -0.4
+  upShot:
+    _muzzleVelocity: 15
+    _gravityScale: 2
+    _fireAngle: 45
+  horizontalShot:
+    _muzzleVelocity: 15
+    _gravityScale: 2
+    _fireAngle: 0
+  downShot:
+    _muzzleVelocity: 15
+    _gravityScale: 2
+    _fireAngle: -45
 --- !u!114 &114834841037191924
 MonoBehaviour:
   m_ObjectHideFlags: 1
