@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/// <summary>
+/// キー入力を管理している。シングルトンなので、シーンにひとつ置いておくこと。
+/// </summary>
 public class InputManager : MonoBehaviour
 {
     protected static readonly string[] findTags =

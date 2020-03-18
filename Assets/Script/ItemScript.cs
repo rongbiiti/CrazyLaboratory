@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 弾を補給できるアイテム。また、弾が何発入っているかを画面上に表示させている。
+/// </summary>
 public class ItemScript : MonoBehaviour {
 
     public Text nameText = null;
     public float risePoint = 1.0f;
     Camera cam;
 
-    [SerializeField, Range(0, 999)] private int _bulletsInItem = 1;
+    [SerializeField, Range(0, 999), CustomLabel("弾の取得量")] private int _bulletsInItem = 1;
     
     public void SetBulletsInItem( int num ) {
         _bulletsInItem = num;

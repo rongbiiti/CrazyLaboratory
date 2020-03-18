@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 床や壁に残る酸のスクリプト
+/// </summary>
 public class ResidualAcidSc : MonoBehaviour {
 
-    [SerializeField, Range(0f, 60f)] private float _destroyTime = 5f;
-    [SerializeField, Range(0f, 4f)] private float _fadeTime = 0.5f;
+    [SerializeField, Range(0f, 60f), CustomLabel("当たり判定消えるまでの時間")] private float _destroyTime = 5f;
+    [SerializeField, Range(0f, 4f), CustomLabel("フェードアウトする時間")] private float _fadeTime = 0.5f;
     private SpriteRenderer sprite;
     private Color color;
     private BoxCollider2D col;
@@ -14,13 +17,6 @@ public class ResidualAcidSc : MonoBehaviour {
     {
         sprite = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
-        var _m = sprite.localToWorldMatrix;
-        var _sprite = sprite.sprite;
-        var _halfX = _sprite.bounds.extents.x;
-        var _halfY = _sprite.bounds.extents.y;
-        var _vec = new Vector3(-_halfX, _halfY, 0f);
-        var _pos = _m.MultiplyPoint3x4(_vec);
-        Debug.Log("1 : " + _pos);
     }
 
     private void FixedUpdate()

@@ -3351,21 +3351,21 @@ MonoBehaviour:
   _acidDamage: 500
   _acidDamageRate: 0.2
   _bulletCapacity: 10
-  _fireRate: 0.5
+  _fireRate: 1.2
   YStickUpDeadZone: 0.4
   _YStickDownDeadZone: -0.4
   upShot:
-    _muzzleVelocity: 15
-    _gravityScale: 2
-    _fireAngle: 45
+    _muzzleVelocity: 11.5
+    _gravityScale: 6
+    _fireAngle: 63
   horizontalShot:
-    _muzzleVelocity: 15
-    _gravityScale: 2
-    _fireAngle: 0
+    _muzzleVelocity: 11
+    _gravityScale: 12
+    _fireAngle: 20
   downShot:
-    _muzzleVelocity: 15
-    _gravityScale: 2
-    _fireAngle: -45
+    _muzzleVelocity: 11
+    _gravityScale: 5
+    _fireAngle: -20
 --- !u!114 &114834841037191924
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 古い敵の挙動クラス
+/// </summary>
 public class Enemy : MonoBehaviour {
 
     [SerializeField, Range(0f, 100f)] private float _moveSpeed = 1f;

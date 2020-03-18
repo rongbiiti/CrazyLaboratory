@@ -5,7 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 
-
+/// <summary>
+/// プレイヤーのスクリプト
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     private GameObject cam;

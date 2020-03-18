@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 public class EnemyHpbar : MonoBehaviour {
 
-    [SerializeField] private Slider HPbar;
+    [SerializeField, CustomLabel("敵のHPバー")] private Slider HPbar;
     [HideInInspector] public Slider hpbar;
-    [SerializeField] private float _YposOffset = 3.0f;  // Enemyの頭上にHPバーを表示するためのオフセットの値
+    [SerializeField, CustomLabel("HPバーのY軸オフセット")] private float _YposOffset = 3.0f;  // Enemyの頭上にHPバーを表示するためのオフセットの値
     private Camera cam;
 
     /// <summary>

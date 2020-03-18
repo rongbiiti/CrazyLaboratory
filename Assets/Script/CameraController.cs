@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// カメラが少し遅れてプレイヤーに追従するようにしている。
+/// Y軸はキャラが画面上の一定の位置に来たときに追従している。
+/// また、Y軸を強制的に補正させるトリガーに侵入したときは
+/// その補正を追加で行っている。
+/// </summary>
 public class CameraController : MonoBehaviour
 {
     private GameObject player = null;

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// 落ちてくるガレキのスクリプト
+/// 床か敵に当たると壊れてバラバラになる
+/// </summary>
 public class FallBlock : MonoBehaviour {
 
     private Rigidbody2D rb;

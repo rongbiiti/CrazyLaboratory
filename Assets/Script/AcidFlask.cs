@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class AcidFlask : MonoBehaviour {
 
-    [SerializeField] private GameObject _residualAcid;
-    [SerializeField] private float _destroyTime = 7f;
+    [SerializeField, CustomLabel("床に残る酸のプレハブ")] private GameObject _residualAcid;
+    [SerializeField, CustomLabel("発射されてから消えるまでの時間")] private float _destroyTime = 7f;
 
     private void FixedUpdate()
     {
@@ -15,6 +15,14 @@ public class AcidFlask : MonoBehaviour {
         }
     }
 
+
+    /// <summary>
+    /// 当たった床や壁のスプライトの幅や高さを取得し、端にぴったりつくように
+    /// 位置を調整している。
+    /// さらにその床や壁のスプライトマスクをONにし、スプライトマスクが酸が消えるまでの秒数だけ起きておくための
+    /// タイマーをセットしている。
+    /// </summary>
+    /// <param name="collision">当たった床や壁など</param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("MoveBlock")) {

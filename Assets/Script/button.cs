@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// シーンリロードボタンと終了ボタン。
+/// 終了ボタンは、エディターでプレイしてるときとビルドでプレイしているときとを
+/// 検知している
+/// </summary>
 public class button : MonoBehaviour {
 
 	public void SceneReload()

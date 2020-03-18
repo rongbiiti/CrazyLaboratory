@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ひっかー、見てたら説明書いといて＾。＾
+/// </summary>
 public class BreakBlockPivot : MonoBehaviour
 {
-
     private bool isEnterAcid;
     private bool isPlayerStay;
-    [SerializeField] private float destroyTime = 2f;
-    [SerializeField] private float restorTime = 5f;
+    [SerializeField, CustomLabel("消えるまでの時間")] private float destroyTime = 2f;
+    [SerializeField, CustomLabel("元に戻るまでの時間")] private float restorTime = 5f;
     private Vector2 startScale;
     private Vector2 Startposition;
     private GameObject parent1;

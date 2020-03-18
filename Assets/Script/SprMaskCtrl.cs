@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// スプライトマスクを指定した時間だけONにするためのクラス
+/// 基本的に弾側から秒数を設定させる。
+/// </summary>
 public class SprMaskCtrl : MonoBehaviour {
 
     private SpriteMask spriteMask;
