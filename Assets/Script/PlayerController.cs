@@ -193,11 +193,11 @@ public class PlayerController : MonoBehaviour
             mainThrowPoint = transform.GetChild(1).transform.position;
         }
 
-        if (inputManager.MoveStopKey != 0) {
-            playerManager.MoveSpeed = 0;
-        } else {
-            playerManager.MoveSpeed = startMoveSpeed;
-        }
+        //if (inputManager.MoveStopKey != 0) {
+        //    playerManager.MoveSpeed = 0;
+        //} else {
+        //    playerManager.MoveSpeed = startMoveSpeed;
+        //}
 
         // 地面と当たり判定をしている。
         isGrounded = rb.IsTouching(filter2d);
@@ -210,11 +210,11 @@ public class PlayerController : MonoBehaviour
             SoundManagerV2.Instance.PlaySE(9);
         }
 
-        if (inputManager.MoveKey >= 0.3 && !flip) {
+        if (inputManager.MoveKey >= 0.3 && !flip && inputManager.MoveStopKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = true;
         }
-        if (inputManager.MoveKey <= -0.3 && flip) {
+        if (inputManager.MoveKey <= -0.3 && flip && inputManager.MoveStopKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
