@@ -923,7 +923,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1673227826395028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7432866, y: -11.537091, z: 0}
+  m_LocalPosition: {x: -4.39, y: -11.537091, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4625420599057240}
@@ -3331,6 +3331,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _HPbar: {fileID: 0}
   _bulletsRemain: {fileID: 0}
+  _handgunUI: {fileID: 0}
+  _hmUI: {fileID: 0}
   filter2d:
     useTriggers: 0
     useLayerMask: 1
@@ -3351,6 +3353,10 @@ MonoBehaviour:
   _acidDamage: 500
   _acidDamageRate: 0.2
   _bulletCapacity: 10
+  _hmBulletCapacity: 20
+  _hmShotBullets: 6
+  _hmSpreadRange: 30
+  _hmFireRate: 2.5
   _fireRate: 1.2
   YStickUpDeadZone: 0.4
   _YStickDownDeadZone: -0.4
