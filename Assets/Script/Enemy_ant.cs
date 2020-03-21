@@ -288,6 +288,11 @@ public class Enemy_ant : MonoBehaviour {
             Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の非弱点にヒット");
             SoundManagerV2.Instance.PlaySE(7);
+            if (patrolType == 0)   //パトロール中にplayerを見つけた時
+            {
+                patrolType = 1;     //敵を見つけて追いかけるモード
+            }
+            
         }
 
         if(collision.gameObject.CompareTag("Gareki")) {
