@@ -14,11 +14,11 @@ public class EnemyHpbar : MonoBehaviour {
     /// 最初に、シーンに内にあるカメラを探す。
     /// 名前がMain Cameraじゃないとエラーになるので注意
     /// </summary>
-    private void Start()
+    private void Awake()
     {
         GameObject obj = GameObject.Find("Main Camera");
         cam = obj.GetComponent<Camera>();
-        hpbar = Instantiate(HPbar);
+        hpbar = Instantiate(HPbar) as Slider;
         GameObject canvas = GameObject.Find("Canvas");
         hpbar.transform.SetParent(canvas.transform, false);
     }
@@ -41,5 +41,15 @@ public class EnemyHpbar : MonoBehaviour {
     private void FixedUpdate()
     {
         hpbar.transform.position = cam.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + _YposOffset, transform.position.z));
+    }
+
+    //private void OnDisable()
+    //{
+    //    hpbar.enabled = false;
+    //}
+
+    private void OnEnable()
+    {
+        hpbar.enabled = true;
     }
 }

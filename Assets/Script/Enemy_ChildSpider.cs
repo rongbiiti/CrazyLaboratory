@@ -20,11 +20,11 @@ public class Enemy_ChildSpider : MonoBehaviour {
     private float stanTimeRemain = 0;
     private float nowHP;
 
-    [SerializeField] private GameObject[] PatrolPoint;
+    [SerializeField] private GameObject[] _PatrolPoint;
     private Vector3[] PatrolPointPosition;
     private byte patroltype;    //0：次のパトロール位置を取得する待ち    1:取得した後、硬直する 3：動く
     private int PointCount;    //パトロールポイントのカウント PatrolPointの配列の数が最大値
-    [SerializeField] private float pointWaitRate;      //パトロール後の硬直
+    [SerializeField] private float _pointWaitRate;      //パトロール後の硬直
     private float pointWaitTime;      //パトロール後の硬直
 
     private Vector3 Point_Position;     //パトロールポイントの座標の格納用
@@ -34,18 +34,18 @@ public class Enemy_ChildSpider : MonoBehaviour {
     private float Count;
     private EnemyHpbar enemyHpbar;
     private bool isZeroHP;
-    [SerializeField] private float destroyTime = 2f;
+    [SerializeField] private float _destroyTime = 2f;
     private Vector2 startScale;
 
     // Use this for initialization
     void Start()
     {
         startScale = transform.localScale;
-        PatrolPointPosition = new Vector3[PatrolPoint.Length];
-        for (int i = 0; i < PatrolPoint.Length; i++)
+        PatrolPointPosition = new Vector3[_PatrolPoint.Length];
+        for (int i = 0; i < _PatrolPoint.Length; i++)
         {
-            PatrolPointPosition[i] = PatrolPoint[i].gameObject.transform.position;
-            PatrolPoint[i].SetActive(false);
+            PatrolPointPosition[i] = _PatrolPoint[i].gameObject.transform.position;
+            _PatrolPoint[i].SetActive(false);
         }
         Point_Position = PatrolPointPosition[PointCount];     //最初のパトロールポイントの座標を格納
         patroltype = 2;
@@ -83,11 +83,11 @@ public class Enemy_ChildSpider : MonoBehaviour {
         {
             if (0 < transform.localScale.x)
             {
-                transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+                transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
             }
             else if (transform.localScale.x < 0)
             {
-                transform.localScale -= new Vector3(-startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+                transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
             }
             if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
             {
@@ -119,8 +119,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
             if (patroltype == 0)
             {
-                if (PointCount++ > PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
-
+                if (++PointCount > _PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
+                Debug.Log(PointCount);
                 Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
                 if (gameObject.transform.position.x >= Point_Position.x)     //現在のポジションからポイントの座標を見て　設定する
                 {
@@ -135,7 +135,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 }
 
                 patroltype = 1;     //硬直へ
-                pointWaitTime += pointWaitRate;
+                pointWaitTime += _pointWaitRate;
             }
             
 
