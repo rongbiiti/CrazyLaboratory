@@ -17,7 +17,26 @@ public class PlayerCtrlAnimTest : MonoBehaviour
 
     private bool flip = true;
 
+    //アニメーション関連
     Animator animator;
+    private State state;
+    private int GunLayer;
+    private int Shot1Layer;
+    private int Shot2Layer;
+    private int Shot3Layer;
+    private float weightGun;
+    private float weight1;
+    private float weight2;
+    private float weight3;
+    private bool smoothFlag;
+    enum State
+    {
+        None,
+        Gun,
+        Shot1,
+        Shot2,
+        Shot3
+    }
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
@@ -142,7 +161,17 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         cam = GameObject.Find("Main Camera");
         SoundManagerV2.Instance.PlayBGM(0);
 
+        //アニメーション関連
         animator = GetComponent<Animator>();
+        GunLayer = animator.GetLayerIndex("Gun Layer");
+        Shot1Layer = animator.GetLayerIndex("Shot1 Layer");
+        Shot2Layer = animator.GetLayerIndex("Shot2 Layer");
+        Shot3Layer = animator.GetLayerIndex("Shot3 Layer");
+        weightGun = 0f;
+        weight1 = 0f;
+        weight2 = 0f;
+        weight3 = 0f;
+        SetState(State.None, first: true);
     }
 
     void Update()
@@ -152,19 +181,55 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         if (YStickUpDeadZone < inputManager.UpMoveKey && isGetGun)
         {
             mainThrowPoint = transform.GetChild(0).transform.position;
-
-
-            // 下に発射
-        }
+            if (state != State.Shot1) {
+                SetState(State.Shot1);
+            }   
+            Debug.Log("shot1");
+        }// 下に発射
         else if (inputManager.UpMoveKey < _YStickDownDeadZone && isGetGun)
         {
             mainThrowPoint = transform.GetChild(2).transform.position;
-            // 正面に発射
-        }
-        else
+            if (state != State.Shot3){
+                SetState(State.Shot3);
+            }
+            Debug.Log("shot3");
+        }// 正面に発射
+        else if(isGetGun)
         {
             mainThrowPoint = transform.GetChild(1).transform.position;
+            if (state != State.Gun){
+                SetState(State.Gun);
+            }
         }
+
+        if (smoothFlag) {
+            if (state == State.Shot1){
+                weight1 = 1f;
+                weight2 = 0f;
+                weight3 = 0f;
+                weightGun = 0f;
+            }else if(state == State.Gun){
+                weightGun = 1f;
+                weight1 = 0f;
+                weight2 = 0f;
+                weight3 = 0f;
+            }else if (state == State.Shot2){
+                weight2 = 1f;
+                weightGun = 0f;
+                weight1 = 0f;
+                weight3 = 0f;
+            }else if (state == State.Shot3){
+                weight3 = 1f;
+                weightGun = 0f;
+                weight1 = 0f;
+                weight2 = 0f;
+            }
+            animator.SetLayerWeight(GunLayer, weightGun);
+            animator.SetLayerWeight(Shot1Layer, weight1);
+            animator.SetLayerWeight(Shot2Layer, weight2);
+            animator.SetLayerWeight(Shot3Layer, weight3);
+        }
+        
 
         if (inputManager.MoveStopKey != 0)
         {
@@ -212,20 +277,18 @@ public class PlayerCtrlAnimTest : MonoBehaviour
                 rad = upShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
                 muzzleVelocity = upShot.MuzzleVelocity; //上へ発射時の初速を代入
                 bRb.gravityScale = upShot.GravityScale; //上へ発射時の弾の重量を代入
-                                                        // 下に発射
-            }
+            }// 下に発射
             else if (inputManager.UpMoveKey < _YStickDownDeadZone)
             {
                 rad = downShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
                 muzzleVelocity = downShot.MuzzleVelocity; //下へ発射時の初速を代入
                 bRb.gravityScale = downShot.GravityScale; //下へ発射時の弾の重量を代入
-                // 正面に発射
-            }
+            }// 正面に発射
             else
             {
                 rad = horizontalShot.FireAngle * Mathf.Deg2Rad;　//角度をラジアン角に変換
                 muzzleVelocity = horizontalShot.MuzzleVelocity;  //正面へ発射時の初速を代入
-                bRb.gravityScale = horizontalShot.GravityScale;  //正面へ発射時の弾の重量を代入
+                bRb.gravityScale = horizontalShot.GravityScale;  //正面へ発射時の弾の重量を代入          
             }
 
             //rad(ラジアン角)から発射用ベクトルを作成
@@ -270,12 +333,14 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         // 地面にいるとき
         if (isGrounded)
         {
+            
             animator.SetBool("JumpUp", false);
             rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.MoveSpeed - rb.velocity.x), rb.velocity.y));
            if(inputManager.MoveKey != 0)
             {
+                //Debug.Log("顔が消えた");
                 animator.SetBool("Run", true);
-                animator.SetBool("Stand", false);                
+                animator.SetBool("Stand", false);
             }
             else if(inputManager.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
            {
@@ -424,6 +489,10 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         {
             _bulletsRemain.enabled = true;
             isGetGun = true;
+            if (state != State.Gun)
+            {
+                SetState(State.Gun);
+            }
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
         }
@@ -480,6 +549,15 @@ public class PlayerCtrlAnimTest : MonoBehaviour
                     Debug.Log(_unpos.y);
                 }
             }
+        }
+    }
+
+    void SetState(State state, bool first = false)
+    {
+        this.state = state;
+        //　最初の設定でなければスムーズフラグをオンにする
+        if (!first) {
+            smoothFlag = true;
         }
     }
 

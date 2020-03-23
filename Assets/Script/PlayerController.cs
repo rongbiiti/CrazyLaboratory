@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
 
     private bool flip = true;
 
+    Animator animator;  //アニメーション変数
+
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
 
@@ -161,6 +163,8 @@ public class PlayerController : MonoBehaviour
         }
         PreCalcSpreadAngle();
 
+        animator = GetComponent<Animator>(); //アニメーション
+
         ShowListContentsInTheDebugLog(hmSpreadAngle);
     }
 
@@ -274,10 +278,26 @@ public class PlayerController : MonoBehaviour
 
         // 地面にいるとき
         if (isGrounded) {
+            animator.SetBool("JumpUp", false);
             rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.MoveSpeed - rb.velocity.x), rb.velocity.y));
 
-        // 空中にいるとき
+            if (inputManager.MoveKey != 0)
+            {
+                //Debug.Log("顔が消えた");
+                animator.SetBool("Run", true);
+                animator.SetBool("Stand", false);
+            }
+            else if (inputManager.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
+            {
+                animator.SetBool("Stand", true);
+                animator.SetBool("Run", false);
+            }
+            // 空中にいるとき
         } else {
+            animator.SetBool("JumpUp", true);
+            animator.SetBool("Run", false);
+            animator.SetBool("Stand", false);
+
             // ジャンプキーが話されたらジャンプ中でないことにする
             if (inputManager.JumpKey == 0) {
                 isJumping = false;
@@ -308,6 +328,8 @@ public class PlayerController : MonoBehaviour
             
             // ジャンプキーを押し続けていられる時間をへらす
             jumpTimeCounter -= Time.deltaTime;
+
+            animator.SetBool("Run", false);
 
             // ジャンプキーを押し続けている間は通常のジャンプパワー軽減率がはたらく
             if (inputManager.JumpKey == 2) {
