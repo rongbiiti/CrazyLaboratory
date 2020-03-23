@@ -270,12 +270,14 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         // 地面にいるとき
         if (isGrounded)
         {
+            
             animator.SetBool("JumpUp", false);
             rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.MoveSpeed - rb.velocity.x), rb.velocity.y));
            if(inputManager.MoveKey != 0)
             {
+                //Debug.Log("顔が消えた");
                 animator.SetBool("Run", true);
-                animator.SetBool("Stand", false);                
+                animator.SetBool("Stand", false);
             }
             else if(inputManager.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
            {
