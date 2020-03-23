@@ -6,6 +6,11 @@ public class AcidFlask : MonoBehaviour {
 
     [SerializeField, CustomLabel("床に残る酸のプレハブ")] private GameObject _residualAcid;
     [SerializeField, CustomLabel("発射されてから消えるまでの時間")] private float _destroyTime = 7f;
+    private bool isConflictDestroy = true;
+    public bool SetConlictDestroyFalse
+    {
+        set{ isConflictDestroy = false; }
+    }
 
     private void FixedUpdate()
     {
@@ -73,7 +78,10 @@ public class AcidFlask : MonoBehaviour {
             SoundManagerV2.Instance.PlaySE(0);
         }
 
-        Destroy(gameObject);
+        if(isConflictDestroy) {
+            Destroy(gameObject);
+        }
+        
     }
 
 }
