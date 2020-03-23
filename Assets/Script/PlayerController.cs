@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, CustomLabel("残弾数UI")] private Text _bulletsRemain;
     [SerializeField, CustomLabel("ハンドガン装備UI")] private Button _handgunUI;
     [SerializeField, CustomLabel("ホールメイカー装備UI")] private Button _hmUI;
+    [SerializeField, CustomLabel("装備UI表示切替")] private bool _isUIDisplay = false;
 
     private bool flip = true;
 
@@ -229,13 +230,33 @@ public class PlayerController : MonoBehaviour
         }
 
         if (inputManager.EquipHandGun && isGetGun) {
-            _handgunUI.Select();
+            if (_isUIDisplay) {
+                _handgunUI.Select();
+            }
+           
             equipment = Equipment.Handgun;
             _bulletsRemain.text = " ∞ ";
         }
         if (inputManager.EquipHoleMaker && isGetHoleMaker && 0 < hmBullets) {
-            _hmUI.Select();
+            if (_isUIDisplay) {
+                _hmUI.Select();
+            }
+            
             equipment = Equipment.HoleMaker;
+            _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
+        }
+
+        // ホールメイカーの隠しコマンド
+        if(Input.GetKey(KeyCode.H) && Input.GetKeyUp(KeyCode.M)) {
+            if (_isUIDisplay) {
+                _hmUI.gameObject.SetActive(true);
+                _hmUI.Select();
+            }
+
+            isGetHoleMaker = true;
+            SoundManagerV2.Instance.PlaySE(12);
+            equipment = Equipment.HoleMaker;
+            hmBullets += _hmBulletCapacity;
             _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
         }
  
@@ -381,6 +402,7 @@ public class PlayerController : MonoBehaviour
     {
         for (int i = 0; i < _hmShotBullets; i++) {
             GameObject bullet = Instantiate(_acidbulletPrefab, mainThrowPoint, Quaternion.identity) as GameObject;
+            bullet.GetComponent<AcidFlask>().SetConlictDestroyFalse = false;
             Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
             float rad = 0;
@@ -499,16 +521,22 @@ public class PlayerController : MonoBehaviour
 
             _bulletsRemain.text = " ∞ ";
         } else if (collision.CompareTag("PutGun")) {
-            _handgunUI.gameObject.SetActive(true);
-            _handgunUI.Select();
+            if (_isUIDisplay) {
+                _handgunUI.gameObject.SetActive(true);
+                _handgunUI.Select();
+            }
+           
             _bulletsRemain.enabled = true;
             isGetGun = true;
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.Handgun;
         } else if (collision.CompareTag("PutHoleMaker") && isGetGun) {
-            _hmUI.gameObject.SetActive(true);
-            _hmUI.Select();
+            if (_isUIDisplay) {
+                _hmUI.gameObject.SetActive(true);
+                _hmUI.Select();
+            }
+            
             isGetHoleMaker = true;
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
