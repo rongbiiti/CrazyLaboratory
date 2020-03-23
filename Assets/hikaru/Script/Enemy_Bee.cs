@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy_ChildSpider : MonoBehaviour {
+public class Enemy_Bee : MonoBehaviour
+{
 
-    [SerializeField] private float _HP = 1f;
+    [SerializeField] private float _HP = 2f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _PlayerDamage = 1000f;
     [SerializeField] private float _PlayerDamageRate = 3f;
     [SerializeField] private float _nockBuckPower = 150f;
     [SerializeField] private float _nockBuckUpperPower = 0.38f;
     private float _PlayerDamageTime;
-    [SerializeField] private float _MoveSpeed = 0.1f;
+    [SerializeField] private float _moveSpeed = 0.1f;
     //[SerializeField] private bool _directionChange;     //false:LEFT true:RIGHT
     private int _direction;
     [SerializeField] private byte _AttackWait = 1;
@@ -19,6 +20,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
     [SerializeField] private float _stanTime = 3f;
     private float stanTimeRemain = 0;
     private float nowHP;
+
+
 
     [SerializeField] private GameObject[] _PatrolPoint;
     private Vector3[] PatrolPointPosition;
@@ -39,6 +42,13 @@ public class Enemy_ChildSpider : MonoBehaviour {
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
+    private Rigidbody2D rb;
+    public Vector3 targetPosition;
+    private bool isReachTargetPosition;
+    private bool istargetPointA;
+    [SerializeField] private GameObject _pointA;
+    [SerializeField] private GameObject _pointB;
+
 
 
 
@@ -47,17 +57,17 @@ public class Enemy_ChildSpider : MonoBehaviour {
     {
         startScale = transform.localScale;
         PatrolPointPosition = new Vector3[_PatrolPoint.Length];
-        for (int i = 0; i < _PatrolPoint.Length; i++)
-        {
-            PatrolPointPosition[i] = _PatrolPoint[i].gameObject.transform.position;
-            _PatrolPoint[i].SetActive(false);
-        }
-        Point_Position = PatrolPointPosition[PointCount];     //最初のパトロールポイントの座標を格納
+        //for (int i = 0; i < _PatrolPoint.Length; i++)
+        //{
+        //    PatrolPointPosition[i] = _PatrolPoint[i].gameObject.transform.position;
+        //    _PatrolPoint[i].SetActive(false);
+        //}
+        //Point_Position = PatrolPointPosition[PointCount];     //最初のパトロールポイントの座標を格納
         movetype = 2;
         AttackPhase = 0;
         Count = 0;
         nowHP = _HP;
-        
+
         if (Point_Position.x <= gameObject.transform.position.x)
         {
             _direction = -1;     //左
@@ -71,6 +81,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
         playerObject = GameObject.FindGameObjectWithTag("Player");
+        targetPosition = _pointA.transform.position;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void FixedUpdate()
@@ -108,32 +120,32 @@ public class Enemy_ChildSpider : MonoBehaviour {
             {
                 pointWaitTime -= Time.deltaTime;
             }
-           else if(movetype == 1 && 0 >= pointWaitTime)
+            else if (movetype == 1 && 0 >= pointWaitTime)
             {
                 movetype = 2;
             }
 
-            if (movetype == 0)
-            {
-                if (++PointCount > _PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
-                Debug.Log(PointCount);
-                Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
-                if (gameObject.transform.position.x >= Point_Position.x)     //現在のポジションからポイントの座標を見て　設定する
-                {
-                    if(_direction == 1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
-                    _direction = -1; //左
-                    
-                }
-                else if (gameObject.transform.position.x <= Point_Position.x)
-                {
-                    if (_direction == -1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
-                    _direction = 1; //右
-                }
+            //if (movetype == 0)
+            //{
+            //    if (++PointCount > _PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
+            //    Debug.Log(PointCount);
+            //    Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
+            //    if (gameObject.transform.position.x >= Point_Position.x)     //現在のポジションからポイントの座標を見て　設定する
+            //    {
+            //        if (_direction == 1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+            //        _direction = -1; //左
 
-                movetype = 1;     //硬直へ
-                pointWaitTime += _pointWaitRate;
-            }
-            
+            //    }
+            //    else if (gameObject.transform.position.x <= Point_Position.x)
+            //    {
+            //        if (_direction == -1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+            //        _direction = 1; //右
+            //    }
+
+            //    movetype = 1;     //硬直へ
+            //    pointWaitTime += _pointWaitRate;
+            //}
+
 
 
 
@@ -144,25 +156,38 @@ public class Enemy_ChildSpider : MonoBehaviour {
             switch (patrolType)
             {
                 case 0:
+
+                    DecideTargetPotision();
+                    // 巡回ポイントの位置を取得
+                    Vector2 targetPos = targetPosition;
+                    // 巡回ポイントのx座標
+                    float x = targetPos.x;
+                    // ENEMYは、地面を移動させるので座標は常に0とする
+                    float y = targetPos.y;
+                    // 移動を計算させるための２次元のベクトルを作る
+                    Vector2 direction = new Vector2(x - transform.position.x, y - transform.position.y).normalized;
+                    // ENEMYのRigidbody2Dに移動速度を指定する
+                    rb.velocity = direction * _moveSpeed;
+
                     Debug.Log("パトロール");
-                    if (AttackPhase == 0 && stanTimeRemain <= 0)        //パトロール中
-                    {
-                        if (movetype != 2) return;  //パトロールついて硬直中は動かない
+                    //if (AttackPhase == 0 && stanTimeRemain <= 0)        //パトロール中
+                    //{
+                    //    if (movetype != 2) return;  //パトロールついて硬直中は動かない
 
-                        // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
-                        myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
+                    //    // 現在の座標からのxyz を _moveSpeed ずつ加算して移動
+                    //    myTransform.Translate(_moveSpeed * _direction, 0.0f, 0.0f, Space.World);
 
-                        //パトロールポイントを超えたら待機タイプに変える
-                        if (_direction == -1 && gameObject.transform.position.x <= Point_Position.x)
-                        {
-                            movetype = 0;
-                        }
-                        else if (_direction == 1 && gameObject.transform.position.x >= Point_Position.x)
-                        {
-                            movetype = 0;
-                        }
+                    //    //パトロールポイントを超えたら待機タイプに変える
+                    //    if (_direction == -1 && gameObject.transform.position.x <= Point_Position.x)
+                    //    {
+                    //        movetype = 0;
+                    //    }
+                    //    else if (_direction == 1 && gameObject.transform.position.x >= Point_Position.x)
+                    //    {
+                    //        movetype = 0;
+                    //    }
 
-                    }
+                    //}
                     break;
 
                 case 1:
@@ -182,8 +207,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
                     if (AttackPhase == 0 && stanTimeRemain <= 0)
                     {
-                        // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
-                        myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
+                        // 現在の座標からのxyz を _moveSpeed ずつ加算して移動
+                        myTransform.Translate(_moveSpeed * _direction, 0.0f, 0.0f, Space.World);
                     }
 
                     var difference = playerObject.transform.position.x - gameObject.transform.position.x;
@@ -227,11 +252,40 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     break;
             }
 
-            
-            
+
+
         }
 
 
+    }
+
+    private void DecideTargetPotision()
+    {
+        // まだ目的地についてなかったら（移動中なら）目的地を変えない
+        if (!isReachTargetPosition)
+        {
+            return;
+        }
+
+        // 目的地に着いていたら目的地を再設定する
+        if (istargetPointA)
+        {
+            targetPosition = _pointA.transform.position;
+            istargetPointA = false;
+            _pointA.SetActive(true);
+            _pointB.SetActive(false);
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
+        }
+        else
+        {
+            targetPosition = _pointB.transform.position;
+            istargetPointA = true;
+            _pointA.SetActive(false);
+            _pointB.SetActive(true);
+            transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
+        }
+
+        isReachTargetPosition = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -254,6 +308,12 @@ public class Enemy_ChildSpider : MonoBehaviour {
             {
                 isZeroHP = true;
             }
+        }
+
+        if (collision.gameObject.CompareTag("PatrolPoint"))
+        {
+            isReachTargetPosition = true;
+            DecideTargetPotision();
         }
 
         if (collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
@@ -297,7 +357,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
         }
 
         
-
+        
 
         if (collision.gameObject.CompareTag("Gareki"))
         {
