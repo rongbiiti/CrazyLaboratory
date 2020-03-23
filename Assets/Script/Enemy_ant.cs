@@ -29,7 +29,7 @@ public class Enemy_ant : MonoBehaviour {
     private Vector2 startScale;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
-    [SerializeField] private GameObject _playerObject;  //playerのオブジェクトを格納
+    private GameObject playerObject;  //playerのオブジェクトを格納
 
     // Use this for initialization
     void Start () {
@@ -54,6 +54,7 @@ public class Enemy_ant : MonoBehaviour {
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
         patrolType = 0;
+        playerObject = GameObject.FindGameObjectWithTag("Player");
     }
 
     void FixedUpdate()
@@ -134,13 +135,13 @@ public class Enemy_ant : MonoBehaviour {
 
                 case 1: //追尾の動き playerを追いかける
                     Debug.Log("追跡中");
-                    if (_playerObject.transform.position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
+                    if (playerObject.transform.position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
                     {
                         _direction *= -1;
                         _directionChange = true;
                         gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
-                    else if (_playerObject.transform.position.x <= transform.position.x && AttackPhase == 0 && _directionChange && stanTimeRemain <= 0)
+                    else if (playerObject.transform.position.x <= transform.position.x && AttackPhase == 0 && _directionChange && stanTimeRemain <= 0)
                     {
                         _direction *= -1;
                         _directionChange = false;
@@ -155,7 +156,7 @@ public class Enemy_ant : MonoBehaviour {
                         myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
                     }
 
-                    var difference = _playerObject.transform.position.x - gameObject.transform.position.x;
+                    var difference = playerObject.transform.position.x - gameObject.transform.position.x;
                     if(difference < 0)
                     {
                         difference *= -1;
