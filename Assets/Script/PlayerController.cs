@@ -17,8 +17,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField, CustomLabel("残弾数UI")] private Text _bulletsRemain;
     [SerializeField, CustomLabel("ハンドガン装備UI")] private Button _handgunUI;
     [SerializeField, CustomLabel("ホールメイカー装備UI")] private Button _hmUI;
+    [SerializeField, CustomLabel("装備UI表示切替")] private bool _isUIDisplay = false;
 
     private bool flip = true;
+
+    Animator animator;  //アニメーション変数
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
@@ -160,6 +163,8 @@ public class PlayerController : MonoBehaviour
         }
         PreCalcSpreadAngle();
 
+        animator = GetComponent<Animator>(); //アニメーション
+
         ShowListContentsInTheDebugLog(hmSpreadAngle);
     }
 
@@ -229,13 +234,33 @@ public class PlayerController : MonoBehaviour
         }
 
         if (inputManager.EquipHandGun && isGetGun) {
-            _handgunUI.Select();
+            if (_isUIDisplay) {
+                _handgunUI.Select();
+            }
+           
             equipment = Equipment.Handgun;
             _bulletsRemain.text = " ∞ ";
         }
         if (inputManager.EquipHoleMaker && isGetHoleMaker && 0 < hmBullets) {
-            _hmUI.Select();
+            if (_isUIDisplay) {
+                _hmUI.Select();
+            }
+            
             equipment = Equipment.HoleMaker;
+            _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
+        }
+
+        // ホールメイカーの隠しコマンド
+        if(Input.GetKey(KeyCode.H) && Input.GetKeyUp(KeyCode.M)) {
+            if (_isUIDisplay) {
+                _hmUI.gameObject.SetActive(true);
+                _hmUI.Select();
+            }
+
+            isGetHoleMaker = true;
+            SoundManagerV2.Instance.PlaySE(12);
+            equipment = Equipment.HoleMaker;
+            hmBullets += _hmBulletCapacity;
             _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
         }
  
@@ -253,10 +278,26 @@ public class PlayerController : MonoBehaviour
 
         // 地面にいるとき
         if (isGrounded) {
+            animator.SetBool("JumpUp", false);
             rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.MoveSpeed - rb.velocity.x), rb.velocity.y));
 
-        // 空中にいるとき
+            if (inputManager.MoveKey != 0)
+            {
+                //Debug.Log("顔が消えた");
+                animator.SetBool("Run", true);
+                animator.SetBool("Stand", false);
+            }
+            else if (inputManager.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
+            {
+                animator.SetBool("Stand", true);
+                animator.SetBool("Run", false);
+            }
+            // 空中にいるとき
         } else {
+            animator.SetBool("JumpUp", true);
+            animator.SetBool("Run", false);
+            animator.SetBool("Stand", false);
+
             // ジャンプキーが話されたらジャンプ中でないことにする
             if (inputManager.JumpKey == 0) {
                 isJumping = false;
@@ -287,6 +328,8 @@ public class PlayerController : MonoBehaviour
             
             // ジャンプキーを押し続けていられる時間をへらす
             jumpTimeCounter -= Time.deltaTime;
+
+            animator.SetBool("Run", false);
 
             // ジャンプキーを押し続けている間は通常のジャンプパワー軽減率がはたらく
             if (inputManager.JumpKey == 2) {
@@ -381,6 +424,7 @@ public class PlayerController : MonoBehaviour
     {
         for (int i = 0; i < _hmShotBullets; i++) {
             GameObject bullet = Instantiate(_acidbulletPrefab, mainThrowPoint, Quaternion.identity) as GameObject;
+            bullet.GetComponent<AcidFlask>().SetConlictDestroyFalse = false;
             Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
             float rad = 0;
@@ -499,16 +543,22 @@ public class PlayerController : MonoBehaviour
 
             _bulletsRemain.text = " ∞ ";
         } else if (collision.CompareTag("PutGun")) {
-            _handgunUI.gameObject.SetActive(true);
-            _handgunUI.Select();
+            if (_isUIDisplay) {
+                _handgunUI.gameObject.SetActive(true);
+                _handgunUI.Select();
+            }
+           
             _bulletsRemain.enabled = true;
             isGetGun = true;
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.Handgun;
         } else if (collision.CompareTag("PutHoleMaker") && isGetGun) {
-            _hmUI.gameObject.SetActive(true);
-            _hmUI.Select();
+            if (_isUIDisplay) {
+                _hmUI.gameObject.SetActive(true);
+                _hmUI.Select();
+            }
+            
             isGetHoleMaker = true;
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
