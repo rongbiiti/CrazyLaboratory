@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy_ant : MonoBehaviour {
-    
-    [SerializeField] private float _HP;
-    [SerializeField] private float _HitDamage;
-    [SerializeField] private float _PlayerDamage;
-    [SerializeField] private float _PlayerDamageRate;
+
+    [SerializeField] private float _HP = 10f;
+    [SerializeField] private float _HitDamage = 2f;
+    [SerializeField] private float _PlayerDamage = 2000f;
+    [SerializeField] private float _PlayerDamageRate = 3f;
     [SerializeField] private float _nockBuckPower = 300f;
     [SerializeField] private float _nockBuckUpperPower = 0.38f;
     private float _PlayerDamageTime;
-    [SerializeField] private float _MoveSpeed;
-    [SerializeField] private bool _directionChange;
+    [SerializeField] private float _MoveSpeed = 0.1f;
+    [SerializeField] private bool _directionChange = false;
     private int _direction;
-    [SerializeField] private byte _AttackWait;
-    [SerializeField] private float _AttackTime;
+    [SerializeField] private byte _AttackWait = 1;
+    [SerializeField] private float _AttackTime = 0.45f;
     [SerializeField] private float _stanTime = 3f;
     private float stanTimeRemain = 0;
     private float nowHP;
@@ -25,8 +25,11 @@ public class Enemy_ant : MonoBehaviour {
     private float Count;
     private EnemyHpbar enemyHpbar;
     private bool isZeroHP;
-    [SerializeField] private float destroyTime = 2f;
+    [SerializeField] private float _destroyTime = 2f;
     private Vector2 startScale;
+    private int patrolType;     //0:パトロール 1:追尾 3:攻撃
+    [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
+    private GameObject playerObject;  //playerのオブジェクトを格納
 
     // Use this for initialization
     void Start () {
@@ -50,15 +53,17 @@ public class Enemy_ant : MonoBehaviour {
         }
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
+        patrolType = 0;
+        playerObject = GameObject.FindGameObjectWithTag("Player");
     }
 
     void FixedUpdate()
     {
         if (isZeroHP) {
             if (0 < transform.localScale.x) {
-                transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+                transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
             } else if (transform.localScale.x < 0) {
-                transform.localScale -= new Vector3(-startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+                transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
             }
             if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95) {
                 Destroy(enemyHpbar.hpbar.gameObject);
@@ -74,39 +79,149 @@ public class Enemy_ant : MonoBehaviour {
                 stanTimeRemain -= Time.deltaTime;
             }
 
-            if (PointA_Position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0) {
-                _direction *= -1;
-                _directionChange = true;
-                gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
-            } else if (PointB_Position.x <= transform.position.x && AttackPhase == 0 && _directionChange && stanTimeRemain <= 0) {
-                _direction *= -1;
-                _directionChange = false;
-                gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
-            }
-
             // transformを取得
             Transform myTransform = this.transform;
-            if (AttackPhase == 0 && stanTimeRemain <= 0) {
-                // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
-                myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
-            } else if (AttackPhase == 1 && stanTimeRemain <= 0) {
-                // 現在の座標からのxyz を1ずつ加算して移動
-                //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
-                Count += Time.deltaTime;
-                if (Count >= _AttackWait) {
-                    AttackPhase = 2;
-                    Count = 0;
-                }
-            } else if (AttackPhase == 2 && stanTimeRemain <= 0) {
-                myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
-                //AttackPhase = 0;
-                Count += Time.deltaTime;
-                if (Count >= _AttackTime) {
-                    AttackPhase = 0;
-                    Count = 0;
-                    stanTimeRemain += 2;
-                }
+
+            switch (patrolType)
+            {
+                case 0:     //パトロールの動き
+                    Debug.Log("パトロール中");
+                    if (PointA_Position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
+                    {
+                        _direction *= -1;
+                        _directionChange = true;
+                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                    }
+                    else if (PointB_Position.x <= transform.position.x && AttackPhase == 0 && _directionChange && stanTimeRemain <= 0)
+                    {
+                        _direction *= -1;
+                        _directionChange = false;
+                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                    }
+
+                    // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
+                    myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
+
+                    //if (AttackPhase == 0 && stanTimeRemain <= 0)
+                    //{
+                    //    // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
+                    //    myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
+                    //}
+                    //else if (AttackPhase == 1 && stanTimeRemain <= 0)
+                    //{
+                    //    // 現在の座標からのxyz を1ずつ加算して移動
+                    //    //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
+                    //    Count += Time.deltaTime;
+                    //    if (Count >= _AttackWait)
+                    //    {
+                    //        AttackPhase = 2;
+                    //        Count = 0;
+                    //    }
+                    //}
+                    //else if (AttackPhase == 2 && stanTimeRemain <= 0)
+                    //{
+                    //    myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
+                    //    //AttackPhase = 0;
+                    //    Count += Time.deltaTime;
+                    //    if (Count >= _AttackTime)
+                    //    {
+                    //        AttackPhase = 0;
+                    //        Count = 0;
+                    //        stanTimeRemain += 2;
+                    //    }
+                    //}
+
+                    break;
+
+                case 1: //追尾の動き playerを追いかける
+                    Debug.Log("追跡中");
+                    if (playerObject.transform.position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
+                    {
+                        _direction *= -1;
+                        _directionChange = true;
+                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                    }
+                    else if (playerObject.transform.position.x <= transform.position.x && AttackPhase == 0 && _directionChange && stanTimeRemain <= 0)
+                    {
+                        _direction *= -1;
+                        _directionChange = false;
+                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                    }
+
+
+
+                    if (AttackPhase == 0 && stanTimeRemain <= 0)
+                    {
+                        // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
+                        myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
+                    }
+
+                    var difference = playerObject.transform.position.x - gameObject.transform.position.x;
+                    if(difference < 0)
+                    {
+                        difference *= -1;
+                    }
+
+                    if (difference >= _tracking)
+                    {
+                        patrolType = 0;
+                    }
+                    //else if (AttackPhase == 1 && stanTimeRemain <= 0)
+                    //{
+                    //    // 現在の座標からのxyz を1ずつ加算して移動
+                    //    //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
+                    //    Count += Time.deltaTime;
+                    //    if (Count >= _AttackWait)
+                    //    {
+                    //        AttackPhase = 2;
+                    //        Count = 0;
+                    //    }
+                    //}
+                    //else if (AttackPhase == 2 && stanTimeRemain <= 0)
+                    //{
+                    //    myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
+                    //    //AttackPhase = 0;
+                    //    Count += Time.deltaTime;
+                    //    if (Count >= _AttackTime)
+                    //    {
+                    //        AttackPhase = 0;
+                    //        Count = 0;
+                    //        stanTimeRemain += 2;
+                    //    }
+                    //}
+                    break;
+
+                case 2:
+                    Debug.Log("攻撃中");
+                    if (AttackPhase == 1 && stanTimeRemain <= 0)
+                    {
+                        // 現在の座標からのxyz を1ずつ加算して移動
+                        //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
+                        Count += Time.deltaTime;
+                        if (Count >= _AttackWait)
+                        {
+                            AttackPhase = 2;
+                            Count = 0;
+                        }
+                    }
+                    else if (AttackPhase == 2 && stanTimeRemain <= 0)
+                    {
+                        myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
+                        //AttackPhase = 0;
+                        Count += Time.deltaTime;
+                        if (Count >= _AttackTime)
+                        {
+                            AttackPhase = 0;
+                            Count = 0;
+                            stanTimeRemain += 2;
+                            patrolType = 1;
+                        }
+
+                    }
+                    break;
             }
+
+            
         }
 
         
@@ -134,15 +249,24 @@ public class Enemy_ant : MonoBehaviour {
                 isZeroHP = true;
             }
         }
-        if (collision.CompareTag("Player") && AttackPhase == 0 && stanTimeRemain <= 0)
+
+        if(collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
+        {
+            patrolType = 1;     //敵を見つけて追いかけるモード
+        }
+
+        if (collision.CompareTag("Player") && patrolType == 1 && AttackPhase == 0 && stanTimeRemain <= 0)
         {
             AttackPhase = 1;
+            patrolType = 2;
         }
         
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+
+
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
             _PlayerDamageTime += _PlayerDamageRate;
@@ -157,6 +281,7 @@ public class Enemy_ant : MonoBehaviour {
         }
     }
 
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("AcidFlask"))
@@ -164,6 +289,11 @@ public class Enemy_ant : MonoBehaviour {
             Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の非弱点にヒット");
             SoundManagerV2.Instance.PlaySE(7);
+            if (patrolType == 0)   //パトロール中にplayerを見つけた時
+            {
+                patrolType = 1;     //敵を見つけて追いかけるモード
+            }
+            
         }
 
         if(collision.gameObject.CompareTag("Gareki")) {

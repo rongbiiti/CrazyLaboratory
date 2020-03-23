@@ -1,0 +1,155 @@
+{
+	"Version": 3,
+	"Parameters": [
+		{
+			"Id": "eyeParam",
+			"GroupId": "",
+			"Name": "目　開閉"
+		},
+		{
+			"Id": "DirectionParam",
+			"GroupId": "",
+			"Name": "方向"
+		},
+		{
+			"Id": "ClothesParam",
+			"GroupId": "",
+			"Name": "服"
+		},
+		{
+			"Id": "AxisParam",
+			"GroupId": "",
+			"Name": "体軸"
+		},
+		{
+			"Id": "LeftParam1",
+			"GroupId": "ParamGroup4",
+			"Name": "左肩"
+		},
+		{
+			"Id": "LeftArmParam",
+			"GroupId": "ParamGroup4",
+			"Name": "左腕"
+		},
+		{
+			"Id": "RightParam1",
+			"GroupId": "ParamGroup3",
+			"Name": "右肩"
+		},
+		{
+			"Id": "RightArmParam",
+			"GroupId": "ParamGroup3",
+			"Name": "右腕"
+		},
+		{
+			"Id": "LeftLegParam1",
+			"GroupId": "ParamGroup2",
+			"Name": "左足1"
+		},
+		{
+			"Id": "LeftLegParam2",
+			"GroupId": "ParamGroup2",
+			"Name": "左足2"
+		},
+		{
+			"Id": "LeftLegParam3",
+			"GroupId": "ParamGroup2",
+			"Name": "左足3"
+		},
+		{
+			"Id": "RightLegParam1",
+			"GroupId": "ParamGroup",
+			"Name": "右足1"
+		},
+		{
+			"Id": "RightLegParam2",
+			"GroupId": "ParamGroup",
+			"Name": "右足2"
+		},
+		{
+			"Id": "RightLegParam3",
+			"GroupId": "ParamGroup",
+			"Name": "右足3"
+		}
+	],
+	"ParameterGroups": [
+		{
+			"Id": "ParamGroup4",
+			"GroupId": "",
+			"Name": "左腕"
+		},
+		{
+			"Id": "ParamGroup3",
+			"GroupId": "",
+			"Name": "右腕"
+		},
+		{
+			"Id": "ParamGroup2",
+			"GroupId": "",
+			"Name": "左足"
+		},
+		{
+			"Id": "ParamGroup",
+			"GroupId": "",
+			"Name": "右足"
+		}
+	],
+	"Parts": [
+		{
+			"Id": "Part",
+			"Name": "全体"
+		},
+		{
+			"Id": "Part2",
+			"Name": "左腕"
+		},
+		{
+			"Id": "Part5",
+			"Name": "上半身"
+		},
+		{
+			"Id": "Part8",
+			"Name": "左足"
+		},
+		{
+			"Id": "Part9",
+			"Name": "右足"
+		},
+		{
+			"Id": "Part10",
+			"Name": "右腕"
+		},
+		{
+			"Id": "Part3",
+			"Name": "銃(左)"
+		},
+		{
+			"Id": "Part11",
+			"Name": "左手"
+		},
+		{
+			"Id": "Part4",
+			"Name": "体"
+		},
+		{
+			"Id": "Part6",
+			"Name": "頭部"
+		},
+		{
+			"Id": "Part14",
+			"Name": "銃(右)"
+		},
+		{
+			"Id": "Part15",
+			"Name": "右手"
+		},
+		{
+			"Id": "Part7",
+			"Name": "目"
+		},
+		{
+			"Id": "Part13",
+			"Name": "生首"
+		}
+	]
+}

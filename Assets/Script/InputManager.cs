@@ -100,6 +100,20 @@ public class InputManager : MonoBehaviour
         get { return moveStopKey; }
     }
 
+    /* -- 方向パッド右入力 --------------------------------------------------------------------------------- */
+    private bool equipHoleMaker = false;
+    public bool EquipHoleMaker
+    {
+        get { return equipHoleMaker; }
+    }
+
+    /* -- 方向パッド下入力 --------------------------------------------------------------------------------- */
+    private bool equipHandGun = false;
+    public bool EquipHandGun
+    {
+        get { return equipHandGun; }
+    }
+
     void Update()
     {
         // 移動
@@ -138,6 +152,20 @@ public class InputManager : MonoBehaviour
         else if (Input.GetButtonUp("Jump"))
         {
             jumpKey = 0;
+        }
+
+        // ホールメイカー装備
+        if (0 < Input.GetAxisRaw("DpadHorizontal")) {
+            equipHoleMaker = true;
+        } else {
+            equipHoleMaker = false;
+        }
+
+        // ホールメイカー装備
+        if (Input.GetAxisRaw("DpadVertical") < 0) {
+            equipHandGun = true;
+        } else {
+            equipHandGun = false;
         }
     }
 }
