@@ -13,25 +13,19 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: JumpUp
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Stand
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: Blend
-    m_Type: 1
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -46,23 +40,86 @@ AnimatorController:
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
   - serializedVersion: 5
-    m_Name: Eye Layer
-    m_StateMachine: {fileID: 1107056308751728398}
+    m_Name: Gun Layer
+    m_StateMachine: {fileID: 1107305898314901416}
     m_Mask: {fileID: 0}
     m_Motions:
     - serializedVersion: 2
       m_State: {fileID: 1102599223642749538}
-      m_Motion: {fileID: 7400000, guid: 165a5075de21f9f41b74327af172fb7e, type: 2}
+      m_Motion: {fileID: 7400000, guid: 9b66a61c1ca061c45bd60eb47a058f73, type: 2}
     - serializedVersion: 2
       m_State: {fileID: 1102677365017522676}
-      m_Motion: {fileID: 7400000, guid: 165a5075de21f9f41b74327af172fb7e, type: 2}
+      m_Motion: {fileID: 7400000, guid: 9b66a61c1ca061c45bd60eb47a058f73, type: 2}
     - serializedVersion: 2
       m_State: {fileID: 1102513380520100950}
-      m_Motion: {fileID: 7400000, guid: 165a5075de21f9f41b74327af172fb7e, type: 2}
+      m_Motion: {fileID: 7400000, guid: 9b66a61c1ca061c45bd60eb47a058f73, type: 2}
     m_Behaviours: []
-    m_BlendingMode: 1
+    m_BlendingMode: 0
     m_SyncedLayerIndex: 0
-    m_DefaultWeight: 1
+    m_DefaultWeight: 0
+    m_IKPass: 0
+    m_SyncedLayerAffectsTiming: 0
+    m_Controller: {fileID: 9100000}
+  - serializedVersion: 5
+    m_Name: Shot1 Layer
+    m_StateMachine: {fileID: 1107910933993142882}
+    m_Mask: {fileID: 0}
+    m_Motions:
+    - serializedVersion: 2
+      m_State: {fileID: 1102677365017522676}
+      m_Motion: {fileID: 7400000, guid: 38bf220c3056848459a3f365d4e3e7df, type: 2}
+    - serializedVersion: 2
+      m_State: {fileID: 1102599223642749538}
+      m_Motion: {fileID: 7400000, guid: 38bf220c3056848459a3f365d4e3e7df, type: 2}
+    - serializedVersion: 2
+      m_State: {fileID: 1102513380520100950}
+      m_Motion: {fileID: 7400000, guid: 38bf220c3056848459a3f365d4e3e7df, type: 2}
+    m_Behaviours: []
+    m_BlendingMode: 0
+    m_SyncedLayerIndex: 0
+    m_DefaultWeight: 0
+    m_IKPass: 0
+    m_SyncedLayerAffectsTiming: 0
+    m_Controller: {fileID: 9100000}
+  - serializedVersion: 5
+    m_Name: Shot2 Layer
+    m_StateMachine: {fileID: 1107986502516101728}
+    m_Mask: {fileID: 0}
+    m_Motions:
+    - serializedVersion: 2
+      m_State: {fileID: 1102599223642749538}
+      m_Motion: {fileID: 7400000, guid: 9b66a61c1ca061c45bd60eb47a058f73, type: 2}
+    - serializedVersion: 2
+      m_State: {fileID: 1102677365017522676}
+      m_Motion: {fileID: 7400000, guid: 9b66a61c1ca061c45bd60eb47a058f73, type: 2}
+    - serializedVersion: 2
+      m_State: {fileID: 1102513380520100950}
+      m_Motion: {fileID: 7400000, guid: 9b66a61c1ca061c45bd60eb47a058f73, type: 2}
+    m_Behaviours: []
+    m_BlendingMode: 0
+    m_SyncedLayerIndex: 0
+    m_DefaultWeight: 0
+    m_IKPass: 0
+    m_SyncedLayerAffectsTiming: 0
+    m_Controller: {fileID: 9100000}
+  - serializedVersion: 5
+    m_Name: Shot3 Layer
+    m_StateMachine: {fileID: 1107636214979538560}
+    m_Mask: {fileID: 0}
+    m_Motions:
+    - serializedVersion: 2
+      m_State: {fileID: 1102599223642749538}
+      m_Motion: {fileID: 7400000, guid: 4039301c0ded4d34da79b13119d3f30c, type: 2}
+    - serializedVersion: 2
+      m_State: {fileID: 1102677365017522676}
+      m_Motion: {fileID: 7400000, guid: 4039301c0ded4d34da79b13119d3f30c, type: 2}
+    - serializedVersion: 2
+      m_State: {fileID: 1102513380520100950}
+      m_Motion: {fileID: 7400000, guid: 4039301c0ded4d34da79b13119d3f30c, type: 2}
+    m_Behaviours: []
+    m_BlendingMode: 0
+    m_SyncedLayerIndex: 0
+    m_DefaultWeight: 0
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
@@ -510,7 +567,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: 2
+  m_Name: stand
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -537,7 +594,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: New State 1
+  m_Name: jump 0
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -672,7 +729,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: New State
+  m_Name: EntryState
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -726,7 +783,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: New State 0
+  m_Name: run 0
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -792,6 +849,42 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 0}
+--- !u!1107 &1107073715564475212
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shot3 Layer
+  m_ChildStates: []
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 0}
+--- !u!1107 &1107073882828698998
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: New Layer
+  m_ChildStates: []
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 0}
 --- !u!1107 &1107198647947734378
 AnimatorStateMachine:
   serializedVersion: 5
@@ -799,6 +892,24 @@ AnimatorStateMachine:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Asside Layer
+  m_ChildStates: []
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 0}
+--- !u!1107 &1107305898314901416
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Gun Layer
   m_ChildStates: []
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
@@ -828,6 +939,42 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 0}
+--- !u!1107 &1107562844096430674
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shot2 Layer
+  m_ChildStates: []
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 0}
+--- !u!1107 &1107636214979538560
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shot3 Layer
+  m_ChildStates: []
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 0}
 --- !u!1107 &1107853946214084572
 AnimatorStateMachine:
   serializedVersion: 5
@@ -841,31 +988,31 @@ AnimatorStateMachine:
     m_Position: {x: 288, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102677365017522676}
-    m_Position: {x: 408, y: 312, z: 0}
+    m_Position: {x: 156, y: 288, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102513380520100950}
-    m_Position: {x: 576, y: 120, z: 0}
+    m_Position: {x: 480, y: 288, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102437878662192720}
-    m_Position: {x: 576, y: 552, z: 0}
+    m_Position: {x: 348, y: 696, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102373694614597214}
-    m_Position: {x: 1440, y: 408, z: 0}
+    m_Position: {x: 1452, y: 696, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102433617993010470}
-    m_Position: {x: 360, y: 780, z: 0}
+    m_Position: {x: 132, y: 924, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102983329600708964}
-    m_Position: {x: 768, y: 768, z: 0}
+    m_Position: {x: 540, y: 912, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102632942966597852}
-    m_Position: {x: 996, y: 120, z: 0}
+    m_Position: {x: 852, y: 432, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102745995683900232}
-    m_Position: {x: 1116, y: 576, z: 0}
+    m_Position: {x: 1008, y: 1008, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102401048675350664}
-    m_Position: {x: 1740, y: 564, z: 0}
+    m_Position: {x: 1872, y: 996, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -876,3 +1023,39 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 48, y: -48, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 1102599223642749538}
+--- !u!1107 &1107910933993142882
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shot1 Layer
+  m_ChildStates: []
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 0}
+--- !u!1107 &1107986502516101728
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Shot2 Layer
+  m_ChildStates: []
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: 50, y: 20, z: 0}
+  m_EntryPosition: {x: 50, y: 120, z: 0}
+  m_ExitPosition: {x: 800, y: 120, z: 0}
+  m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+  m_DefaultState: {fileID: 0}
