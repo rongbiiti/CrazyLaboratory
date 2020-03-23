@@ -250,6 +250,10 @@ public class PlayerCtrlAnimTest : MonoBehaviour
             isJumping = true;
             _jumpPower = playerManager.JumpPower;
             SoundManagerV2.Instance.PlaySE(9);
+            //animator.SetBool("JumpUp", true);
+            animator.SetTrigger("Jump");
+            animator.SetBool("Run", false);
+            animator.SetBool("Stand", false);
         }
 
         if (inputManager.MoveKey >= 0.3 && !flip)
@@ -331,10 +335,10 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         }
 
         // 地面にいるとき
-        if (isGrounded)
+        if (isGrounded && !isJumping)
         {
             
-            animator.SetBool("JumpUp", false);
+            //animator.SetBool("JumpUp", false);
             rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.MoveSpeed - rb.velocity.x), rb.velocity.y));
            if(inputManager.MoveKey != 0)
             {
@@ -351,9 +355,9 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         }
         else
         {
-            animator.SetBool("JumpUp", true);
-            animator.SetBool("Run", false);
-            animator.SetBool("Stand", false);
+            //animator.SetBool("JumpUp", true);
+            //animator.SetBool("Run", false);
+            //animator.SetBool("Stand", false);
 
             groundCount = 0;
             // ジャンプキーが話されたらジャンプ中でないことにする
