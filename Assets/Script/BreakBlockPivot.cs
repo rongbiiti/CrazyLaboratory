@@ -53,8 +53,6 @@ public class BreakBlockPivot : MonoBehaviour
     {
         isEnterAcid = false;
         status = Status.Restoring;
-        spriteRenderer.color -= new Color(0, 0, 0, 0.6f);
-        GetComponent<BoxCollider2D>().isTrigger = true;
     }
 
     private void UnSetRestoring()
@@ -62,6 +60,12 @@ public class BreakBlockPivot : MonoBehaviour
         status = Status.Normal;
         spriteRenderer.color += new Color(0, 0, 0, 0.6f);
         GetComponent<BoxCollider2D>().isTrigger = false;
+    }
+
+    private void DisableCollider()
+    {
+        spriteRenderer.color -= new Color(0, 0, 0, 0.6f);
+        GetComponent<BoxCollider2D>().isTrigger = true;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -136,6 +140,7 @@ public class BreakBlockPivot : MonoBehaviour
             myTransform.position = Startposition;  // ワールド座標での座標を設定
 
             isEnterAcid = true;
+            DisableCollider();
             SoundManagerV2.Instance.PlaySE(1);
         }
     }

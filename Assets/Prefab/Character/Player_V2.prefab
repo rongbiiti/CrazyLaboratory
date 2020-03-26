@@ -923,7 +923,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1673227826395028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.39, y: -11.537091, z: 0}
+  m_LocalPosition: {x: -4.39, y: -13.937092, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4625420599057240}
@@ -1191,7 +1191,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1195276613634458}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.294, y: 0.027, z: 0}
+  m_LocalPosition: {x: -0.136, y: 0.027, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4042691428292062}
@@ -1236,7 +1236,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1846314982940828}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.004, y: -0.134, z: 0}
+  m_LocalPosition: {x: 0.004, y: -0.096, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4042691428292062}
@@ -1273,7 +1273,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1696878038593324}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.348, y: 0.266, z: 0}
+  m_LocalPosition: {x: -0.136, y: 0.266, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4042691428292062}
@@ -1325,7 +1325,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1741711513526180}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.299, y: 0.508, z: 0}
+  m_LocalPosition: {x: -0.136, y: 0.386, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4042691428292062}
@@ -2460,7 +2460,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0071366727, y: -1.7343149}
+  m_Offset: {x: -0.014387608, y: -1.7343149}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -2471,7 +2471,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.0831485, y: 0.17572594}
+  m_Size: {x: 0.80761147, y: 0.17572594}
   m_EdgeRadius: 0
 --- !u!70 &70552297421299462
 CapsuleCollider2D:
@@ -3329,10 +3329,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd2ed085d85b3f43b24486e83883113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBGMMute: 0
   _HPbar: {fileID: 0}
-  _bulletsRemain: {fileID: 0}
-  _handgunUI: {fileID: 0}
-  _hmUI: {fileID: 0}
   filter2d:
     useTriggers: 0
     useLayerMask: 1
@@ -3347,16 +3345,14 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 70
     maxNormalAngle: 110
+  _rsdAcdPool: {fileID: 1484762405217074, guid: 90038ebabacfa2d4f8088ec154c27732,
+    type: 2}
   _acidbulletPrefab: {fileID: 1901359971894644, guid: a6c4063d23756304bbbfc6aa69c9fa59,
     type: 2}
   _maxHP: 9999
   _acidDamage: 500
   _acidDamageRate: 0.2
   _bulletCapacity: 10
-  _hmBulletCapacity: 20
-  _hmShotBullets: 6
-  _hmSpreadRange: 30
-  _hmFireRate: 2.5
   _fireRate: 1.2
   YStickUpDeadZone: 0.4
   _YStickDownDeadZone: -0.4

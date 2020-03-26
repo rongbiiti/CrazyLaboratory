@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+using Live2D.Cubism.Core;
+using Live2D.Cubism.Framework;
 
 /// <summary>
 /// プレイヤーのスクリプト
@@ -17,7 +19,24 @@ public class PlayerCtrlAnimTest : MonoBehaviour
 
     private bool flip = true;
 
+    //アニメーション関連
     Animator animator;
+    private State state;
+    private int Shot1Layer;
+    private int Shot2Layer;
+    private int Shot3Layer;
+    private float weight1;
+    private float weight2;
+    private float weight3;
+    private bool smoothFlag;
+    private CubismModel Model;
+    enum State
+    {
+        None,
+        Shot1,
+        Shot2,
+        Shot3
+    }
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
@@ -142,7 +161,16 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         cam = GameObject.Find("Main Camera");
         SoundManagerV2.Instance.PlayBGM(0);
 
+        //アニメーション関連
+        Model = this.FindCubismModel();
         animator = GetComponent<Animator>();
+        Shot1Layer = animator.GetLayerIndex("Shot1 Layer");
+        Shot2Layer = animator.GetLayerIndex("Shot2 Layer");
+        Shot3Layer = animator.GetLayerIndex("Shot3 Layer");
+        weight1 = 0f;
+        weight2 = 0f;
+        weight3 = 0f;
+        SetState(State.None, first: true);
     }
 
     void Update()
@@ -152,19 +180,46 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         if (YStickUpDeadZone < inputManager.UpMoveKey && isGetGun)
         {
             mainThrowPoint = transform.GetChild(0).transform.position;
-
-
-            // 下に発射
-        }
+            if (state != State.Shot1) {
+                SetState(State.Shot1);
+            }   
+            Debug.Log("shot1");
+        }// 下に発射
         else if (inputManager.UpMoveKey < _YStickDownDeadZone && isGetGun)
         {
             mainThrowPoint = transform.GetChild(2).transform.position;
-            // 正面に発射
-        }
-        else
+            if (state != State.Shot3){
+                SetState(State.Shot3);
+            }
+            Debug.Log("shot3");
+        }// 正面に発射
+        else if(isGetGun)
         {
             mainThrowPoint = transform.GetChild(1).transform.position;
+            if (state != State.Shot2){
+                SetState(State.Shot2);
+            }
         }
+
+        if (smoothFlag) {
+            if (state == State.Shot1){
+                weight1 = 1f;
+                weight2 = 0f;
+                weight3 = 0f;
+            }else if (state == State.Shot2){
+                weight2 = 1f;
+                weight1 = 0f;
+                weight3 = 0f;
+            }else if (state == State.Shot3){
+                weight3 = 1f;
+                weight1 = 0f;
+                weight2 = 0f;
+            }
+            animator.SetLayerWeight(Shot1Layer, weight1);
+            animator.SetLayerWeight(Shot2Layer, weight2);
+            animator.SetLayerWeight(Shot3Layer, weight3);
+        }
+        
 
         if (inputManager.MoveStopKey != 0)
         {
@@ -185,6 +240,10 @@ public class PlayerCtrlAnimTest : MonoBehaviour
             isJumping = true;
             _jumpPower = playerManager.JumpPower;
             SoundManagerV2.Instance.PlaySE(9);
+            animator.SetBool("JumpUp", true);
+            animator.SetBool("JumpDown", false);
+            animator.SetBool("Run", false);
+            animator.SetBool("Stand", false);
         }
 
         if (inputManager.MoveKey >= 0.3 && !flip)
@@ -197,6 +256,26 @@ public class PlayerCtrlAnimTest : MonoBehaviour
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
+
+
+        //{11(6),3(7),手前}{15(10),14(11)奥側} 手のパーツ
+        if (!isGetGun){                             //銃を持ってるとき、右手に銃を持たす
+            Model.Parts[6].Opacity = 1;
+            Model.Parts[7].Opacity = 0;
+            Model.Parts[10].Opacity = 1;
+            Model.Parts[11].Opacity = 0;
+        }else if (isGetGun && flip){                             //銃を持ってるとき、右手に銃を持たす
+            Model.Parts[6].Opacity = 0;
+            Model.Parts[7].Opacity = 1;
+            Model.Parts[10].Opacity = 1;
+            Model.Parts[11].Opacity = 0;
+        }else if (isGetGun && !flip){                             //銃を持ってるとき、左手に銃を持たす
+            Model.Parts[6].Opacity = 1;
+            Model.Parts[7].Opacity = 0;
+            Model.Parts[10].Opacity = 0;
+            Model.Parts[11].Opacity = 1;
+        }
+
 
         if (inputManager.ShotKey == 1 && fireTime <= 0 && 0 == bullets && isGetGun)
         {
@@ -212,20 +291,18 @@ public class PlayerCtrlAnimTest : MonoBehaviour
                 rad = upShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
                 muzzleVelocity = upShot.MuzzleVelocity; //上へ発射時の初速を代入
                 bRb.gravityScale = upShot.GravityScale; //上へ発射時の弾の重量を代入
-                                                        // 下に発射
-            }
+            }// 下に発射
             else if (inputManager.UpMoveKey < _YStickDownDeadZone)
             {
                 rad = downShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
                 muzzleVelocity = downShot.MuzzleVelocity; //下へ発射時の初速を代入
                 bRb.gravityScale = downShot.GravityScale; //下へ発射時の弾の重量を代入
-                // 正面に発射
-            }
+            }// 正面に発射
             else
             {
                 rad = horizontalShot.FireAngle * Mathf.Deg2Rad;　//角度をラジアン角に変換
                 muzzleVelocity = horizontalShot.MuzzleVelocity;  //正面へ発射時の初速を代入
-                bRb.gravityScale = horizontalShot.GravityScale;  //正面へ発射時の弾の重量を代入
+                bRb.gravityScale = horizontalShot.GravityScale;  //正面へ発射時の弾の重量を代入          
             }
 
             //rad(ラジアン角)から発射用ベクトルを作成
@@ -268,31 +345,27 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         }
 
         // 地面にいるとき
-        if (isGrounded)
+        if (isGrounded && !isJumping)
         {
             
-            animator.SetBool("JumpUp", false);
+            //animator.SetBool("JumpUp", false);
             rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.MoveSpeed - rb.velocity.x), rb.velocity.y));
            if(inputManager.MoveKey != 0)
             {
-                //Debug.Log("顔が消えた");
                 animator.SetBool("Run", true);
                 animator.SetBool("Stand", false);
+                animator.SetBool("JumpDown", false);
             }
             else if(inputManager.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
            {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
+                animator.SetBool("JumpDown", false);
             }
             // 空中にいるとき
         }
         else
         {
-            animator.SetBool("JumpUp", true);
-            animator.SetBool("Run", false);
-            animator.SetBool("Stand", false);
-
-            groundCount = 0;
             // ジャンプキーが話されたらジャンプ中でないことにする
             if (inputManager.JumpKey == 0)
             {
@@ -301,9 +374,14 @@ public class PlayerCtrlAnimTest : MonoBehaviour
             // ジャンプしてない
             if (!isJumping)
             {
-                
-                // 落ちる力が一定を超えるとそれ以上落下速度が上がらないようにする
-                if (rb.velocity.y <= -playerManager.MaxFallSpeed)
+                animator.SetBool("JumpUp", false);
+                if (!isGrounded && !isJumping)
+                {
+                    animator.SetBool("JumpDown", true);
+                    animator.SetBool("Run", false);
+                }
+                    // 落ちる力が一定を超えるとそれ以上落下速度が上がらないようにする
+                    if (rb.velocity.y <= -playerManager.MaxFallSpeed)
                 {
                     rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.JumpMoveSpeed - rb.velocity.x), 0));
                 }
@@ -353,13 +431,11 @@ public class PlayerCtrlAnimTest : MonoBehaviour
             if (jumpTimeCounter < 0)
             {
                 isJumping = false;
-                //animator.SetTrigger("JumpDown0");
             }
             // 下に落ちているときはジャンプ中を解除
             if (rb.velocity.y <= -1)
             {
                 isJumping = false;
-                //animator.SetTrigger("JumpDown0");
             }
         }
 
@@ -426,6 +502,10 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         {
             _bulletsRemain.enabled = true;
             isGetGun = true;
+            if (state != State.Shot2)
+            {
+                SetState(State.Shot2);
+            }
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
         }
@@ -485,4 +565,13 @@ public class PlayerCtrlAnimTest : MonoBehaviour
         }
     }
 
+    // 以下アニメーションに関する
+    void SetState(State state, bool first = false)  //アニメーションレイヤーのステート
+    {
+        this.state = state;
+        //　最初の設定でなければスムーズフラグをオンにする
+        if (!first) {
+            smoothFlag = true;
+        }
+    }
 }

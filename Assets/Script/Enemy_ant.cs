@@ -55,6 +55,7 @@ public class Enemy_ant : MonoBehaviour {
         enemyHpbar.SetBarValue(_HP, nowHP);
         patrolType = 0;
         playerObject = GameObject.FindGameObjectWithTag("Player");
+        
     }
 
     void FixedUpdate()
@@ -102,34 +103,6 @@ public class Enemy_ant : MonoBehaviour {
                     // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
                     myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
 
-                    //if (AttackPhase == 0 && stanTimeRemain <= 0)
-                    //{
-                    //    // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
-                    //    myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
-                    //}
-                    //else if (AttackPhase == 1 && stanTimeRemain <= 0)
-                    //{
-                    //    // 現在の座標からのxyz を1ずつ加算して移動
-                    //    //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
-                    //    Count += Time.deltaTime;
-                    //    if (Count >= _AttackWait)
-                    //    {
-                    //        AttackPhase = 2;
-                    //        Count = 0;
-                    //    }
-                    //}
-                    //else if (AttackPhase == 2 && stanTimeRemain <= 0)
-                    //{
-                    //    myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
-                    //    //AttackPhase = 0;
-                    //    Count += Time.deltaTime;
-                    //    if (Count >= _AttackTime)
-                    //    {
-                    //        AttackPhase = 0;
-                    //        Count = 0;
-                    //        stanTimeRemain += 2;
-                    //    }
-                    //}
 
                     break;
 
@@ -166,29 +139,6 @@ public class Enemy_ant : MonoBehaviour {
                     {
                         patrolType = 0;
                     }
-                    //else if (AttackPhase == 1 && stanTimeRemain <= 0)
-                    //{
-                    //    // 現在の座標からのxyz を1ずつ加算して移動
-                    //    //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
-                    //    Count += Time.deltaTime;
-                    //    if (Count >= _AttackWait)
-                    //    {
-                    //        AttackPhase = 2;
-                    //        Count = 0;
-                    //    }
-                    //}
-                    //else if (AttackPhase == 2 && stanTimeRemain <= 0)
-                    //{
-                    //    myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
-                    //    //AttackPhase = 0;
-                    //    Count += Time.deltaTime;
-                    //    if (Count >= _AttackTime)
-                    //    {
-                    //        AttackPhase = 0;
-                    //        Count = 0;
-                    //        stanTimeRemain += 2;
-                    //    }
-                    //}
                     break;
 
                 case 2:
@@ -207,7 +157,6 @@ public class Enemy_ant : MonoBehaviour {
                     else if (AttackPhase == 2 && stanTimeRemain <= 0)
                     {
                         myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
-                        //AttackPhase = 0;
                         Count += Time.deltaTime;
                         if (Count >= _AttackTime)
                         {
@@ -240,7 +189,6 @@ public class Enemy_ant : MonoBehaviour {
         if (collision.CompareTag("AcidFlask"))
         {
             nowHP -= _HitDamage;  
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の弱点にヒット");
             SoundManagerV2.Instance.PlaySE(4);
             enemyHpbar.SetBarValue(_HP, nowHP);
@@ -286,7 +234,6 @@ public class Enemy_ant : MonoBehaviour {
     {
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の非弱点にヒット");
             SoundManagerV2.Instance.PlaySE(7);
             if (patrolType == 0)   //パトロール中にplayerを見つけた時
@@ -302,6 +249,18 @@ public class Enemy_ant : MonoBehaviour {
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
             SoundManagerV2.Instance.PlaySE(3);
+        }
+
+        if (collision.gameObject.CompareTag("Player") && stanTimeRemain <= 0)
+        {
+            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
+            Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
+            Vector2 targetPos = collision.gameObject.transform.position;
+            float y = _nockBuckUpperPower;
+            float x = targetPos.x;
+            Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
+            prb.velocity = direction * _nockBuckPower;
+            SoundManagerV2.Instance.PlaySE(2);
         }
     }
 }

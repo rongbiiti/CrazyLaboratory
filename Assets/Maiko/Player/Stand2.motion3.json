@@ -1,13 +1,13 @@
 {
 	"Version": 3,
 	"Meta": {
-		"Duration": 0.33,
+		"Duration": 0.333,
 		"Fps": 30.0,
 		"Loop": true,
 		"AreBeziersRestricted": true,
-		"CurveCount": 15,
-		"TotalSegmentCount": 15,
-		"TotalPointCount": 56,
+		"CurveCount": 13,
+		"TotalSegmentCount": 13,
+		"TotalPointCount": 52,
 		"UserDataCount": 0,
 		"TotalUserDataSize": 0
 	},
@@ -44,17 +44,6 @@
 		},
 		{
 			"Target": "Parameter",
-			"Id": "ClothesParam",
-			"Segments": [
-				0,
-				0,
-				0,
-				0.333,
-				0
-			]
-		},
-		{
-			"Target": "Parameter",
 			"Id": "AxisParam",
 			"Segments": [
 				0,
@@ -73,14 +62,14 @@
 			"Id": "LeftParam1",
 			"Segments": [
 				0,
-				-1,
+				-11,
 				1,
 				0.111,
-				-1,
+				-11,
 				0.222,
-				-1,
+				-11,
 				0.333,
-				-1
+				-11
 			]
 		},
 		{
@@ -103,14 +92,14 @@
 			"Id": "RightParam1",
 			"Segments": [
 				0,
-				-3,
+				-13,
 				1,
 				0.111,
-				-3,
+				-13,
 				0.222,
-				-3,
+				-13,
 				0.333,
-				-3
+				-13
 			]
 		},
 		{
@@ -133,14 +122,14 @@
 			"Id": "LeftLegParam1",
 			"Segments": [
 				0,
-				-9,
+				-5,
 				1,
 				0.111,
-				-9,
+				-5,
 				0.222,
-				-9,
+				-5,
 				0.333,
-				-9
+				-5
 			]
 		},
 		{
@@ -148,14 +137,14 @@
 			"Id": "LeftLegParam2",
 			"Segments": [
 				0,
-				-20,
+				-25,
 				1,
 				0.111,
-				-20,
+				-25,
 				0.222,
-				-20,
+				-25,
 				0.333,
-				-20
+				-25
 			]
 		},
 		{
@@ -178,14 +167,14 @@
 			"Id": "RightLegParam1",
 			"Segments": [
 				0,
-				-7,
+				-12,
 				1,
 				0.111,
-				-7,
+				-12,
 				0.222,
-				-7,
+				-12,
 				0.333,
-				-7
+				-12
 			]
 		},
 		{
@@ -208,25 +197,14 @@
 			"Id": "RightLegParam3",
 			"Segments": [
 				0,
-				-9,
+				-12,
 				1,
 				0.111,
-				-9,
+				-12,
 				0.222,
-				-9,
+				-12,
 				0.333,
-				-9
-			]
-		},
-		{
-			"Target": "PartOpacity",
-			"Id": "Part3",
-			"Segments": [
-				0,
-				0,
-				0,
-				0.33,
-				0
+				-12
 			]
 		}
 	]
