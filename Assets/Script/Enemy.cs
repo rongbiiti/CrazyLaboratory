@@ -97,7 +97,6 @@ public class Enemy : MonoBehaviour {
         // 弱点のみ、IsTriggerをオンにしている。
         if (collision.CompareTag("AcidFlask")) {
             damageTime += _bulletHitDamage;
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の弱点にヒット");
         }
     }
@@ -105,7 +104,6 @@ public class Enemy : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("AcidFlask")) {
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の非弱点にヒット");
         }
     }

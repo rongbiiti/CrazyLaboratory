@@ -189,7 +189,6 @@ public class Enemy_ant : MonoBehaviour {
         if (collision.CompareTag("AcidFlask"))
         {
             nowHP -= _HitDamage;  
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の弱点にヒット");
             SoundManagerV2.Instance.PlaySE(4);
             enemyHpbar.SetBarValue(_HP, nowHP);
@@ -235,7 +234,6 @@ public class Enemy_ant : MonoBehaviour {
     {
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の非弱点にヒット");
             SoundManagerV2.Instance.PlaySE(7);
             if (patrolType == 0)   //パトロール中にplayerを見つけた時

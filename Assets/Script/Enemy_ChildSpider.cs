@@ -247,7 +247,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
         if (collision.CompareTag("AcidFlask"))
         {
             nowHP -= _HitDamage;
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の弱点にヒット");
             enemyHpbar.SetBarValue(_HP, nowHP);
             if (nowHP <= 0)
@@ -288,7 +287,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
     {
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の非弱点にヒット");
             if (patrolType == 0)   //パトロール中にplayerを見つけた時
             {

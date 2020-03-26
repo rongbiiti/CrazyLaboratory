@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
-using System.Linq;
 
 /// <summary>
 /// プレイヤーのスクリプト
@@ -13,29 +11,33 @@ public class PlayerController : MonoBehaviour
 {
     private GameObject cam;
     private Rigidbody2D rb;
+    private InputManager im;
+    private PlayerManager pm;
+    private ObjectPool pool;
+    [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
     [SerializeField, CustomLabel("HPバー")] private Slider _HPbar;
-    [SerializeField, CustomLabel("残弾数UI")] private Text _bulletsRemain;
-    [SerializeField, CustomLabel("ハンドガン装備UI")] private Button _handgunUI;
-    [SerializeField, CustomLabel("ホールメイカー装備UI")] private Button _hmUI;
-    [SerializeField, CustomLabel("装備UI表示切替")] private bool _isUIDisplay = false;
+    [HideInInspector, CustomLabel("残弾数UI")] private Text _bulletsRemain;
+    [HideInInspector, CustomLabel("ハンドガン装備UI")] private Button _handgunUI;
+    [HideInInspector, CustomLabel("ホールメイカー装備UI")] private Button _hmUI;
+    [HideInInspector, CustomLabel("装備UI表示切替")] private bool _isUIDisplay = false;
 
     private bool flip = true;
 
-    Animator animator;  //アニメーション変数
+    private Animator animator;  //アニメーション変数
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
 
+    [SerializeField, CustomLabel("残留酸プール")] private GameObject _rsdAcdPool;
     [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
     [SerializeField, Range(0.001f, 9999f), CustomLabel("最大HP")] private float _maxHP = 9999f;
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     [SerializeField, Range(0, 999), CustomLabel("弾の最大所持数")] private int _bulletCapacity = 10;
-    [SerializeField, CustomLabel("ホールメイカー弾最大所持数")] private int _hmBulletCapacity = 20;
-    [Header("同時発射数は奇数だった場合-1された偶数に自動調整されます。")]
-    [SerializeField, CustomLabel("ホールメイカー弾同時発射数")] private int _hmShotBullets = 6;
-    [SerializeField, CustomLabel("ホールメイカー拡散範囲")] private float _hmSpreadRange = 45f;
-    [SerializeField, CustomLabel("ホールメイカー発射間隔")] private float _hmFireRate = 2.5f;
+    [HideInInspector, CustomLabel("ホールメイカー弾最大所持数")] private int _hmBulletCapacity = 20;
+    [HideInInspector, CustomLabel("ホールメイカー弾同時発射数")] private int _hmShotBullets = 6;
+    [HideInInspector, CustomLabel("ホールメイカー拡散範囲")] private float _hmSpreadRange = 45f;
+    [HideInInspector, CustomLabel("ホールメイカー発射間隔")] private float _hmFireRate = 2.5f;
     [SerializeField, Range(0f, 5f), CustomLabel("弾の発射間隔")] private float _fireRate = 0f;
 
     [SerializeField, Range(0.001f, 1f), CustomLabel("スティック上向きの閾値")] private float YStickUpDeadZone = 0.4f;
@@ -141,23 +143,28 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 restartPoint;
 
-    InputManager inputManager;
-    PlayerManager playerManager;
+    private void Awake()
+    {
+        pool = gameObject.AddComponent<ObjectPool>();
+        pool.CreatePool(_acidbulletPrefab, 2);
+        Instantiate(_rsdAcdPool);
+    }
 
     void Start()
     {
-        inputManager = InputManager.Instance;
-        playerManager = PlayerManager.Instance;
-        jumpTimeCounter = playerManager.JumpTime;
+        im = InputManager.Instance;
+        pm = PlayerManager.Instance;
         rb = GetComponent<Rigidbody2D>();
-        startMoveSpeed = playerManager.MoveSpeed;
+        cam = GameObject.Find("Main Camera");
+        
+        jumpTimeCounter = pm.JumpTime;
+        startMoveSpeed = pm.MoveSpeed;
         HP = _maxHP;
         _HPbar.maxValue = _maxHP;
         _HPbar.value = HP;
-        _bulletsRemain.text = " ∞ ";
-        _bulletsRemain.enabled = false;
-        cam = GameObject.Find("Main Camera");
-        SoundManagerV2.Instance.PlayBGM(0);
+        if (!isBGMMute) {
+            SoundManagerV2.Instance.PlayBGM(0);
+        }
         if (_hmShotBullets % 2 != 0) {
             _hmShotBullets--;
         }
@@ -165,66 +172,48 @@ public class PlayerController : MonoBehaviour
 
         animator = GetComponent<Animator>(); //アニメーション
 
-        ShowListContentsInTheDebugLog(hmSpreadAngle);
-    }
-
-    public void ShowListContentsInTheDebugLog<T>(List<T> list)
-    {
-        string log = "";
-
-        foreach (var content in list.Select((val, idx) => new { val, idx })) {
-            if (content.idx == list.Count - 1)
-                log += content.val.ToString();
-            else
-                log += content.val.ToString() + ", ";
+        if (_isUIDisplay) {
+            _bulletsRemain.text = " ∞ ";
+            _bulletsRemain.enabled = false;
         }
-
-        Debug.Log(log);
     }
-
 
     void Update()
     {
 
         // 上に発射
-        if (YStickUpDeadZone < inputManager.UpMoveKey && isGetGun) {
+        if (YStickUpDeadZone < im.UpMoveKey && isGetGun) {
             mainThrowPoint = transform.GetChild(0).transform.position;
             
             // 下に発射
-        } else if (inputManager.UpMoveKey < _YStickDownDeadZone && isGetGun) {
+        } else if (im.UpMoveKey < _YStickDownDeadZone && isGetGun) {
             mainThrowPoint = transform.GetChild(2).transform.position;
             // 正面に発射
         } else {
             mainThrowPoint = transform.GetChild(1).transform.position;
         }
 
-        //if (inputManager.MoveStopKey != 0) {
-        //    playerManager.MoveSpeed = 0;
-        //} else {
-        //    playerManager.MoveSpeed = startMoveSpeed;
-        //}
-
         // 地面と当たり判定をしている。
         isGrounded = rb.IsTouching(filter2d);
 
-        if (isJumpingCheck && inputManager.JumpKey == 1 && isGrounded) {
-            jumpTimeCounter = playerManager.JumpTime;
+        if (isJumpingCheck && im.JumpKey == 1 && isGrounded) {
+            jumpTimeCounter = pm.JumpTime;
             isJumpingCheck = false;
             isJumping = true;
-            _jumpPower = playerManager.JumpPower;
+            _jumpPower = pm.JumpPower;
             SoundManagerV2.Instance.PlaySE(9);
         }
 
-        if (inputManager.MoveKey >= 0.3 && !flip && inputManager.MoveStopKey == 0) {
+        if (im.MoveKey >= 0.3 && !flip && im.MoveStopKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = true;
         }
-        if (inputManager.MoveKey <= -0.3 && flip && inputManager.MoveStopKey == 0) {
+        if (im.MoveKey <= -0.3 && flip && im.MoveStopKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
         
-        if (inputManager.ShotKey == 1 && fireTime <= 0) {
+        if (im.ShotKey == 1 && fireTime <= 0) {
 
             if(equipment == Equipment.Handgun && isGetGun) {
                 HandgunShot();
@@ -233,21 +222,20 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (inputManager.EquipHandGun && isGetGun) {
+        if (im.EquipHandGun && isGetGun) {
             if (_isUIDisplay) {
                 _handgunUI.Select();
+                _bulletsRemain.text = " ∞ ";
             }
-           
             equipment = Equipment.Handgun;
-            _bulletsRemain.text = " ∞ ";
         }
-        if (inputManager.EquipHoleMaker && isGetHoleMaker && 0 < hmBullets) {
+
+        if (im.EquipHoleMaker && isGetHoleMaker && 0 < hmBullets) {
             if (_isUIDisplay) {
                 _hmUI.Select();
+                _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
             }
-            
             equipment = Equipment.HoleMaker;
-            _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
         }
 
         // ホールメイカーの隠しコマンド
@@ -255,13 +243,12 @@ public class PlayerController : MonoBehaviour
             if (_isUIDisplay) {
                 _hmUI.gameObject.SetActive(true);
                 _hmUI.Select();
+                _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
             }
-
             isGetHoleMaker = true;
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.HoleMaker;
             hmBullets += _hmBulletCapacity;
-            _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
         }
  
     }
@@ -279,15 +266,15 @@ public class PlayerController : MonoBehaviour
         // 地面にいるとき
         if (isGrounded) {
             animator.SetBool("JumpUp", false);
-            rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.MoveSpeed - rb.velocity.x), rb.velocity.y));
+            rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
 
-            if (inputManager.MoveKey != 0)
+            if (im.MoveKey != 0)
             {
                 //Debug.Log("顔が消えた");
                 animator.SetBool("Run", true);
                 animator.SetBool("Stand", false);
             }
-            else if (inputManager.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
+            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
@@ -299,25 +286,25 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Stand", false);
 
             // ジャンプキーが話されたらジャンプ中でないことにする
-            if (inputManager.JumpKey == 0) {
+            if (im.JumpKey == 0) {
                 isJumping = false;
             }
             // ジャンプしてない
             if (!isJumping) {
                 // 落ちる力が一定を超えるとそれ以上落下速度が上がらないようにする
-                if(rb.velocity.y <= -playerManager.MaxFallSpeed) {
-                    rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.JumpMoveSpeed - rb.velocity.x), 0));
+                if(rb.velocity.y <= -pm.MaxFallSpeed) {
+                    rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), 0));
                 } else if(rb.velocity.y <= 0) {
                     // 落ち始めると重力を使って落ちるようにする
-                    rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.JumpMoveSpeed - rb.velocity.x), Physics.gravity.y * playerManager.GravityRate));
+                    rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), Physics.gravity.y * pm.GravityRate));
                 } else {
                     // ジャンプパワーがまだあるときは小ジャンプ実現のためにジャンプパワー軽減率を使う
                     if (0 <= _jumpPower) {
-                        _jumpPower -= playerManager.JumpPowerAttenuation * 2;
-                        rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
+                        _jumpPower -= pm.JumpPowerAttenuation * 2;
+                        rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
                     // ジャンプパワーがないときは重力を使って落とす
                     } else {
-                        rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.JumpMoveSpeed - rb.velocity.x), Physics.gravity.y * playerManager.GravityRate));
+                        rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), Physics.gravity.y * pm.GravityRate));
                     }
                 }
             }
@@ -328,31 +315,31 @@ public class PlayerController : MonoBehaviour
             
             // ジャンプキーを押し続けていられる時間をへらす
             jumpTimeCounter -= Time.deltaTime;
-
             animator.SetBool("Run", false);
 
             // ジャンプキーを押し続けている間は通常のジャンプパワー軽減率がはたらく
-            if (inputManager.JumpKey == 2) {
-                _jumpPower -= playerManager.JumpPowerAttenuation;
-                rb.AddForce(new Vector2(playerManager.MoveForceMultiplier * (inputManager.MoveKey * playerManager.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
-            } else if(inputManager.JumpKey == 0) {
-                _jumpPower -= playerManager.JumpPowerAttenuation;
+            if (im.JumpKey == 2) {
+                _jumpPower -= pm.JumpPowerAttenuation;
+                rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
+            } else if(im.JumpKey == 0) {
+                _jumpPower -= pm.JumpPowerAttenuation;
 
             }
+
             // ジャンプキーを押し続けていられる時間がくると、ジャンプ中を解除する
             if (jumpTimeCounter < 0) {
                 isJumping = false;
             }
+
             // 下に落ちているときはジャンプ中を解除
             if (rb.velocity.y <= -1) {
                 isJumping = false;
             }
         }
 
-        if (inputManager.JumpKey == 0) {
+        if (im.JumpKey == 0) {
             isJumpingCheck = true;
         }
-
         
     }
 
@@ -368,24 +355,30 @@ public class PlayerController : MonoBehaviour
 
         HP += HP * (healPercent / 100);
         _HPbar.value = HP;
+        if(_maxHP < HP) {
+            HP = _maxHP;
+        }
         Debug.Log("HP " + HP + " / " + _maxHP);
     }
 
     // ハンドガン発射
     private void HandgunShot()
     {
-        GameObject bullet = Instantiate(_acidbulletPrefab, mainThrowPoint, Quaternion.identity) as GameObject;
+        GameObject bullet = pool.GetObject();
+        if (bullet != null) {
+            bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
+        }
         Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
         float rad = 0;
 
         // 上に発射
-        if (YStickUpDeadZone < inputManager.UpMoveKey) {
+        if (YStickUpDeadZone < im.UpMoveKey) {
             rad = upShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
             muzzleVelocity = upShot.MuzzleVelocity; //上へ発射時の初速を代入
             bRb.gravityScale = upShot.GravityScale; //上へ発射時の弾の重量を代入
                                                     // 下に発射
-        } else if (inputManager.UpMoveKey < _YStickDownDeadZone) {
+        } else if (im.UpMoveKey < _YStickDownDeadZone) {
             rad = downShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
             muzzleVelocity = downShot.MuzzleVelocity; //下へ発射時の初速を代入
             bRb.gravityScale = downShot.GravityScale; //下へ発射時の弾の重量を代入
@@ -406,16 +399,19 @@ public class PlayerController : MonoBehaviour
             shotangle = Vector3.Reflect(shotangle, Vector3.right);
         }
 
-        //　発射角度にオブジェクトを回転させる、進んでいる方向と角度を一致させる
+        //　発射角度にオブジェクトを回転させる、飛ぶ方向と弾自身の角度を一致させる
         var diff = shotangle - bullet.transform.position;
         var axis = Vector3.Cross(bullet.transform.right, shotangle);
         var angle = Vector3.Angle(bullet.transform.right, shotangle) * (axis.z < 0 ? -1 : 1);
         bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        //　で、でますよ
+        //　発射
         bRb.AddForce(shotangle * muzzleVelocity, ForceMode2D.Force);
         SoundManagerV2.Instance.PlaySE(6);
-        _bulletsRemain.text = " ∞ ";
+        if (_isUIDisplay) {
+            _bulletsRemain.text = " ∞ ";
+        }
+            
         fireTime += _fireRate;
     }
 
@@ -423,19 +419,21 @@ public class PlayerController : MonoBehaviour
     private void HoleMakerShot()
     {
         for (int i = 0; i < _hmShotBullets; i++) {
-            GameObject bullet = Instantiate(_acidbulletPrefab, mainThrowPoint, Quaternion.identity) as GameObject;
-            bullet.GetComponent<AcidFlask>().SetConlictDestroyFalse = false;
+            GameObject bullet = pool.GetObject();
+            if (bullet != null) {
+                bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
+            }
             Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
             float rad = 0;
 
             // 上に発射
-            if (YStickUpDeadZone < inputManager.UpMoveKey) {
+            if (YStickUpDeadZone < im.UpMoveKey) {
                 rad = (upShot.FireAngle + hmSpreadAngle[i]) * Mathf.Deg2Rad; //角度をラジアン角に変換
                 muzzleVelocity = upShot.MuzzleVelocity; //上へ発射時の初速を代入
                 bRb.gravityScale = upShot.GravityScale; //上へ発射時の弾の重量を代入
                                                         // 下に発射
-            } else if (inputManager.UpMoveKey < _YStickDownDeadZone) {
+            } else if (im.UpMoveKey < _YStickDownDeadZone) {
                 rad = (downShot.FireAngle + hmSpreadAngle[i]) * Mathf.Deg2Rad; //角度をラジアン角に変換
                 muzzleVelocity = downShot.MuzzleVelocity; //下へ発射時の初速を代入
                 bRb.gravityScale = downShot.GravityScale; //下へ発射時の弾の重量を代入
@@ -468,7 +466,9 @@ public class PlayerController : MonoBehaviour
 
         StartCoroutine("HoleMakerSound");
         --hmBullets;
-        _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
+        if (_isUIDisplay) {
+            _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
+        }
         fireTime += _hmFireRate;
         if (hmBullets <= 0) {
             _handgunUI.Select();
@@ -507,7 +507,6 @@ public class PlayerController : MonoBehaviour
         for(; i < _hmShotBullets; i++) {
             hmSpreadAngle.Add(hmSpreadAngle[i-1] - range);
         }
-
         
     }
 
@@ -540,15 +539,17 @@ public class PlayerController : MonoBehaviour
                 itemScript.SetBulletsInItem(0);
                 Destroy(collision.gameObject);              
             }
-
-            _bulletsRemain.text = " ∞ ";
+            if (_isUIDisplay) {
+                _bulletsRemain.text = " ∞ ";
+            }
+               
         } else if (collision.CompareTag("PutGun")) {
             if (_isUIDisplay) {
                 _handgunUI.gameObject.SetActive(true);
                 _handgunUI.Select();
+                _bulletsRemain.enabled = true;
             }
-           
-            _bulletsRemain.enabled = true;
+            
             isGetGun = true;
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
@@ -557,6 +558,7 @@ public class PlayerController : MonoBehaviour
             if (_isUIDisplay) {
                 _hmUI.gameObject.SetActive(true);
                 _hmUI.Select();
+                _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
             }
             
             isGetHoleMaker = true;
@@ -564,7 +566,7 @@ public class PlayerController : MonoBehaviour
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.HoleMaker;
             hmBullets += 4;
-            _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
+            
         }
     }
 

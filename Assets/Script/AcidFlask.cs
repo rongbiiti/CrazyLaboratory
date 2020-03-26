@@ -1,25 +1,45 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AcidFlask : MonoBehaviour {
 
     [SerializeField, CustomLabel("床に残る酸のプレハブ")] private GameObject _residualAcid;
     [SerializeField, CustomLabel("発射されてから消えるまでの時間")] private float _destroyTime = 7f;
+    private float resetTime;
     private bool isConflictDestroy = true;
+    private Rigidbody2D rb;
     public bool SetConlictDestroyFalse
     {
         set{ isConflictDestroy = false; }
     }
 
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        resetTime = _destroyTime;
+    }
+
     private void FixedUpdate()
     {
-        _destroyTime -= Time.deltaTime;
-        if (_destroyTime <= 0) {
-            Destroy(gameObject);
+        resetTime -= Time.deltaTime;
+        if (resetTime <= 0) {
+            ResetPosition();
         }
     }
 
+    public void Init(Vector3 pos)
+    {
+        transform.position = pos;
+        transform.rotation = Quaternion.identity;
+    }
+
+    private void ResetPosition()
+    {
+        gameObject.SetActive(false);
+        resetTime = _destroyTime;
+        rb.velocity = Vector2.zero;
+        transform.localPosition = Vector3.zero;
+        transform.rotation = Quaternion.identity;
+    }
 
     /// <summary>
     /// 当たった床や壁のスプライトの幅や高さを取得し、端にぴったりつくように
@@ -38,7 +58,10 @@ public class AcidFlask : MonoBehaviour {
             var _halfY = _sprite.bounds.extents.y;
             var _vec = new Vector3(0f, _halfY / 2f, 0f);
             var _pos = _m.MultiplyPoint3x4(_vec);
-            GameObject residualAcid = Instantiate(_residualAcid, transform.position - _vec, Quaternion.identity) as GameObject;
+            GameObject residualAcid = RsdAcdPool.Instance.GetObject();
+            if (residualAcid != null) {
+                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, Quaternion.identity);
+            }
             residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform);
             collision.transform.parent.GetComponent<SprMaskCtrl>().EnableSpriteMask(residualAcid.GetComponent<ResidualAcidSc>().GetReAcidEnableTime());
             SoundManagerV2.Instance.PlaySE(0);
@@ -52,11 +75,15 @@ public class AcidFlask : MonoBehaviour {
             var _vec = new Vector3(_halfX / 3f, 0f, 0f);
             var _pos = _m.MultiplyPoint3x4(_vec);
             var x = transform.position.x;
-            GameObject residualAcid;
+            GameObject residualAcid = RsdAcdPool.Instance.GetObject();
             if (gameObject.transform.position.x < collision.gameObject.transform.position.x) {
-                residualAcid = Instantiate(_residualAcid, transform.position - _vec, Quaternion.Euler(0, 0, 270)) as GameObject;
+                if (residualAcid != null) {
+                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, Quaternion.Euler(0, 0, 270));
+                }
             } else {
-                residualAcid = Instantiate(_residualAcid, transform.position + _vec, Quaternion.Euler(0, 0, 90)) as GameObject;
+                if (residualAcid != null) {
+                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, Quaternion.Euler(0, 0, 90));
+                }
             }
             residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform);
             residualAcid.tag = "WallReAcid";
@@ -72,16 +99,28 @@ public class AcidFlask : MonoBehaviour {
             var _halfY = _sprite.bounds.extents.y;
             var _vec = new Vector3(0f, _halfY / 2f, 0f);
             var _pos = _m.MultiplyPoint3x4(_vec);
-            GameObject residualAcid = Instantiate(_residualAcid, transform.position + _vec, Quaternion.Euler(0, 0, 180)) as GameObject;
+            GameObject residualAcid = RsdAcdPool.Instance.GetObject();
+            if (residualAcid != null) {
+                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, Quaternion.Euler(0, 0, 180));
+            }
             residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform);
             collision.transform.parent.GetComponent<SprMaskCtrl>().EnableSpriteMask(residualAcid.GetComponent<ResidualAcidSc>().GetReAcidEnableTime());
             SoundManagerV2.Instance.PlaySE(0);
         }
 
         if(isConflictDestroy) {
-            Destroy(gameObject);
+            ResetPosition();
         }
         
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("EnemyHitBox")) {
+            if (isConflictDestroy) {
+                ResetPosition();
+            }
+        }
     }
 
 }
