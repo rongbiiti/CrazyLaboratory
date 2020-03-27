@@ -5,14 +5,16 @@ using UnityEngine;
 public class Enemy_Bee : MonoBehaviour
 {
 
-    [SerializeField] private float _HP = 2f;
+    [SerializeField] private float _HP = 1f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _PlayerDamage = 1000f;
     [SerializeField] private float _PlayerDamageRate = 3f;
     [SerializeField] private float _nockBuckPower = 150f;
     [SerializeField] private float _nockBuckUpperPower = 0.38f;
     private float _PlayerDamageTime;
-    [SerializeField] private float _moveSpeed = 0.1f;
+    [SerializeField] private float _moveSpeed = 20f;
+    [SerializeField] private float _moveDashSpeed = 40f;
+
     //[SerializeField] private bool _directionChange;     //false:LEFT true:RIGHT
     private int _direction;
     [SerializeField] private float _stanTime = 3f;
@@ -22,6 +24,7 @@ public class Enemy_Bee : MonoBehaviour
     [SerializeField] private GameObject[] _PatrolPoint;
     [SerializeField] private GameObject _waitPosition;  //待機場所
     private Vector3[] PatrolPointPosition;
+    [SerializeField] private GameObject _player_Hit_Patrol;  //待機中にプレイヤーが入ったら巡回に行くためのオブジェクト
     private int PointCount;    //パトロールポイントのカウント PatrolPointの配列の数が最大値
     [SerializeField] private float _attackWaitRate = 2f;      //攻撃前　硬直　指定用
     private float attackWaitTime;      //攻撃前　硬直
@@ -49,8 +52,9 @@ public class Enemy_Bee : MonoBehaviour
     private Vector3 waitingPosition;    //待機場所のtransform格納用
     private Vector3 waitingRotion;    //待機場所のtransform格納用
     private bool waitType = true;  //false:待機してない true:待機中
+    [SerializeField] private int _childNullCount = 4;   //子を離す数
 
-    
+
 
     // Use this for initialization
     void Start()
@@ -83,16 +87,20 @@ public class Enemy_Bee : MonoBehaviour
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
         targetPosition = PatrolPointPosition[PointCount];
-        //targetPosition = _pointA.transform.position;
         rb = GetComponent<Rigidbody2D>();
-        var count = transform.childCount;
-        for (int i = count - 1; i > 0; i--)
+        var count = transform.childCount - 1;
+        for (int i = count; i > count - _childNullCount; i--) 
         {
+            Debug.Log(i);
+            transform.GetChild(i).gameObject.SetActive(false);
             transform.GetChild(i).transform.parent = null;
-            if (i >= _PatrolPoint.Length) continue;
-            _PatrolPoint[i].SetActive(false);
+            //if (i >= _PatrolPoint.Length) continue;
+            //_PatrolPoint[i].SetActive(false);
+            
         }
-        transform.GetChild(0).gameObject.SetActive(true);
+        //transform.DetachChildren();
+        //transform.GetChild(0).gameObject.SetActive(true);
+
     }
 
     void FixedUpdate()
@@ -190,7 +198,11 @@ public class Enemy_Bee : MonoBehaviour
                     if (AttackPhase == 1 && stanTimeRemain <= 0)   //敵を捉えた時 攻撃までの硬直
                     {
 
-                        if (attackWaitTime > 0) break;
+                        if (attackWaitTime > 0)
+                        {
+                            _PatrolPoint[PointCount].transform.position = playerObject.transform.position;
+                            break;
+                        }
                         Debug.Log("攻撃");
                         // 現在の座標からのxyz を1ずつ加算して移動
                         //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
@@ -203,29 +215,9 @@ public class Enemy_Bee : MonoBehaviour
                         // 移動を計算させるための２次元のベクトルを作る
                         direction = new Vector2(x - transform.position.x, y - transform.position.y).normalized;
                         // ENEMYのRigidbody2Dに移動速度を指定する
-                        rb.velocity = _moveSpeed * direction;
+                        rb.velocity = direction * _moveDashSpeed;
 
-                        //Count += Time.deltaTime;
-                        //if (Count >= _AttackWait)
-                        //{
-                        //    AttackPhase = 2;
-                        //    Count = 0;
-                        //}
                     }
-                    //else if (AttackPhase == 2 && stanTimeRemain <= 0)   //敵に攻撃
-                    //{
-                    //    //DecideTargetPotision();
-                    //    // 巡回ポイントの位置を取得
-                    //    targetPos = waitingPosition;
-                    //    // 巡回ポイントのx座標
-                    //    x = targetPos.x;
-                    //    // ENEMYは、地面を移動させるので座標は常に0とする
-                    //    y = targetPos.y;
-                    //    // 移動を計算させるための２次元のベクトルを作る
-                    //    direction = new Vector2(x - transform.position.x, y - transform.position.y).normalized;
-                    //    // ENEMYのRigidbody2Dに移動速度を指定する
-                    //    rb.velocity = direction * _moveSpeed;
-                    //}
                     break;
             }
 
@@ -247,12 +239,12 @@ public class Enemy_Bee : MonoBehaviour
         if (++PointCount > _PatrolPoint.Length) PointCount = 0;  //配列の最大数に到達したら0に戻す
         Debug.Log(PointCount);
 
-        if (PointCount == _PatrolPoint.Length)
+        if (PointCount == _PatrolPoint.Length)  //_patrolPoint配列の最後のオブジェクトを利用してプレイヤーの座標にオブジェクトを移動させる
         {
             targetPosition = playerObject.transform.position;
             //_PatrolPoint[PointCount - 1].SetActive(false);
             PointCount = _PatrolPoint.Length - 1;
-            _PatrolPoint[PointCount].transform.position = playerObject.transform.position;
+            //_PatrolPoint[PointCount].transform.position = playerObject.transform.position;
             patrolType = 2;
             AttackPhase = 1;
             attackWaitTime += _attackWaitRate;
@@ -287,46 +279,15 @@ public class Enemy_Bee : MonoBehaviour
             _direction = 1; //右
         }
 
-
-        //transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
-
-        //目的地に着いていたら目的地を再設定する
-        //if (istargetPointA)
-        //{
-        //    targetPosition = _pointA.transform.position;
-        //    istargetPointA = false;
-        //    _pointA.SetActive(true);
-        //    _pointB.SetActive(false);
-        //    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
-        //}
-        //else
-        //{
-        //    targetPosition = _pointB.transform.position;
-        //    istargetPointA = true;
-        //    _pointA.SetActive(false);
-        //    _pointB.SetActive(true);
-        //    transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y);
-        //}
-
-
-
         isReachTargetPosition = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        /*
-        if (collision.CompareTag("PatrolPoint"))
-        {
-            isReachTargetPosition = true;
-            DecideTargetPotision();
-        }
-        */
         // 弱点のみ、IsTriggerをオンにしている。
         if (collision.CompareTag("AcidFlask"))
         {
             nowHP -= _HitDamage;
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の弱点にヒット");
             enemyHpbar.SetBarValue(_HP, nowHP);
             if (nowHP <= 0)
@@ -355,18 +316,13 @@ public class Enemy_Bee : MonoBehaviour
 
         if (collision.gameObject.CompareTag("WaitingPoint"))
         {
-            //if (waitType == false)
-            //{
-            //    waitType = true;
-            //    return;
-            //}
-
             if (patrolType == 0 && waitType == false)
             {
                 waitType = true;
                 gameObject.transform.position = waitingPosition;
                 gameObject.transform.eulerAngles = waitingRotion;
                 rb.velocity = new Vector2(0.0f,0.0f);
+                _player_Hit_Patrol.SetActive(true);
                 return;
             }
         }
@@ -379,13 +335,9 @@ public class Enemy_Bee : MonoBehaviour
             _PatrolPoint[0].SetActive(true);
             targetPosition = _PatrolPoint[0].transform.position;
             isReachTargetPosition = true;
+            _player_Hit_Patrol.SetActive(false);
         }
 
-        //if (collision.CompareTag("Player") && patrolType == 0 && waitType)
-        //{
-        //    patrolType = 1;
-            
-        //}
 
     }
 
@@ -408,7 +360,6 @@ public class Enemy_Bee : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
-            Destroy(collision.gameObject);
             Debug.Log(gameObject.name + "の非弱点にヒット");
             if (patrolType == 0)   //パトロール中にplayerを見つけた時
             {
