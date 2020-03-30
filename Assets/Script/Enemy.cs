@@ -8,7 +8,6 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     [SerializeField, Range(0f, 100f)] private float _moveSpeed = 1f;
-    [SerializeField] private float _moveForceMultiplier = 20f;
     [SerializeField] private float _HP = 4f;
     [SerializeField] private float _bulletHitDamage = 1f;
     [SerializeField] private GameObject _pointA;
