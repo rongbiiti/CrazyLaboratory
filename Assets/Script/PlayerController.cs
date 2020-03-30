@@ -552,7 +552,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator HoleMakerSound()
+    private IEnumerator HoleMakerSound()
     {
         SoundManagerV2.Instance.PlaySE(13);
         yield return new WaitForSeconds(_hmFireRate - 1.5f);
@@ -650,14 +650,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.tag == "ResidualAcid") {
+        if (collision.CompareTag("ResidualAcid")) {
             if (acidDamageTime <= 0) {
                 GameObject acidParentBlock = collision.transform.parent.gameObject;
                 var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
                 var _sprite = sprite.sprite;
-                var _halfX = _sprite.bounds.extents.x;
-                var _vec = new Vector3(-_halfX, 0f, 0f); // これは左上
-                var _unvec = new Vector3(_halfX, 0f, 0f); // これは右上
+                var halfX = _sprite.bounds.extents.x;
+                var _vec = new Vector3(-halfX, 0f, 0f); // これは左上
+                var _unvec = new Vector3(halfX, 0f, 0f); // これは右上
                 var _pos = sprite.transform.TransformPoint(_vec);
                 var _unpos = sprite.transform.TransformPoint(_unvec);
                 if (transform.position.x >= _pos.x && transform.position.x <= _unpos.x) {
@@ -665,9 +665,6 @@ public class PlayerController : MonoBehaviour
                     Damage(_acidDamage);
                     SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
-                    Debug.Log(transform.position.x);
-                    Debug.Log(_pos.x);
-                    Debug.Log(_unpos.x);
                 }
             }
         } else if(collision.CompareTag("WallReAcid")) {
@@ -685,9 +682,6 @@ public class PlayerController : MonoBehaviour
                     Damage(_acidDamage);
                     SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
-                    Debug.Log(transform.position.y);
-                    Debug.Log(_pos.y);
-                    Debug.Log(_unpos.y);
                 }
             }
         }
