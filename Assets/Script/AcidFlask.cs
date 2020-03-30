@@ -54,10 +54,8 @@ public class AcidFlask : MonoBehaviour {
             var sprite = collision.transform.parent.GetComponent<SpriteRenderer>();
             var _m = sprite.localToWorldMatrix;
             var _sprite = sprite.sprite;
-            var _halfX = _sprite.bounds.extents.x;
             var _halfY = _sprite.bounds.extents.y;
             var _vec = new Vector3(0f, _halfY / 2f, 0f);
-            var _pos = _m.MultiplyPoint3x4(_vec);
             GameObject residualAcid = RsdAcdPool.Instance.GetObject();
             if (residualAcid != null) {
                 residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, Quaternion.identity);
@@ -71,10 +69,7 @@ public class AcidFlask : MonoBehaviour {
             var _m = sprite.localToWorldMatrix;
             var _sprite = sprite.sprite;
             var _halfX = _sprite.bounds.extents.x;
-            var _halfY = _sprite.bounds.extents.y;
             var _vec = new Vector3(_halfX / 3f, 0f, 0f);
-            var _pos = _m.MultiplyPoint3x4(_vec);
-            var x = transform.position.x;
             GameObject residualAcid = RsdAcdPool.Instance.GetObject();
             if (gameObject.transform.position.x < collision.gameObject.transform.position.x) {
                 if (residualAcid != null) {
@@ -95,10 +90,8 @@ public class AcidFlask : MonoBehaviour {
             var sprite = collision.transform.parent.GetComponent<SpriteRenderer>();
             var _m = sprite.localToWorldMatrix;
             var _sprite = sprite.sprite;
-            var _halfX = _sprite.bounds.extents.x;
             var _halfY = _sprite.bounds.extents.y;
             var _vec = new Vector3(0f, _halfY / 2f, 0f);
-            var _pos = _m.MultiplyPoint3x4(_vec);
             GameObject residualAcid = RsdAcdPool.Instance.GetObject();
             if (residualAcid != null) {
                 residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, Quaternion.Euler(0, 0, 180));
