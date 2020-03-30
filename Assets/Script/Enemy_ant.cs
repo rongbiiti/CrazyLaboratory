@@ -86,7 +86,6 @@ public class Enemy_ant : MonoBehaviour {
             switch (patrolType)
             {
                 case 0:     //パトロールの動き
-                    Debug.Log("パトロール中");
                     if (PointA_Position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
                     {
                         _direction *= -1;
@@ -107,7 +106,6 @@ public class Enemy_ant : MonoBehaviour {
                     break;
 
                 case 1: //追尾の動き playerを追いかける
-                    Debug.Log("追跡中");
                     if (playerObject.transform.position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
                     {
                         _direction *= -1;
@@ -142,7 +140,6 @@ public class Enemy_ant : MonoBehaviour {
                     break;
 
                 case 2:
-                    Debug.Log("攻撃中");
                     if (AttackPhase == 1 && stanTimeRemain <= 0)
                     {
                         // 現在の座標からのxyz を1ずつ加算して移動

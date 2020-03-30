@@ -143,7 +143,6 @@ public class Enemy_Bee : MonoBehaviour
             switch (patrolType)
             {
                 case 0:
-                    Debug.Log("待機中");
                     
                     if (waitType == true)
                     {
@@ -177,7 +176,6 @@ public class Enemy_Bee : MonoBehaviour
                     break;
 
                 case 1:
-                    Debug.Log("巡回中");
 
                     //DecideTargetPotision();
                     // 巡回ポイントの位置を取得
@@ -203,7 +201,6 @@ public class Enemy_Bee : MonoBehaviour
                             _PatrolPoint[PointCount].transform.position = playerObject.transform.position;
                             break;
                         }
-                        Debug.Log("攻撃");
                         // 現在の座標からのxyz を1ずつ加算して移動
                         //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
 
