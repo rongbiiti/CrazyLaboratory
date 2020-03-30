@@ -210,7 +210,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     }
                     else if (AttackPhase == 2 && stanTimeRemain <= 0)   //敵に攻撃
                     {
-                        myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
+                        myTransform.Translate(0.2f * _direction, 0.0f, 0.0f, Space.World);
                         //AttackPhase = 0;
                         Count += Time.deltaTime;
                         if (Count >= _AttackTime)
