@@ -9,11 +9,9 @@ using UnityEngine;
 /// </summary>
 public class FallBlock : MonoBehaviour {
 
-    private Rigidbody2D rb;
     private Explodable explodable;
 
 	void Start () {
-        rb = GetComponent<Rigidbody2D>();
         explodable = GetComponent<Explodable>();
 	}
 

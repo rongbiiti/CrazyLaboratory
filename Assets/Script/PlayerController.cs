@@ -12,7 +12,6 @@ using Live2D.Cubism.Framework;
 /// </summary>
 public class PlayerController : MonoBehaviour
 {
-    private GameObject cam;
     private Rigidbody2D rb;
     private InputManager im;
     private PlayerManager pm;
@@ -155,7 +154,6 @@ public class PlayerController : MonoBehaviour
     private float fireTime;
     private float acidDamageTime;
 
-    private float startMoveSpeed;
     private bool isJumping = false;
     private bool isJumpingCheck = true;
     private float jumpTimeCounter;
@@ -175,10 +173,8 @@ public class PlayerController : MonoBehaviour
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
         rb = GetComponent<Rigidbody2D>();
-        cam = GameObject.Find("Main Camera");
         
         jumpTimeCounter = pm.JumpTime;
-        startMoveSpeed = pm.MoveSpeed;
         HP = _maxHP;
         _HPbar.maxValue = _maxHP;
         _HPbar.value = HP;
@@ -345,7 +341,6 @@ public class PlayerController : MonoBehaviour
         // 地面にいるとき
         if (isGrounded && !isJumping) {
             rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
-
             if (im.MoveKey != 0)
             {
                 animator.SetBool("Run", true);
@@ -482,7 +477,6 @@ public class PlayerController : MonoBehaviour
         }
 
         //　発射角度にオブジェクトを回転させる、飛ぶ方向と弾自身の角度を一致させる
-        var diff = shotangle - bullet.transform.position;
         var axis = Vector3.Cross(bullet.transform.right, shotangle);
         var angle = Vector3.Angle(bullet.transform.right, shotangle) * (axis.z < 0 ? -1 : 1);
         bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -537,7 +531,6 @@ public class PlayerController : MonoBehaviour
             }
 
             //　発射角度にオブジェクトを回転させる、進んでいる方向と角度を一致させる
-            var diff = shotangle - bullet.transform.position;
             var axis = Vector3.Cross(bullet.transform.right, shotangle);
             var angle = Vector3.Angle(bullet.transform.right, shotangle) * (axis.z < 0 ? -1 : 1);
             bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -663,7 +656,6 @@ public class PlayerController : MonoBehaviour
                 var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
                 var _sprite = sprite.sprite;
                 var _halfX = _sprite.bounds.extents.x;
-                var _halfY = _sprite.bounds.extents.y;
                 var _vec = new Vector3(-_halfX, 0f, 0f); // これは左上
                 var _unvec = new Vector3(_halfX, 0f, 0f); // これは右上
                 var _pos = sprite.transform.TransformPoint(_vec);
@@ -683,7 +675,6 @@ public class PlayerController : MonoBehaviour
                 GameObject acidParentBlock = collision.transform.parent.gameObject;
                 var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
                 var _sprite = sprite.sprite;
-                var _halfX = _sprite.bounds.extents.x;
                 var _halfY = _sprite.bounds.extents.y;
                 var _vec = new Vector3(0f, -_halfY, 0f); // これは上
                 var _unvec = new Vector3(0f, _halfY, 0f); // これは下
