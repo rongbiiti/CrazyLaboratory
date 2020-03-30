@@ -144,7 +144,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
             switch (patrolType)
             {
                 case 0:
-                    Debug.Log("パトロール");
                     if (AttackPhase == 0 && stanTimeRemain <= 0)        //パトロール中
                     {
                         if (movetype != 2) return;  //パトロールついて硬直中は動かない
@@ -166,7 +165,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     break;
 
                 case 1:
-                    Debug.Log("追跡中");
                     if (playerObject.transform.position.x >= transform.position.x && _direction == -1 && AttackPhase == 0 && stanTimeRemain <= 0)
                     {
                         _direction *= -1;
@@ -199,7 +197,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     break;
 
                 case 2:
-                    Debug.Log("攻撃");
                     if (AttackPhase == 1 && stanTimeRemain <= 0)   //敵を捉えた時 攻撃までの硬直
                     {
                         // 現在の座標からのxyz を1ずつ加算して移動
@@ -213,7 +210,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     }
                     else if (AttackPhase == 2 && stanTimeRemain <= 0)   //敵に攻撃
                     {
-                        myTransform.Translate(0.2f * gameObject.transform.localScale.x * -1, 0.0f, 0.0f, Space.World);
+                        myTransform.Translate(0.2f * _direction, 0.0f, 0.0f, Space.World);
                         //AttackPhase = 0;
                         Count += Time.deltaTime;
                         if (Count >= _AttackTime)
