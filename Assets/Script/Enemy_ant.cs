@@ -99,6 +99,7 @@ public class Enemy_ant : MonoBehaviour {
                         gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
 
+                    if(stanTimeRemain <= 0)
                     // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
                     myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
 
