@@ -13,6 +13,7 @@ public class BreakBlockPivot : MonoBehaviour
     [SerializeField, CustomLabel("元に戻るまでの時間")] private float restorTime = 5f;
     private Vector2 startScale;
     private Vector2 Startposition;
+    private Vector2 Startzikkenposition;
     private GameObject parent1;
     private SpriteRenderer spriteRenderer;
     private enum Status
@@ -26,7 +27,8 @@ public class BreakBlockPivot : MonoBehaviour
     {
         parent1 = transform.parent.gameObject;
         startScale = parent1.transform.localScale;
-        Startposition = gameObject.transform.position;
+        Startposition = parent1.transform.position;
+        Startzikkenposition = gameObject.transform.position;
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
     }
 
@@ -43,6 +45,9 @@ public class BreakBlockPivot : MonoBehaviour
             if (!isPlayerStay) {
                 parent1.transform.localScale += new Vector3(startScale.x / restorTime * Time.deltaTime, startScale.y / restorTime * Time.deltaTime);
                 if (startScale.x <= parent1.transform.localScale.x) {
+                    parent1.transform.position = Startposition;
+                    parent1.transform.localScale = startScale;
+                    gameObject.transform.position = Startzikkenposition;
                     UnSetRestoring();
                 }
             }

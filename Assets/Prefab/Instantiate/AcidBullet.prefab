@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 50412610603608286}
   - component: {fileID: 61734312168480904}
   - component: {fileID: 114393955619238534}
+  - component: {fileID: 114345604463896968}
   m_Layer: 8
   m_Name: AcidBullet
   m_TagString: AcidFlask
@@ -37,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1901359971894644}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -11.287706, y: -10.395325, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -88,6 +89,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.3368826, y: 0.0025}
   m_EdgeRadius: 0
+--- !u!114 &114345604463896968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1901359971894644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f6d3c6e4250e84192f5b34ce9e71bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  glowColor: {r: 0, g: 0.122641504, b: 0, a: 1}
+  glowBrightness: 4.15
+  outlineWidth: 7
+  alphaThreshold: 1
+  drawOutside: 0
+  enableInstancing: 0
 --- !u!114 &114393955619238534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -101,7 +119,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _residualAcid: {fileID: 1349799545308152, guid: 8b014841e48a69d4d8cd215cd60e2991,
     type: 2}
-  _residualOffset: {x: 0, y: 0.53, z: 0}
   _destroyTime: 7
 --- !u!212 &212890518918290728
 SpriteRenderer:
@@ -118,7 +135,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 4a8ff91980659db4a912db90aec7bd68, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

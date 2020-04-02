@@ -40,7 +40,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
 
-
+    Animator animator;
 
     // Use this for initialization
     void Start()
@@ -54,6 +54,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
         }
         Point_Position = PatrolPointPosition[PointCount];     //最初のパトロールポイントの座標を格納
         movetype = 2;
+       
         AttackPhase = 0;
         Count = 0;
         nowHP = _HP;
@@ -71,6 +72,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
         playerObject = GameObject.FindGameObjectWithTag("Player");
+
+        animator = GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -111,10 +114,15 @@ public class Enemy_ChildSpider : MonoBehaviour {
            else if(movetype == 1 && 0 >= pointWaitTime)
             {
                 movetype = 2;
+                animator.SetBool("Walk", true);
+                animator.SetBool("Stand", false);
             }
 
             if (movetype == 0)
             {
+                animator.SetBool("Stand", true);
+                animator.SetBool("Walk", false);
+
                 if (++PointCount > _PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
                 Debug.Log(PointCount);
                 Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
@@ -153,7 +161,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
                         //パトロールポイントを超えたら待機タイプに変える
                         if (_direction == -1 && gameObject.transform.position.x <= Point_Position.x)
-                        {
+                        {            
                             movetype = 0;
                         }
                         else if (_direction == 1 && gameObject.transform.position.x >= Point_Position.x)
