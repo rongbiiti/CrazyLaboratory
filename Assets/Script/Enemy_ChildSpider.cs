@@ -116,12 +116,14 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 movetype = 2;
                 animator.SetBool("Walk", true);
                 animator.SetBool("Stand", false);
+                animator.SetBool("Stun", false);
             }
 
             if (movetype == 0)
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Walk", false);
+                animator.SetBool("Stun", false);
 
                 if (++PointCount > _PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
                 Debug.Log(PointCount);
@@ -304,6 +306,9 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
         if (collision.gameObject.CompareTag("Gareki"))
         {
+            animator.SetBool("Stun", true);
+            animator.SetBool("Stand", false);
+            animator.SetBool("Walk", false);
             stanTimeRemain += _stanTime;
             AttackPhase = 0;
             Count = 0;
