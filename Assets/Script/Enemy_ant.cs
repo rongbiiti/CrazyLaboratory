@@ -31,6 +31,8 @@ public class Enemy_ant : MonoBehaviour {
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
 
+    Animator animator;
+
     // Use this for initialization
     void Start () {
         startScale = transform.localScale;
@@ -55,7 +57,9 @@ public class Enemy_ant : MonoBehaviour {
         enemyHpbar.SetBarValue(_HP, nowHP);
         patrolType = 0;
         playerObject = GameObject.FindGameObjectWithTag("Player");
-        
+
+        animator = GetComponent<Animator>();
+
     }
 
     void FixedUpdate()
@@ -78,6 +82,11 @@ public class Enemy_ant : MonoBehaviour {
 
             if (0 < stanTimeRemain) {
                 stanTimeRemain -= Time.deltaTime;
+                if(stanTimeRemain <= 0)
+                {
+                    animator.SetBool("Walk", true);
+                    animator.SetBool("Stun", false);
+                }
             }
 
             // transformを取得
@@ -242,6 +251,9 @@ public class Enemy_ant : MonoBehaviour {
         }
 
         if(collision.gameObject.CompareTag("Gareki")) {
+            animator.SetBool("Walk", false);
+            animator.SetBool("Stun", true);
+
             stanTimeRemain += _stanTime;
             AttackPhase = 0;
             Count = 0;
