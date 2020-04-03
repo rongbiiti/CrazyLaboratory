@@ -58,9 +58,10 @@ public class AcidFlask : MonoBehaviour {
             var _vec = new Vector3(0f, _halfY / 2f, 0f);
             GameObject residualAcid = RsdAcdPool.Instance.GetObject();
             if (residualAcid != null) {
-                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, Quaternion.identity);
+                residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform, false);
+                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, Vector3.zero);
             }
-            residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform);
+            
             collision.transform.parent.GetComponent<SprMaskCtrl>().EnableSpriteMask(residualAcid.GetComponent<ResidualAcidSc>().GetReAcidEnableTime());
             SoundManagerV2.Instance.PlaySE(0);
 
@@ -73,14 +74,16 @@ public class AcidFlask : MonoBehaviour {
             GameObject residualAcid = RsdAcdPool.Instance.GetObject();
             if (gameObject.transform.position.x < collision.gameObject.transform.position.x) {
                 if (residualAcid != null) {
-                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, Quaternion.Euler(0, 0, 270));
+                    residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform, false);
+                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, new Vector3(0, 0, 270));
                 }
             } else {
                 if (residualAcid != null) {
-                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, Quaternion.Euler(0, 0, 90));
+                    residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform, false);
+                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, new Vector3(0, 0, 90));
                 }
             }
-            residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform);
+            
             residualAcid.tag = "WallReAcid";
             collision.transform.parent.GetComponent<SprMaskCtrl>().EnableSpriteMask(residualAcid.GetComponent<ResidualAcidSc>().GetReAcidEnableTime());
             SoundManagerV2.Instance.PlaySE(1);
@@ -93,10 +96,11 @@ public class AcidFlask : MonoBehaviour {
             var _halfY = _sprite.bounds.extents.y;
             var _vec = new Vector3(0f, _halfY / 2f, 0f);
             GameObject residualAcid = RsdAcdPool.Instance.GetObject();
+            
             if (residualAcid != null) {
-                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, Quaternion.Euler(0, 0, 180));
+                residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform ,false);
+                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, new Vector3(0,0,180));
             }
-            residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform);
             collision.transform.parent.GetComponent<SprMaskCtrl>().EnableSpriteMask(residualAcid.GetComponent<ResidualAcidSc>().GetReAcidEnableTime());
             SoundManagerV2.Instance.PlaySE(0);
         }

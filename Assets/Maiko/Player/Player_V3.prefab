@@ -1589,7 +1589,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432322156971034}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.796359, y: -11.9433975, z: 0}
+  m_LocalPosition: {x: -96.45, y: 7.86, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4833721811379570}
@@ -1622,7 +1622,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1706359983438424}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -503, y: 0.602, z: 0}
+  m_LocalPosition: {x: -0.5, y: 0.602, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4817296647120560}
@@ -2725,8 +2725,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.019}
-  m_Size: {x: 0.28919327, y: 1.1382334}
+  m_Offset: {x: 0, y: -0.0638147}
+  m_Size: {x: 0.28919327, y: 0.9726039}
   m_Direction: 0
 --- !u!95 &95022022627970960
 Animator:
@@ -3615,7 +3615,12 @@ MonoBehaviour:
   _bulletCapacity: 10
   _fireRate: 1.2
   YStickUpDeadZone: 0.4
+  YStickCeilDeadZone: 1.1
   _YStickDownDeadZone: -0.4
+  ceilShot:
+    _muzzleVelocity: 11.5
+    _gravityScale: 6
+    _fireAngle: 90
   upShot:
     _muzzleVelocity: 11.5
     _gravityScale: 6

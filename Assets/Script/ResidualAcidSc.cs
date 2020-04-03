@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 /// <summary>
 /// 床や壁に残る酸のスクリプト
@@ -9,12 +10,19 @@ public class ResidualAcidSc : MonoBehaviour {
     [SerializeField, Range(0f, 4f), CustomLabel("フェードアウトする時間")] private float _fadeTime = 0.5f;
     private float resetTime;
     private float fadeResetTime;
+    private Vector3 startScale;
     private SpriteRenderer sprite;
     private Color color;
     private BoxCollider2D col;
 
+    private void Awake()
+    {
+        startScale = transform.localScale;
+    }
+
     private void Start()
     {
+        
         sprite = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         resetTime = _destroyTime;
@@ -42,10 +50,17 @@ public class ResidualAcidSc : MonoBehaviour {
         return _destroyTime + _fadeTime;
     }
 
-    public void Init(Vector3 pos, Quaternion rota)
+    public void Init(Vector3 pos, Vector3 rota)
     {
         transform.position = pos;
-        transform.rotation = rota;
+        transform.Rotate(rota);
+        Vector3 vec = startScale;
+        Vector3 loVec = transform.localScale;
+        Vector3 paVec = transform.lossyScale;
+        vec.x = loVec.x / paVec.x * vec.x;
+        vec.y = loVec.y / paVec.y * vec.y;
+        vec.z = loVec.z / paVec.z * vec.z;
+        transform.localScale = vec;
     }
 
     private void ResetPosition()
@@ -59,5 +74,7 @@ public class ResidualAcidSc : MonoBehaviour {
         sprite.color += new Color(0, 0, 0, 1);
         col.enabled = true;
         tag = "ResidualAcid";
+        transform.localScale = startScale;
+        
     }
 }
