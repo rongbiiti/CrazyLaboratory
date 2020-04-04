@@ -1,0 +1,49 @@
+{
+	"Version": 3,
+	"Meta": {
+		"Duration": 1.333,
+		"Fps": 30.0,
+		"Loop": true,
+		"AreBeziersRestricted": true,
+		"CurveCount": 2,
+		"TotalSegmentCount": 3,
+		"TotalPointCount": 9,
+		"UserDataCount": 0,
+		"TotalUserDataSize": 0
+	},
+	"Curves": [
+		{
+			"Target": "Parameter",
+			"Id": "EyeParam",
+			"Segments": [
+				0,
+				10,
+				1,
+				0.222,
+				10,
+				0.444,
+				-10,
+				0.667,
+				-10,
+				1,
+				0.889,
+				-10,
+				1.111,
+				10,
+				1.333,
+				10
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "NeckParam",
+			"Segments": [
+				0,
+				-10,
+				0,
+				1.333,
+				-10
+			]
+		}
+	]
+}
