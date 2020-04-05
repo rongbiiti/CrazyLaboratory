@@ -151,13 +151,16 @@ public class Enemy_Bee : MonoBehaviour
 
                     if (waitType == true)
                     {
-                        if (playerObject.transform.position.x >= gameObject.transform.position.x)
+                        var ls = transform.localScale;
+                        if (playerObject.transform.position.x >= gameObject.transform.position.x && _direction == 1)
                         {
-                            gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                            _direction = -1;     //左
+                            gameObject.transform.localScale = new Vector3(-ls.x, ls.y, ls.z);
                         }
-                        else
+                        else if(playerObject.transform.position.x < gameObject.transform.position.x && _direction == -1)
                         {
-                            gameObject.transform.localScale = new Vector3(1.0f, -1.0f, 1.0f);
+                            _direction = 1;     //右
+                            gameObject.transform.localScale = new Vector3(-ls.x, ls.y, ls.z);
                         }
                         break;
                     }
@@ -204,8 +207,13 @@ public class Enemy_Bee : MonoBehaviour
                         if (attackWaitTime > 0)
                         {
                             _PatrolPoint[PointCount].transform.position = playerObject.transform.position;
+
+                            
+
                             break;
                         }
+
+                        
                         // 現在の座標からのxyz を1ずつ加算して移動
                         //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
 
@@ -251,6 +259,7 @@ public class Enemy_Bee : MonoBehaviour
             AttackPhase = 1;
             attackWaitTime += _attackWaitRate;
             rb.velocity = new Vector2(0.0f, 0.0f);
+            direction();
             return;
         }
 
@@ -269,19 +278,24 @@ public class Enemy_Bee : MonoBehaviour
         //_pointA.SetActive(true);
         //_pointB.SetActive(false);
 
+        direction();
+
+        isReachTargetPosition = false;
+    }
+
+    private void direction()
+    {
         if (gameObject.transform.position.x >= targetPosition.x)     //現在のポジションからポイントの座標を見て　設定する
         {
             if (_direction == 1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
             _direction = -1; //左
 
         }
-        else if (gameObject.transform.position.x <= targetPosition.x)
+        else if (gameObject.transform.position.x < targetPosition.x)
         {
             if (_direction == -1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
             _direction = 1; //右
         }
-
-        isReachTargetPosition = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -332,7 +346,8 @@ public class Enemy_Bee : MonoBehaviour
         if (collision.CompareTag("Player") && patrolType == 0 && waitType)   //パトロール中にplayerを見つけた時
         {
             patrolType = 1;     //巡回モード
-            gameObject.transform.localScale = new Vector2(gameObject.transform.localScale.x, 1.0f);
+            var ls = transform.localScale;
+            gameObject.transform.localScale = new Vector2(ls.x, ls.y);
             gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
             _PatrolPoint[0].SetActive(true);
             targetPosition = _PatrolPoint[0].transform.position;
