@@ -54,7 +54,7 @@ public class Enemy_Bee : MonoBehaviour
     private bool waitType = true;  //false:待機してない true:待機中
     [SerializeField] private int _childNullCount = 4;   //子を離す数
 
-
+    Animator animator;
 
     // Use this for initialization
     void Start()
@@ -101,6 +101,8 @@ public class Enemy_Bee : MonoBehaviour
         //transform.DetachChildren();
         //transform.GetChild(0).gameObject.SetActive(true);
 
+        animator = GetComponent<Animator>();
+
     }
 
     void FixedUpdate()
@@ -143,7 +145,10 @@ public class Enemy_Bee : MonoBehaviour
             switch (patrolType)
             {
                 case 0:
-                    
+                    //animator.SetBool("Fly", true);
+                    //animator.SetBool("Stand", false);
+                    //animator.SetBool("Stun", false);
+
                     if (waitType == true)
                     {
                         if (playerObject.transform.position.x >= gameObject.transform.position.x)
