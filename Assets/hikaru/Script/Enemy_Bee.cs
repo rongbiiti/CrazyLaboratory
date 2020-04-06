@@ -144,10 +144,11 @@ public class Enemy_Bee : MonoBehaviour
             Transform myTransform = this.transform;
             switch (patrolType)
             {
-                case 0:
-                    //animator.SetBool("Fly", true);
-                    //animator.SetBool("Stand", false);
-                    //animator.SetBool("Stun", false);
+                case 0: 
+                    animator.SetBool("Stand", true);
+                    animator.SetBool("Fly", false);
+                    animator.SetBool("Sting", false);
+                    animator.SetBool("Stun", false);
 
                     if (waitType == true)
                     {
@@ -179,11 +180,19 @@ public class Enemy_Bee : MonoBehaviour
                     Vector2 direction = new Vector2(x - transform.position.x, y - transform.position.y).normalized;
                     // ENEMYのRigidbody2Dに移動速度を指定する
                     rb.velocity = direction * _moveSpeed;
-                    
+
+                    animator.SetBool("Stand", false);
+                    animator.SetBool("Fly", true);
+                    animator.SetBool("Sting", false);
+                    animator.SetBool("Stun", false);
 
                     break;
 
                 case 1:
+                    animator.SetBool("Stand", false);
+                    animator.SetBool("Fly", true);
+                    animator.SetBool("Sting", false);
+                    animator.SetBool("Stun", false);
 
                     //DecideTargetPotision();
                     // 巡回ポイントの位置を取得
@@ -199,19 +208,23 @@ public class Enemy_Bee : MonoBehaviour
 
                     Debug.Log(targetPos);
                     break;
-                case 2:
-                    
+                case 2:                    
+
                     if (AttackPhase == 1 && stanTimeRemain <= 0)   //敵を捉えた時 攻撃までの硬直
                     {
 
                         if (attackWaitTime > 0)
                         {
-                            _PatrolPoint[PointCount].transform.position = playerObject.transform.position;
+                            animator.SetBool("Stand", false);
+                            animator.SetBool("Fly", false);
+                            animator.SetBool("Sting", true);
+                            animator.SetBool("Stun", false);
 
-                            
+                            _PatrolPoint[PointCount].transform.position = playerObject.transform.position;
 
                             break;
                         }
+                        
 
                         
                         // 現在の座標からのxyz を1ずつ加算して移動
@@ -317,6 +330,11 @@ public class Enemy_Bee : MonoBehaviour
             
             if(patrolType == 2 && AttackPhase == 1)
             {
+                animator.SetBool("Stand", false);
+                animator.SetBool("Fly", true);
+                animator.SetBool("Sting", false);
+                animator.SetBool("Stun", false);
+
                 patrolType = 0;
                 _PatrolPoint[PointCount].transform.position = PatrolPointPosition[PointCount];
                 _PatrolPoint[PointCount].gameObject.SetActive(false);
@@ -399,6 +417,11 @@ public class Enemy_Bee : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Gareki"))
         {
+            animator.SetBool("Stand", false);
+            animator.SetBool("Fly", false);
+            animator.SetBool("Sting", false);
+            animator.SetBool("Stun", true);
+
             stanTimeRemain += _stanTime;
             AttackPhase = 0;
             Count = 0;
