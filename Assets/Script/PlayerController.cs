@@ -735,4 +735,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void AnimStop()
+    {
+        animator.SetBool("Stand", true);
+        animator.SetBool("Run", false);
+        animator.SetBool("JumpDown", false);
+        rb.velocity = Vector2.zero;
+        
+    }
+
 }
