@@ -7,7 +7,7 @@ public class AcidFlask : MonoBehaviour {
     private float resetTime;
     private bool isConflictDestroy = true;
     private Rigidbody2D rb;
-    public bool SetConlictDestroyFalse
+    public bool SetConflictDestroyFalse
     {
         set{ isConflictDestroy = false; }
     }
@@ -51,36 +51,32 @@ public class AcidFlask : MonoBehaviour {
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("MoveBlock")) {
-            var sprite = collision.transform.parent.GetComponent<SpriteRenderer>();
-            var _m = sprite.localToWorldMatrix;
-            var _sprite = sprite.sprite;
-            var _halfY = _sprite.bounds.extents.y;
-            var _vec = new Vector3(0f, _halfY / 2f, 0f);
-            GameObject residualAcid = RsdAcdPool.Instance.GetObject();
+            var sprite = collision.transform.parent.GetComponent<SpriteRenderer>().sprite;
+            var halfY = sprite.bounds.extents.y;
+            var vec = new Vector3(0f, halfY / 2f, 0f);
+            var residualAcid = RsdAcdPool.Instance.GetObject();
             if (residualAcid != null) {
                 residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform, false);
-                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, Vector3.zero);
+                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - vec, Vector3.zero);
             }
             
             collision.transform.parent.GetComponent<SprMaskCtrl>().EnableSpriteMask(residualAcid.GetComponent<ResidualAcidSc>().GetReAcidEnableTime());
             SoundManagerV2.Instance.PlaySE(0);
 
         } else if (collision.gameObject.CompareTag("Wall")) {
-            var sprite = collision.transform.parent.GetComponent<SpriteRenderer>();
-            var _m = sprite.localToWorldMatrix;
-            var _sprite = sprite.sprite;
-            var _halfX = _sprite.bounds.extents.x;
-            var _vec = new Vector3(_halfX / 3f, 0f, 0f);
-            GameObject residualAcid = RsdAcdPool.Instance.GetObject();
+            var sprite = collision.transform.parent.GetComponent<SpriteRenderer>().sprite;
+            var halfX = sprite.bounds.extents.x;
+            var vec = new Vector3(halfX / 3f, 0f, 0f);
+            var residualAcid = RsdAcdPool.Instance.GetObject();
             if (gameObject.transform.position.x < collision.gameObject.transform.position.x) {
                 if (residualAcid != null) {
                     residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform, false);
-                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - _vec, new Vector3(0, 0, 270));
+                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position - vec, new Vector3(0, 0, 270));
                 }
             } else {
                 if (residualAcid != null) {
                     residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform, false);
-                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, new Vector3(0, 0, 90));
+                    residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + vec, new Vector3(0, 0, 90));
                 }
             }
             
@@ -90,19 +86,19 @@ public class AcidFlask : MonoBehaviour {
 
 
         } else if (collision.gameObject.CompareTag("Ceil")) {
-            var sprite = collision.transform.parent.GetComponent<SpriteRenderer>();
-            var _m = sprite.localToWorldMatrix;
-            var _sprite = sprite.sprite;
-            var _halfY = _sprite.bounds.extents.y;
-            var _vec = new Vector3(0f, _halfY / 2f, 0f);
-            GameObject residualAcid = RsdAcdPool.Instance.GetObject();
+            var sprite = collision.transform.parent.GetComponent<SpriteRenderer>().sprite;
+            var halfY = sprite.bounds.extents.y;
+            var vec = new Vector3(0f, halfY / 2f, 0f);
+            var residualAcid = RsdAcdPool.Instance.GetObject();
             
             if (residualAcid != null) {
                 residualAcid.transform.SetParent(collision.gameObject.transform.parent.transform ,false);
-                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + _vec, new Vector3(0,0,180));
+                residualAcid.GetComponent<ResidualAcidSc>().Init(transform.position + vec, new Vector3(0,0,180));
             }
             collision.transform.parent.GetComponent<SprMaskCtrl>().EnableSpriteMask(residualAcid.GetComponent<ResidualAcidSc>().GetReAcidEnableTime());
             SoundManagerV2.Instance.PlaySE(0);
+        } else if (collision.gameObject.CompareTag("Beaker")) {
+            Debug.Log("側面に当たった");
         }
 
         if(isConflictDestroy) {
@@ -114,6 +110,11 @@ public class AcidFlask : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("EnemyHitBox")) {
+            if (isConflictDestroy) {
+                ResetPosition();
+            }
+        } else if (collision.CompareTag("Beaker")) {
+            Debug.Log("中に入った");
             if (isConflictDestroy) {
                 ResetPosition();
             }
