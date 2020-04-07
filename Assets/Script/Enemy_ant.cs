@@ -82,10 +82,17 @@ public class Enemy_ant : MonoBehaviour {
 
             if (0 < stanTimeRemain) {
                 stanTimeRemain -= Time.deltaTime;
-                if(stanTimeRemain <= 0)
+                if (stanTimeRemain <= 0)
                 {
                     animator.SetBool("Walk", true);
+                    animator.SetBool("Atack", false);
                     animator.SetBool("Stun", false);
+                }
+                else
+                {
+                    animator.SetBool("Walk", false);
+                    animator.SetBool("Atack", false);
+                    animator.SetBool("Stun", true);
                 }
             }
 
@@ -95,6 +102,7 @@ public class Enemy_ant : MonoBehaviour {
             switch (patrolType)
             {
                 case 0:     //パトロールの動き
+
                     if (PointA_Position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
                     {
                         _direction *= -1;
@@ -116,6 +124,7 @@ public class Enemy_ant : MonoBehaviour {
                     break;
 
                 case 1: //追尾の動き playerを追いかける
+
                     if (playerObject.transform.position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
                     {
                         _direction *= -1;
@@ -152,21 +161,29 @@ public class Enemy_ant : MonoBehaviour {
                 case 2:
                     if (AttackPhase == 1 && stanTimeRemain <= 0)
                     {
+                        animator.SetBool("Walk", false);
+                        animator.SetBool("Atack", true);
+                        animator.SetBool("Stun", false);   
+
                         // 現在の座標からのxyz を1ずつ加算して移動
                         //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
                         Count += Time.deltaTime;
                         if (Count >= _AttackWait)
-                        {
+                        { 
                             AttackPhase = 2;
                             Count = 0;
                         }
                     }
                     else if (AttackPhase == 2 && stanTimeRemain <= 0)
                     {
+                        animator.SetBool("Walk", true);
+                        animator.SetBool("Atack", false);
+                        animator.SetBool("Stun", false);
+
                         myTransform.Translate(0.2f * _direction, 0.0f, 0.0f, Space.World);
                         Count += Time.deltaTime;
                         if (Count >= _AttackTime)
-                        {
+                        {                       
                             AttackPhase = 0;
                             Count = 0;
                             stanTimeRemain += 2;
@@ -213,9 +230,10 @@ public class Enemy_ant : MonoBehaviour {
         if (collision.CompareTag("Player") && patrolType == 1 && AttackPhase == 0 && stanTimeRemain <= 0)
         {
             AttackPhase = 1;
-            patrolType = 2;
+            patrolType = 2;  
+
         }
-        
+
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -252,6 +270,7 @@ public class Enemy_ant : MonoBehaviour {
 
         if(collision.gameObject.CompareTag("Gareki")) {
             animator.SetBool("Walk", false);
+            animator.SetBool("Atack", false);
             animator.SetBool("Stun", true);
 
             stanTimeRemain += _stanTime;
