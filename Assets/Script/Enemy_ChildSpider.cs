@@ -126,7 +126,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 animator.SetBool("Stun", false);
 
                 if (++PointCount > _PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
-                Debug.Log(PointCount);
                 Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
                 if (gameObject.transform.position.x >= Point_Position.x)     //現在のポジションからポイントの座標を見て　設定する
                 {
