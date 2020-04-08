@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -76,6 +77,29 @@ public class Enemy_ChildSpider : MonoBehaviour {
         animator = GetComponent<Animator>();
     }
 
+    private void OnEnable()
+    {
+        if (isZeroHP)
+        {
+            transform.localScale = startScale;
+            nowHP = _HP;
+            enemyHpbar.SetBarValue(_HP,nowHP);
+            enemyHpbar.hpbar.gameObject.SetActive(true);
+            isZeroHP = false;
+            if (Point_Position.x <= gameObject.transform.position.x)
+            {
+                _direction = -1;     //左
+                gameObject.transform.localScale = new Vector2(gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+            }
+            else
+            {
+                _direction = 1;    //右
+                gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+            }
+        }
+        
+    }
+
     void FixedUpdate()
     {
         if (isZeroHP)
@@ -90,8 +114,9 @@ public class Enemy_ChildSpider : MonoBehaviour {
             }
             if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
             {
-                Destroy(enemyHpbar.hpbar.gameObject);
-                Destroy(gameObject);
+                gameObject.SetActive(false);
+                
+                enemyHpbar.hpbar.gameObject.SetActive(false);
             }
 
         }
