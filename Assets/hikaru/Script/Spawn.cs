@@ -27,6 +27,8 @@ public class Spawn : MonoBehaviour {
             {
                 EnemySpawn[i].SetActive(true);
             }
+
+            gameObject.SetActive(false);
         }
     }
 }

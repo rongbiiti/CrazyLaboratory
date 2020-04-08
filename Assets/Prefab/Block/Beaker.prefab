@@ -276,8 +276,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1131809280149112}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.40483, y: -6.009669, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.075462624, w: 0.99714863}
+  m_LocalPosition: {x: 1.06, y: -6.41, z: 0}
   m_LocalScale: {x: 1, y: 0.81250036, z: 1}
   m_Children:
   - {fileID: 4393927435318666}
@@ -294,7 +294,7 @@ Transform:
   - {fileID: 4495016107960424}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 8.656}
 --- !u!4 &4377890499556836
 Transform:
   m_ObjectHideFlags: 1
@@ -955,11 +955,11 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 7e4fb8d71fc085845b4132fb2c17ed3b, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 2
   m_CollisionDetection: 1
-  m_Constraints: 4
+  m_Constraints: 0
 --- !u!50 &50251564555787194
 Rigidbody2D:
   serializedVersion: 4
@@ -1516,7 +1516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d462ca8dfbb884fb7d9a5a806c1dfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _acidCollectMax: 4
+  _acidCollectMax: 1
   _shotBulletCount: 10
   _spreadRange: 75
   _muzzleVelocity: 4.6
