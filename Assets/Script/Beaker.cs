@@ -73,7 +73,8 @@ public class Beaker : MonoBehaviour
 			inAcid.transform.localScale += increaseScale;
 			if (_acidCollectMax <= intoAcidCount)
 			{
-				GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+				var rb = GetComponent<Rigidbody2D>();
+				rb.bodyType = RigidbodyType2D.Dynamic;
 			}
 		}
 	}
