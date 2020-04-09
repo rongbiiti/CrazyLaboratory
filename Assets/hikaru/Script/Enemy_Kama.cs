@@ -114,8 +114,10 @@ public class Enemy_Kama : MonoBehaviour {
                 stanTimeRemain -= Time.deltaTime;
                 if (stanTimeRemain <= 0)
                 {
-                    //animator.SetBool("Walk", true);
-                    //animator.SetBool("Stun", false);
+                    animator.SetBool("Stand", true);
+                    animator.SetBool("Stun", false);
+                    animator.SetBool("Atack", false);
+                    animator.SetBool("Jump", false);
                 }
             }
             if(0 < AttackTime)
@@ -139,12 +141,20 @@ public class Enemy_Kama : MonoBehaviour {
             switch (patrolType)
             {
                 case 0:     //パトロールの動き
+                    animator.SetBool("Stand", true);
+                    animator.SetBool("Stun", false);
+                    animator.SetBool("Atack", false);
+                    animator.SetBool("Jump", false);
 
                     break;
 
                 case 1: //攻撃
+                    if (AttackTime > 0)  return;
 
-                    if(AttackTime > 0)  return; 
+                    animator.SetBool("Stand", false);
+                    animator.SetBool("Stun", false);
+                    animator.SetBool("Atack", true);
+                    animator.SetBool("Jump", false);
 
                     //DecideTargetPotision();
                     // 巡回ポイントの位置を取得
@@ -160,6 +170,8 @@ public class Enemy_Kama : MonoBehaviour {
 
                     if(JumpTime > 0)
                     {
+                        
+
                         Vector2 force = new Vector2(0, _jumpPower);
 
                         rb.AddForce(force);
@@ -169,7 +181,7 @@ public class Enemy_Kama : MonoBehaviour {
 
                 case 2: //戻る
 
-                    if(AfterAttackTime >= 0) return;
+                    if (AfterAttackTime >= 0) return;
 
                     //DecideTargetPotision();
                     // 巡回ポイントの位置を取得
@@ -185,6 +197,11 @@ public class Enemy_Kama : MonoBehaviour {
 
                     if (JumpTime > 0)
                     {
+                        animator.SetBool("Stand", false);
+                        animator.SetBool("Stun", false);
+                        animator.SetBool("Atack", false);
+                        animator.SetBool("Jump", true);
+
                         Vector2 force = new Vector2(0, _jumpPower);
 
                         rb.AddForce(force);
@@ -315,8 +332,10 @@ public class Enemy_Kama : MonoBehaviour {
 
         if (collision.gameObject.CompareTag("Gareki"))
         {
-            //animator.SetBool("Walk", false);
-            //animator.SetBool("Stun", true);
+            animator.SetBool("Stand", false);
+            animator.SetBool("Stun", true);
+            animator.SetBool("Atack", false);
+            animator.SetBool("Jump", false);
 
             stanTimeRemain += _stanTime;
             AttackPhase = 0;
