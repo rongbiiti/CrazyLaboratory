@@ -110,6 +110,11 @@ public class FadeManager : MonoBehaviour
 		StartCoroutine (TransScene (scene, interval));
 	}
 
+	public void FadeScreen(float interval)
+	{
+		StartCoroutine(FadeDisplay(interval));
+	}
+
 	/// <summary>
 	/// シーン遷移用コルーチン .
 	/// </summary>
@@ -128,6 +133,28 @@ public class FadeManager : MonoBehaviour
 
 		//シーン切替 .
 		SceneManager.LoadScene (scene);
+
+		//だんだん明るく .
+		time = 0;
+		while (time <= interval) {
+			this.fadeAlpha = Mathf.Lerp (1f, 0f, time / interval);
+			time += Time.deltaTime;
+			yield return 0;
+		}
+
+		this.isFading = false;
+	}
+	
+	private IEnumerator FadeDisplay (float interval)
+	{
+		//だんだん暗く .
+		this.isFading = true;
+		float time = 0;
+		while (time <= interval) {
+			this.fadeAlpha = Mathf.Lerp (0f, 1f, time / interval);
+			time += Time.deltaTime;
+			yield return 0;
+		}
 
 		//だんだん明るく .
 		time = 0;

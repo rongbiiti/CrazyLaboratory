@@ -16,7 +16,10 @@ public class PlayerController : MonoBehaviour
     private InputManager im;
     private PlayerManager pm;
     private ObjectPool pool;
+    private GameObject cam;
     [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
+
+    [SerializeField, CustomLabel("最初から銃を所持")] private bool isStartGetGun = false;
     [SerializeField, CustomLabel("HPバー")] private Slider _HPbar;
     [HideInInspector, CustomLabel("残弾数UI")] private Text _bulletsRemain;
     [HideInInspector, CustomLabel("ハンドガン装備UI")] private Button _handgunUI;
@@ -161,6 +164,7 @@ public class PlayerController : MonoBehaviour
     Equipment equipment;
 
     private List<float> hmSpreadAngle = new List<float>();
+    private GameObject[] restartPoints;
     private float muzzleVelocity = 5f;
     private bool isGetGun = false;
     private bool isGetHoleMaker = false;
@@ -184,7 +188,10 @@ public class PlayerController : MonoBehaviour
     private float jumpTimeCounter;
     private float _jumpPower;
 
-    private Vector3 restartPoint;
+    private Vector3 restartPosition;
+    private float restartHP;
+    private Vector3 startPosition;
+    private Vector3 restartCameraPosition;
 
     private void Awake()
     {
@@ -197,6 +204,7 @@ public class PlayerController : MonoBehaviour
     {
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
+        cam = GameObject.Find("Main Camera");
         rb = GetComponent<Rigidbody2D>();
         
         jumpTimeCounter = pm.JumpTime;
@@ -226,10 +234,33 @@ public class PlayerController : MonoBehaviour
             _bulletsRemain.text = " ∞ ";
             _bulletsRemain.enabled = false;
         }
+
+        restartPoints = GameObject.FindGameObjectsWithTag("RestartPoint");
+        restartPosition = transform.position;
+        startPosition = transform.position;
+        restartHP = _maxHP;
+        restartCameraPosition = cam.transform.position;
+
+        if (isStartGetGun)
+        {
+            if (_isUIDisplay) {
+                _handgunUI.gameObject.SetActive(true);
+                _handgunUI.Select();
+                _bulletsRemain.enabled = true;
+            }
+            
+            isGetGun = true;
+            if (state != State.Shot2){
+                SetState(State.Shot2);
+            }
+            SoundManagerV2.Instance.PlaySE(12);
+            equipment = Equipment.Handgun;
+        }
     }
 
     void Update()
     {
+        if (!(0 < HP)) return;
 
         // 真上に発射
         if (YStickCeilDeadZone < im.UpMoveKey && isGetGun)
@@ -364,6 +395,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
         }
@@ -460,6 +492,7 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(float damage, bool isAcidDamage = false)
     {
+        if (!(0 < HP)) return;
         if (isAcidDamage || invincibleTime <= 0)
         {
             HP -= damage;
@@ -469,19 +502,34 @@ public class PlayerController : MonoBehaviour
             {
                 invincibleTime += _resetInvincibleTime;
             }
+
+            if (HP <= 0)
+            {
+                if (startPosition == restartPosition)
+                {
+                    FadeManager.Instance.LoadScene("HayatoScene_6", 1f);
+                }
+                else
+                {
+                    FadeManager.Instance.FadeScreen(1f);
+                    StartCoroutine(Restart(1f));
+                }
+                
+            }
         }
         
     }
 
     public void Heal(float healPercent)
     {
-
+        if (!(0 < HP)) return;
         HP += HP * (healPercent / 100);
         _HPbar.value = HP;
         if(_maxHP < HP) {
             HP = _maxHP;
         }
         Debug.Log("HP " + HP + " / " + _maxHP);
+
     }
 
     // ハンドガン発射
@@ -654,6 +702,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!(0 < HP)) return;
         if (collision.CompareTag("ItemBullet")) {
             Debug.Log("アイテム取得");
             ItemScript itemScript = collision.gameObject.GetComponent<ItemScript>();
@@ -697,11 +746,16 @@ public class PlayerController : MonoBehaviour
             equipment = Equipment.HoleMaker;
             hmBullets += 4;
             
+        } else if (collision.CompareTag("RestartPoint")) {
+            restartPosition = transform.position;
+            restartHP = HP;
+            restartCameraPosition = cam.transform.position;
         }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (!(0 < HP)) return;
         if (collision.CompareTag("ResidualAcid")) {
             if (acidDamageTime <= 0) {
                 GameObject acidParentBlock = collision.transform.parent.gameObject;
@@ -756,6 +810,37 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("JumpDown", false);
         rb.velocity = Vector2.zero;
         
+    }
+
+    private IEnumerator Restart(float interval)
+    {
+        yield return new WaitForSeconds(interval);
+        foreach (var rps in restartPoints)
+        {
+            RestartPoint rp = rps.GetComponent<RestartPoint>();
+            rp.TurnOnSpawner();
+        }
+        transform.position = restartPosition;
+        cam.transform.position = restartCameraPosition;
+        rb.velocity = Vector2.zero;
+        HP = restartHP;
+        _HPbar.value = HP;
+        if (startPosition != restartPosition || isStartGetGun)
+        {
+            isGetGun = true;
+            equipment = Equipment.Handgun;
+        }
+        else
+        {
+            isGetGun = false;
+            equipment = Equipment.None;
+            weight1 = 0f;
+            weight2 = 0f;
+            weight3 = 0f;
+            SetState(State.None, first: true);
+            AnimStop();
+            
+        }
     }
 
 }

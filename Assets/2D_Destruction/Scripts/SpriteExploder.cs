@@ -151,7 +151,10 @@ public static class SpriteExploder {
         //Create and Add Rigidbody
         Rigidbody2D rigidbody = piece.AddComponent<Rigidbody2D>();
         rigidbody.velocity = origVelocity;
-
+        rigidbody.mass = 0.1f;
+        
+        AutoDestroy autoDestroy = piece.AddComponent<AutoDestroy>();
+        autoDestroy.time = 4f;
         
 
         return piece;
@@ -289,6 +292,10 @@ public static class SpriteExploder {
         //Create and Add Rigidbody
         Rigidbody2D rigidbody = piece.AddComponent<Rigidbody2D>();
         rigidbody.velocity = origVelocity;
+        rigidbody.mass = 0.1f;
+        
+        AutoDestroy autoDestroy = piece.AddComponent<AutoDestroy>();
+        autoDestroy.time = 4f;
 
 
 

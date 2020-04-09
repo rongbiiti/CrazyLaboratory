@@ -14,6 +14,7 @@ public class FallBlock : MonoBehaviour {
 
 	void Start () {
         explodable = GetComponent<Explodable>();
+        if (transform.childCount == 0) return;
         if (transform.GetChild(0).gameObject.CompareTag("ItemMedkit"))
         {
             medKit = transform.GetChild(0).gameObject;

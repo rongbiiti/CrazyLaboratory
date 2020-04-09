@@ -293,7 +293,6 @@ GameObject:
   - component: {fileID: 50995289510178456}
   - component: {fileID: 233310860292055282}
   - component: {fileID: 232513211173506000}
-  - component: {fileID: 331130446012264784}
   - component: {fileID: 114169736681877902}
   - component: {fileID: 114659033115549956}
   m_Layer: 16
@@ -504,8 +503,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1118558399625842}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.439255, y: -8.805876, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 60.1, y: 51.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4180112719513858}
@@ -2037,7 +2036,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
-  m_Distance: 1.2199643
+  m_Distance: 1.2199627
   m_MaxDistanceOnly: 0
 --- !u!233 &233310860292055282
 HingeJoint2D:
@@ -2053,7 +2052,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.01692507, y: -1.9363003}
+  m_ConnectedAnchor: {x: 0.016924541, y: -1.936298}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2076,7 +2075,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2539682}
+  m_ConnectedAnchor: {x: 0, y: -1.2539697}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2099,7 +2098,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0.0000005298191, y: -1.2539682}
+  m_ConnectedAnchor: {x: 0, y: -1.2539697}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2122,7 +2121,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2857141}
+  m_ConnectedAnchor: {x: 0, y: -1.2857165}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2145,7 +2144,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2761903}
+  m_ConnectedAnchor: {x: 0, y: -1.2761918}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2168,7 +2167,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -3.9192548, y: -1.9958763}
+  m_ConnectedAnchor: {x: 61.62, y: 58.409996}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2191,7 +2190,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2063488}
+  m_ConnectedAnchor: {x: 0, y: -1.2063465}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2214,7 +2213,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2539682}
+  m_ConnectedAnchor: {x: 0, y: -1.2539637}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -2223,47 +2222,3 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: 0
     m_UpperAngle: 70
---- !u!331 &331130446012264784
-SpriteMask:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1925564631981916}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
-  m_Materials:
-  - {fileID: 10758, guid: 0000000000000000f000000000000000, type: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c4016a22d3d36504badc7922410aede4, type: 3}
-  m_MaskAlphaCutoff: 0.2
-  m_FrontSortingLayerID: -1546229197
-  m_BackSortingLayerID: 0
-  m_FrontSortingLayer: 1
-  m_BackSortingLayer: 0
-  m_FrontSortingOrder: 8
-  m_BackSortingOrder: 0
-  m_IsCustomRangeActive: 1
