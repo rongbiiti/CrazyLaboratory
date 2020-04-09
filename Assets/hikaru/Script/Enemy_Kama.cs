@@ -312,8 +312,8 @@ public class Enemy_Kama : MonoBehaviour {
 
         if (collision.gameObject.CompareTag("Gareki"))
         {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Stun", true);
+            //animator.SetBool("Walk", false);
+            //animator.SetBool("Stun", true);
 
             stanTimeRemain += _stanTime;
             AttackPhase = 0;
