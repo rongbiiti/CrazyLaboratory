@@ -61,6 +61,33 @@ public class Enemy_ant : MonoBehaviour {
         animator = GetComponent<Animator>();
 
     }
+    
+    private void OnEnable()
+    {
+        if (isZeroHP)
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(1).gameObject.SetActive(false);
+            AttackPhase = 0;
+            Count = 0;
+            transform.localScale = startScale;
+            nowHP = _HP;
+            enemyHpbar.SetBarValue(_HP,nowHP);
+            enemyHpbar.hpbar.gameObject.SetActive(true);
+            isZeroHP = false;
+            if (_directionChange)
+            {
+                _direction = 1;
+                gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+            }
+            else
+            {
+                _direction = -1;
+                gameObject.transform.localScale = new Vector2(gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+            }
+        }
+        
+    }
 
     void FixedUpdate()
     {
@@ -71,8 +98,8 @@ public class Enemy_ant : MonoBehaviour {
                 transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
             }
             if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95) {
-                Destroy(enemyHpbar.hpbar.gameObject);
-                Destroy(gameObject);
+                gameObject.SetActive(false);
+                enemyHpbar.hpbar.gameObject.SetActive(false);
             }
 
         } else {

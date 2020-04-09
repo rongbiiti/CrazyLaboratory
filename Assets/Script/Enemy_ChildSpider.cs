@@ -115,7 +115,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
             if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
             {
                 gameObject.SetActive(false);
-                
                 enemyHpbar.hpbar.gameObject.SetActive(false);
             }
 
