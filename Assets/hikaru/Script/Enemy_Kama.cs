@@ -12,8 +12,9 @@ public class Enemy_Kama : MonoBehaviour {
     [SerializeField] private float _PlayerDamageRate = 3f;
     [SerializeField] private float _nockBuckPower = 300f;
     [SerializeField] private float _nockBuckUpperPower = 0.38f;
+    [SerializeField] private float _collisionDisplacePosition;  //エネミーの中心から後ろに、いくつ離れるか。
     private float _PlayerDamageTime;
-    [SerializeField] private float _moveSpeed = 0.1f;
+    [SerializeField] private float _moveSpeed = 30f;
     [SerializeField] private float _AttackRate = 1f; //攻撃前の硬直時間
     private float AttackTime;  
     [SerializeField] private float _afterAttackRate = 1f;    //攻撃後の硬直時間
@@ -32,7 +33,7 @@ public class Enemy_Kama : MonoBehaviour {
     private Vector2 startposition;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
     private GameObject playerObject;  //playerのオブジェクトを格納
-    [SerializeField] private float _jumpRate;   //ジャンプの時間の入力
+    [SerializeField] private float _jumpRate = 2f;   //ジャンプの時間の入力
     private float JumpTime;    //ジャンプの時間を格納
     [SerializeField] private float _jumpPower = 2000f;  //ジャンプの力
     [SerializeField] private GameObject _AttackPosition;
@@ -47,6 +48,7 @@ public class Enemy_Kama : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        
         startScale = transform.localScale;
         startposition = transform.position;
         AttackPhase = 0;
@@ -58,16 +60,17 @@ public class Enemy_Kama : MonoBehaviour {
         targetPosition = _AttackPosition.transform.position;
 
         var po = transform.position;
-        SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
+        _collisionDisplacePosition = transform.position.x - _WaitPosition.transform.position.x;
+        
         if (_directionChange == false)
         {
-            _WaitPosition.transform.position = new Vector2(po.x + sprite.size.x / 2, po.y);
+            _WaitPosition.transform.position = new Vector2(po.x + Mathf.Abs(_collisionDisplacePosition), po.y);
         }
         else
         {
             var scale = transform.localScale;
             transform.localScale = new Vector2(-scale.x, scale.y);
-            _WaitPosition.transform.position = new Vector2(po.x - sprite.size.x / 2, po.y);
+            _WaitPosition.transform.position = new Vector2(po.x - Mathf.Abs(_collisionDisplacePosition), po.y);
         }
         _AttackPosition.transform.parent = null;
         _AttackPosition.SetActive(false);
