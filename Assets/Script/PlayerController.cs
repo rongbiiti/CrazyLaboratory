@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, CustomLabel("残留酸プール")] private GameObject _rsdAcdPool;
     [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
     [SerializeField, Range(0.001f, 9999f), CustomLabel("最大HP")] private float _maxHP = 9999f;
+    [SerializeField, CustomLabel("無敵時間")] private float _resetInvincibleTime = 4f;
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     [SerializeField, Range(0, 999), CustomLabel("弾の最大所持数")] private int _bulletCapacity = 10;
@@ -165,6 +166,7 @@ public class PlayerController : MonoBehaviour
     private bool isGetHoleMaker = false;
     private Vector3 mainThrowPoint;
     private float HP;
+    private float invincibleTime;
     private int bullets;
     private int hmBullets;
     public bool IsBulletsFull()
@@ -370,6 +372,10 @@ public class PlayerController : MonoBehaviour
             acidDamageTime -= Time.deltaTime;
         }
 
+        if (0 < invincibleTime) {
+            invincibleTime -= Time.deltaTime;
+        }
+
         // 地面にいるとき
         if (isGrounded && !isJumping) {
             rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
@@ -452,11 +458,19 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    public void Damage(float damage)
+    public void Damage(float damage, bool isAcidDamage = false)
     {
-        HP -= damage;
-        _HPbar.value = HP;
-        Debug.Log("HP " + HP + " / " + _maxHP);
+        if (isAcidDamage || invincibleTime <= 0)
+        {
+            HP -= damage;
+            _HPbar.value = HP;
+            Debug.Log("HP " + HP + " / " + _maxHP);
+            if (!isAcidDamage)
+            {
+                invincibleTime += _resetInvincibleTime;
+            }
+        }
+        
     }
 
     public void Heal(float healPercent)
@@ -700,7 +714,7 @@ public class PlayerController : MonoBehaviour
                 var _unpos = sprite.transform.TransformPoint(_unvec);
                 if (transform.position.x >= _pos.x && transform.position.x <= _unpos.x) {
                     acidDamageTime += _acidDamageRate;
-                    Damage(_acidDamage);
+                    Damage(_acidDamage, true);
                     SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
                 }
@@ -717,7 +731,7 @@ public class PlayerController : MonoBehaviour
                 var _unpos = sprite.transform.TransformPoint(_unvec);
                 if (transform.position.y >= _pos.y && transform.position.y <= _unpos.y) {
                     acidDamageTime += _acidDamageRate;
-                    Damage(_acidDamage);
+                    Damage(_acidDamage, true);
                     SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
                 }
