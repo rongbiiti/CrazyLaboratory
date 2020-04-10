@@ -309,7 +309,10 @@ public class Enemy_ChildSpider : MonoBehaviour {
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            prb.velocity = direction * _nockBuckPower;
+            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            {
+                prb.velocity = direction * _nockBuckPower;
+            }
         }
     }
 

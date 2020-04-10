@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// プレイヤーのスクリプト
@@ -192,6 +193,19 @@ public class PlayerController : MonoBehaviour
     private float restartHP;
     private Vector3 startPosition;
     private Vector3 restartCameraPosition;
+
+    public bool IsGodMode { get; set; }
+
+    public bool IsNotNockBack { get; set; }
+
+    public PlayerController()
+    {
+        IsMachinGun = false;
+        IsNotNockBack = false;
+        IsGodMode = false;
+    }
+
+    public bool IsMachinGun { get; set; }
 
     private void Awake()
     {
@@ -398,6 +412,7 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
+            if (IsMachinGun) fireTime = 0;
         }
 
         if(0 < acidDamageTime) {
@@ -492,7 +507,7 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(float damage, bool isAcidDamage = false)
     {
-        if (!(0 < HP)) return;
+        if (!(0 < HP) || IsGodMode) return;
         if (isAcidDamage || invincibleTime <= 0)
         {
             HP -= damage;
@@ -507,7 +522,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (startPosition == restartPosition)
                 {
-                    FadeManager.Instance.LoadScene("HayatoScene_6", 1f);
+                    FadeManager.Instance.LoadScene(SceneManager.GetActiveScene().name, 1f);
                 }
                 else
                 {
@@ -523,13 +538,20 @@ public class PlayerController : MonoBehaviour
     public void Heal(float healPercent)
     {
         if (!(0 < HP)) return;
-        HP += HP * (healPercent / 100);
+        HP += _maxHP * (healPercent / 100);
         _HPbar.value = HP;
         if(_maxHP < HP) {
             HP = _maxHP;
         }
         Debug.Log("HP " + HP + " / " + _maxHP);
 
+    }
+
+    public void DebugHP(float heal)
+    {
+        HP = heal;
+        _HPbar.value = HP;
+        Debug.Log("HP " + HP + " / " + _maxHP);
     }
 
     // ハンドガン発射
@@ -720,19 +742,8 @@ public class PlayerController : MonoBehaviour
             }
                
         } else if (collision.CompareTag("PutGun")) {
-            if (_isUIDisplay) {
-                _handgunUI.gameObject.SetActive(true);
-                _handgunUI.Select();
-                _bulletsRemain.enabled = true;
-            }
-            
-            isGetGun = true;
-            if (state != State.Shot2){
-                SetState(State.Shot2);
-            }
             Destroy(collision.gameObject);
-            SoundManagerV2.Instance.PlaySE(12);
-            equipment = Equipment.Handgun;
+            GetGun();
         } else if (collision.CompareTag("PutHoleMaker") && isGetGun) {
             if (_isUIDisplay) {
                 _hmUI.gameObject.SetActive(true);
@@ -841,6 +852,22 @@ public class PlayerController : MonoBehaviour
             AnimStop();
             
         }
+    }
+
+    public void GetGun()
+    {
+        if (_isUIDisplay) {
+            _handgunUI.gameObject.SetActive(true);
+            _handgunUI.Select();
+            _bulletsRemain.enabled = true;
+        }
+            
+        isGetGun = true;
+        if (state != State.Shot2){
+            SetState(State.Shot2);
+        }
+        SoundManagerV2.Instance.PlaySE(12);
+        equipment = Equipment.Handgun;
     }
 
 }
