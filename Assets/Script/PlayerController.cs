@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField, CustomLabel("残留酸プール")] private GameObject _rsdAcdPool;
     [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
+    [SerializeField, CustomLabel("ダメージエフェクト")] private GameObject _damageEffect;
     [SerializeField, Range(0.001f, 9999f), CustomLabel("最大HP")] private float _maxHP = 9999f;
     [SerializeField, CustomLabel("無敵時間")] private float _resetInvincibleTime = 4f;
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
@@ -194,6 +195,8 @@ public class PlayerController : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 restartCameraPosition;
 
+    private GameObject damageEffect;
+
     public bool IsGodMode { get; set; }
 
     public bool IsNotNockBack { get; set; }
@@ -270,6 +273,9 @@ public class PlayerController : MonoBehaviour
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.Handgun;
         }
+
+        damageEffect = Instantiate(_damageEffect);
+
     }
 
     void Update()
@@ -516,6 +522,8 @@ public class PlayerController : MonoBehaviour
             if (!isAcidDamage)
             {
                 invincibleTime += _resetInvincibleTime;
+                damageEffect.transform.position = transform.position;
+                damageEffect.SetActive(true);
             }
 
             if (HP <= 0)
