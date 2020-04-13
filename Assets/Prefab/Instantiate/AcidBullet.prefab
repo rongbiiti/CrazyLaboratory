@@ -38,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1901359971894644}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.287706, y: -10.395325, z: 0}
+  m_LocalPosition: {x: -86.86943, y: 13.441939, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -87,7 +87,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.3368826, y: 0.0025}
+  m_Size: {x: 0.03, y: 0.0025}
   m_EdgeRadius: 0
 --- !u!114 &114345604463896968
 MonoBehaviour:
@@ -118,6 +118,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _residualAcid: {fileID: 1349799545308152, guid: 8b014841e48a69d4d8cd215cd60e2991,
+    type: 2}
+  _acidEffect: {fileID: 1989418042143272, guid: 2431221b58c742e43a2980faaa26314e,
+    type: 2}
+  _enemyHitEffect: {fileID: 1994581025723230, guid: de2cd8f95d157904cb0ff9a058fe45da,
     type: 2}
   _destroyTime: 7
 --- !u!212 &212890518918290728

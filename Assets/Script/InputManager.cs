@@ -113,6 +113,14 @@ public class InputManager : MonoBehaviour
     {
         get { return equipHandGun; }
     }
+    
+    /* -- Cheat入力 --------------------------------------------------------------------------------- */
+    private int cheatKey = 0;
+    public int CheatKey
+    
+    {
+        get { return cheatKey; }
+    }
 
     void Update()
     {
@@ -153,6 +161,21 @@ public class InputManager : MonoBehaviour
         {
             jumpKey = 0;
         }
+
+        // チート
+        if (Input.GetButtonDown("RStickButton"))
+        {
+            cheatKey = 1;
+        } 
+        else if (Input.GetButton("RStickButton"))
+        {
+            cheatKey = 2;
+        } 
+        else if (Input.GetButtonUp("RStickButton"))
+        {
+            cheatKey = 0;
+        }
+        
 
         // ホールメイカー装備
         if (0 < Input.GetAxisRaw("DpadHorizontal")) {

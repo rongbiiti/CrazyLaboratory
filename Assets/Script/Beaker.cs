@@ -24,13 +24,7 @@ public class Beaker : MonoBehaviour
 	[SerializeField, CustomLabel("砲口初速")] private float _muzzleVelocity = 10f;
 	[SerializeField, CustomLabel("弾の落下しやすさ")] private float _gravityScale = 6f;
 	[SerializeField, CustomLabel("発射角度")] private float _fireAngle = 90f;
-
-	[SerializeField, CustomLabel("ランダム範囲最小値")]
-	private float _randomMin = -10f;
 	
-	[SerializeField, CustomLabel("ランダム範囲最大値")]
-	private float _randomMax = 10f;
-
 	private int intoAcidCount = 0;
 
 	private void Awake()
@@ -84,21 +78,21 @@ public class Beaker : MonoBehaviour
 		var range = _spreadRange / _shotBulletCount;
 		// 一番上から一番下まで順に計算する。
 		// 一番上は拡散範囲÷2
-		SpreadAngle.Add(_spreadRange / 2 + Random.Range(_randomMin, _randomMax));
+		SpreadAngle.Add(_spreadRange / 2);
 		int i;
 
 		// 2番目から真ん中まではループで求める
 		for(i = 1; i < _shotBulletCount / 2; i++) {
-			SpreadAngle.Add(SpreadAngle[i-1] - range + Random.Range(_randomMin, _randomMax));
+			SpreadAngle.Add(SpreadAngle[i-1] - range);
 		}
 
 		// 下半分の最初は拡散範囲÷同時発射数×2した数にする
-		SpreadAngle.Add(SpreadAngle[i-1] - range * 2 + Random.Range(_randomMin, _randomMax));
+		SpreadAngle.Add(SpreadAngle[i-1] - range * 2);
 		i++;
 
 		// 残りの一番下まではループで
 		for(; i < _shotBulletCount; i++) {
-			SpreadAngle.Add(SpreadAngle[i-1] - range + Random.Range(_randomMin, _randomMax));
+			SpreadAngle.Add(SpreadAngle[i-1] - range);
 		}
         
 	}
