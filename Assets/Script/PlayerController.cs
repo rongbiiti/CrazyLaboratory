@@ -324,6 +324,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("JumpDown", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
+            animator.SetBool("Wait", false);            
         }
 
         if (im.MoveKey >= 0.3 && !flip && im.MoveStopKey == 0) {
@@ -416,12 +417,17 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Run", true);
                 animator.SetBool("Stand", false);
                 animator.SetBool("JumpDown", false);
+                animator.SetBool("Wait", false);
             }
             else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
                 animator.SetBool("JumpDown", false);
+
+                //if () {
+                //    animator.SetBool("Wait", true);
+                //}
             }
             // 空中にいるとき
         } else {
@@ -806,6 +812,7 @@ public class PlayerController : MonoBehaviour
     public void AnimStop()
     {
         animator.SetBool("Stand", true);
+        animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
         animator.SetBool("JumpDown", false);
         rb.velocity = Vector2.zero;
