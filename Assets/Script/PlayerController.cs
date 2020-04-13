@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private float weight3;
     private bool smoothFlag;
     private CubismModel Model;
+    private float anicount;
     enum State
     {
         None,
@@ -297,6 +298,8 @@ public class PlayerController : MonoBehaviour
         if (YStickCeilDeadZone < im.UpMoveKey && isGetGun)
         {
             mainThrowPoint = transform.GetChild(3).transform.position;
+            anicount = 0.0f;
+            animator.SetBool("Wait", false);
             if (state != State.Shot1){
                 SetState(State.Shot1);
             }
@@ -304,6 +307,8 @@ public class PlayerController : MonoBehaviour
             // 上に発射
         } else if (YStickUpDeadZone < im.UpMoveKey && isGetGun) {
             mainThrowPoint = transform.GetChild(0).transform.position;
+            anicount = 0.0f;
+            animator.SetBool("Wait", false);
             if (state != State.Shot1){
                 SetState(State.Shot1);
             }
@@ -311,6 +316,8 @@ public class PlayerController : MonoBehaviour
             // 下に発射
         } else if (im.UpMoveKey < _YStickDownDeadZone && isGetGun) {
             mainThrowPoint = transform.GetChild(2).transform.position;
+            anicount = 0.0f;
+            animator.SetBool("Wait", false);
             if (state != State.Shot3){
                 SetState(State.Shot3);
             }
@@ -351,6 +358,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             _jumpPower = pm.JumpPower;
             SoundManagerV2.Instance.PlaySE(9);
+            anicount = 0.0f;
             animator.SetBool("JumpUp", true);
             animator.SetBool("JumpDown", false);
             animator.SetBool("Run", false);
@@ -446,6 +454,7 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
             if (im.MoveKey != 0)
             {
+                anicount = 0.0f;            
                 animator.SetBool("Run", true);
                 animator.SetBool("Stand", false);
                 animator.SetBool("JumpDown", false);
@@ -457,9 +466,12 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Run", false);
                 animator.SetBool("JumpDown", false);
 
-                //if () {
-                //    animator.SetBool("Wait", true);
-                //}
+                anicount += Time.deltaTime;
+                if (anicount >= 5.0f && im.MoveKey == 0)
+                {
+                    animator.SetBool("Wait", true);
+                    animator.SetBool("Stand", false);
+                }
             }
             // 空中にいるとき
         } else {
@@ -500,6 +512,7 @@ public class PlayerController : MonoBehaviour
             
             // ジャンプキーを押し続けていられる時間をへらす
             jumpTimeCounter -= Time.deltaTime;
+            anicount = 0.0f;
             animator.SetBool("Run", false);
 
             // ジャンプキーを押し続けている間は通常のジャンプパワー軽減率がはたらく
@@ -631,6 +644,8 @@ public class PlayerController : MonoBehaviour
         //　発射
         bRb.AddForce(shotangle * muzzleVelocity, ForceMode2D.Force);
         SoundManagerV2.Instance.PlaySE(6);
+        anicount = 0.0f;
+        animator.SetBool("Wait", false);
         if (_isUIDisplay) {
             _bulletsRemain.text = " ∞ ";
         }
@@ -841,6 +856,7 @@ public class PlayerController : MonoBehaviour
 
     public void AnimStop()
     {
+        anicount = 0.0f;
         animator.SetBool("Stand", true);
         animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
