@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ using UnityEngine;
 /// </summary>
 public class CameraController : MonoBehaviour
 {
+    [SerializeField, CustomLabel("チートON")] private bool _isCheatEnable = false;
     private GameObject player = null;
     private Camera cam;
     private Vector3 offset = Vector3.zero;
@@ -17,11 +19,20 @@ public class CameraController : MonoBehaviour
     private float YAxisFixTime = 0f;
     private float setYAxisFixTime = 1f;
 
+    private void Awake()
+    {
+        if (!_isCheatEnable)
+        {
+            Destroy(GetComponent<CheatMenu>());
+        }
+    }
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         offset = transform.position - player.transform.position;
         cam = GetComponent<Camera>();
+        
     }
 
     void LateUpdate()

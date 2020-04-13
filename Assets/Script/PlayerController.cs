@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// プレイヤーのスクリプト
@@ -39,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private float weight3;
     private bool smoothFlag;
     private CubismModel Model;
+    private float anicount;
     enum State
     {
         None,
@@ -52,6 +54,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField, CustomLabel("残留酸プール")] private GameObject _rsdAcdPool;
     [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
+    [SerializeField, CustomLabel("ダメージエフェクト")] private GameObject _damageEffect;
     [SerializeField, Range(0.001f, 9999f), CustomLabel("最大HP")] private float _maxHP = 9999f;
     [SerializeField, CustomLabel("無敵時間")] private float _resetInvincibleTime = 4f;
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
@@ -170,6 +173,12 @@ public class PlayerController : MonoBehaviour
     private bool isGetHoleMaker = false;
     private Vector3 mainThrowPoint;
     private float HP;
+
+    public float Hp
+    {
+        get { return HP; }
+    }
+
     private float invincibleTime;
     private int bullets;
     private int hmBullets;
@@ -193,6 +202,21 @@ public class PlayerController : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 restartCameraPosition;
 
+    private GameObject damageEffect;
+
+    public bool IsGodMode { get; set; }
+
+    public bool IsNotNockBack { get; set; }
+
+    public PlayerController()
+    {
+        IsMachinGun = false;
+        IsNotNockBack = false;
+        IsGodMode = false;
+    }
+
+    public bool IsMachinGun { get; set; }
+
     private void Awake()
     {
         pool = gameObject.AddComponent<ObjectPool>();
@@ -209,6 +233,11 @@ public class PlayerController : MonoBehaviour
         
         jumpTimeCounter = pm.JumpTime;
         HP = _maxHP;
+        if (!SaveManager.Instance.IsNewGame)
+        {
+            HP = SaveManager.Instance.save.playerHP;
+        }
+        
         _HPbar.maxValue = _maxHP;
         _HPbar.value = HP;
         if (!isBGMMute) {
@@ -256,6 +285,9 @@ public class PlayerController : MonoBehaviour
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.Handgun;
         }
+
+        damageEffect = Instantiate(_damageEffect);
+
     }
 
     void Update()
@@ -266,6 +298,8 @@ public class PlayerController : MonoBehaviour
         if (YStickCeilDeadZone < im.UpMoveKey && isGetGun)
         {
             mainThrowPoint = transform.GetChild(3).transform.position;
+            anicount = 0.0f;
+            animator.SetBool("Wait", false);
             if (state != State.Shot1){
                 SetState(State.Shot1);
             }
@@ -273,6 +307,8 @@ public class PlayerController : MonoBehaviour
             // 上に発射
         } else if (YStickUpDeadZone < im.UpMoveKey && isGetGun) {
             mainThrowPoint = transform.GetChild(0).transform.position;
+            anicount = 0.0f;
+            animator.SetBool("Wait", false);
             if (state != State.Shot1){
                 SetState(State.Shot1);
             }
@@ -280,6 +316,8 @@ public class PlayerController : MonoBehaviour
             // 下に発射
         } else if (im.UpMoveKey < _YStickDownDeadZone && isGetGun) {
             mainThrowPoint = transform.GetChild(2).transform.position;
+            anicount = 0.0f;
+            animator.SetBool("Wait", false);
             if (state != State.Shot3){
                 SetState(State.Shot3);
             }
@@ -320,10 +358,12 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             _jumpPower = pm.JumpPower;
             SoundManagerV2.Instance.PlaySE(9);
+            anicount = 0.0f;
             animator.SetBool("JumpUp", true);
             animator.SetBool("JumpDown", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
+            animator.SetBool("Wait", false);            
         }
 
         if (im.MoveKey >= 0.3 && !flip && im.MoveStopKey == 0) {
@@ -398,6 +438,7 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
+            if (IsMachinGun) fireTime = 0;
         }
 
         if(0 < acidDamageTime) {
@@ -413,15 +454,24 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
             if (im.MoveKey != 0)
             {
+                anicount = 0.0f;            
                 animator.SetBool("Run", true);
                 animator.SetBool("Stand", false);
                 animator.SetBool("JumpDown", false);
+                animator.SetBool("Wait", false);
             }
             else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
                 animator.SetBool("JumpDown", false);
+
+                anicount += Time.deltaTime;
+                if (anicount >= 5.0f && im.MoveKey == 0)
+                {
+                    animator.SetBool("Wait", true);
+                    animator.SetBool("Stand", false);
+                }
             }
             // 空中にいるとき
         } else {
@@ -462,6 +512,7 @@ public class PlayerController : MonoBehaviour
             
             // ジャンプキーを押し続けていられる時間をへらす
             jumpTimeCounter -= Time.deltaTime;
+            anicount = 0.0f;
             animator.SetBool("Run", false);
 
             // ジャンプキーを押し続けている間は通常のジャンプパワー軽減率がはたらく
@@ -492,7 +543,7 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(float damage, bool isAcidDamage = false)
     {
-        if (!(0 < HP)) return;
+        if (!(0 < HP) || IsGodMode) return;
         if (isAcidDamage || invincibleTime <= 0)
         {
             HP -= damage;
@@ -501,13 +552,15 @@ public class PlayerController : MonoBehaviour
             if (!isAcidDamage)
             {
                 invincibleTime += _resetInvincibleTime;
+                damageEffect.transform.position = transform.position;
+                damageEffect.SetActive(true);
             }
 
             if (HP <= 0)
             {
                 if (startPosition == restartPosition)
                 {
-                    FadeManager.Instance.LoadScene("HayatoScene_6", 1f);
+                    FadeManager.Instance.LoadScene(SceneManager.GetActiveScene().name, 1f);
                 }
                 else
                 {
@@ -523,13 +576,20 @@ public class PlayerController : MonoBehaviour
     public void Heal(float healPercent)
     {
         if (!(0 < HP)) return;
-        HP += HP * (healPercent / 100);
+        HP += _maxHP * (healPercent / 100);
         _HPbar.value = HP;
         if(_maxHP < HP) {
             HP = _maxHP;
         }
         Debug.Log("HP " + HP + " / " + _maxHP);
 
+    }
+
+    public void DebugHP(float heal)
+    {
+        HP = heal;
+        _HPbar.value = HP;
+        Debug.Log("HP " + HP + " / " + _maxHP);
     }
 
     // ハンドガン発射
@@ -584,6 +644,8 @@ public class PlayerController : MonoBehaviour
         //　発射
         bRb.AddForce(shotangle * muzzleVelocity, ForceMode2D.Force);
         SoundManagerV2.Instance.PlaySE(6);
+        anicount = 0.0f;
+        animator.SetBool("Wait", false);
         if (_isUIDisplay) {
             _bulletsRemain.text = " ∞ ";
         }
@@ -720,19 +782,8 @@ public class PlayerController : MonoBehaviour
             }
                
         } else if (collision.CompareTag("PutGun")) {
-            if (_isUIDisplay) {
-                _handgunUI.gameObject.SetActive(true);
-                _handgunUI.Select();
-                _bulletsRemain.enabled = true;
-            }
-            
-            isGetGun = true;
-            if (state != State.Shot2){
-                SetState(State.Shot2);
-            }
             Destroy(collision.gameObject);
-            SoundManagerV2.Instance.PlaySE(12);
-            equipment = Equipment.Handgun;
+            GetGun();
         } else if (collision.CompareTag("PutHoleMaker") && isGetGun) {
             if (_isUIDisplay) {
                 _hmUI.gameObject.SetActive(true);
@@ -805,7 +856,9 @@ public class PlayerController : MonoBehaviour
 
     public void AnimStop()
     {
+        anicount = 0.0f;
         animator.SetBool("Stand", true);
+        animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
         animator.SetBool("JumpDown", false);
         rb.velocity = Vector2.zero;
@@ -841,6 +894,22 @@ public class PlayerController : MonoBehaviour
             AnimStop();
             
         }
+    }
+
+    public void GetGun()
+    {
+        if (_isUIDisplay) {
+            _handgunUI.gameObject.SetActive(true);
+            _handgunUI.Select();
+            _bulletsRemain.enabled = true;
+        }
+            
+        isGetGun = true;
+        if (state != State.Shot2){
+            SetState(State.Shot2);
+        }
+        SoundManagerV2.Instance.PlaySE(12);
+        equipment = Equipment.Handgun;
     }
 
 }

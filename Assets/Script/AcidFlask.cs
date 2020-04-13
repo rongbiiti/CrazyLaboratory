@@ -3,6 +3,8 @@
 public class AcidFlask : MonoBehaviour {
 
     [SerializeField, CustomLabel("床に残る酸のプレハブ")] private GameObject _residualAcid;
+    [SerializeField, CustomLabel("酸の飛沫")] private GameObject _acidEffect;
+    [SerializeField, CustomLabel("敵にヒット時エフェクト")] private GameObject _enemyHitEffect;
     [SerializeField, CustomLabel("発射されてから消えるまでの時間")] private float _destroyTime = 7f;
     private float resetTime;
     private bool isConflictDestroy = true;
@@ -11,11 +13,16 @@ public class AcidFlask : MonoBehaviour {
     {
         set{ isConflictDestroy = false; }
     }
+    
+    private GameObject acidEffect;
+    private GameObject enemyHitEffect;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         resetTime = _destroyTime;
+        acidEffect = Instantiate(_acidEffect);
+        enemyHitEffect = Instantiate(_enemyHitEffect);
     }
 
     private void FixedUpdate()
@@ -50,6 +57,8 @@ public class AcidFlask : MonoBehaviour {
     /// <param name="collision">当たった床や壁など</param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        acidEffect.transform.position = transform.position;
+        acidEffect.SetActive(true);
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("MoveBlock")) {
             var sprite = collision.transform.parent.GetComponent<SpriteRenderer>().sprite;
             var halfY = sprite.bounds.extents.y;
@@ -110,9 +119,10 @@ public class AcidFlask : MonoBehaviour {
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("EnemyHitBox")) {
-            if (isConflictDestroy) {
-                ResetPosition();
-            }
+            if (!isConflictDestroy) return;
+            enemyHitEffect.transform.position = transform.position;
+            enemyHitEffect.SetActive(true);
+            ResetPosition();
         } else if (collision.CompareTag("Beaker")) {
             Debug.Log("中に入った");
             if (isConflictDestroy) {

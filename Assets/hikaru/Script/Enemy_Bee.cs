@@ -422,7 +422,10 @@ public class Enemy_Bee : MonoBehaviour
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            prb.velocity = direction * _nockBuckPower;
+            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            {
+                prb.velocity = direction * _nockBuckPower;
+            }
         }
     }
 
@@ -445,7 +448,10 @@ public class Enemy_Bee : MonoBehaviour
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            prb.velocity = direction * _nockBuckPower;
+            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            {
+                prb.velocity = direction * _nockBuckPower;
+            }
             SoundManagerV2.Instance.PlaySE(2);
         }
 

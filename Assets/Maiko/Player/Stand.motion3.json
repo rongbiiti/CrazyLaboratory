@@ -1,13 +1,13 @@
 {
 	"Version": 3,
 	"Meta": {
-		"Duration": 0.333,
+		"Duration": 0.667,
 		"Fps": 30.0,
 		"Loop": true,
 		"AreBeziersRestricted": true,
-		"CurveCount": 5,
-		"TotalSegmentCount": 5,
-		"TotalPointCount": 12,
+		"CurveCount": 14,
+		"TotalSegmentCount": 15,
+		"TotalPointCount": 33,
 		"UserDataCount": 0,
 		"TotalUserDataSize": 0
 	},
@@ -18,13 +18,20 @@
 			"Segments": [
 				0,
 				1,
-				1,
-				0.111,
-				1,
-				0.222,
-				1,
-				0.333,
+				0,
+				0.667,
 				1
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "DirectionParam",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
 			]
 		},
 		{
@@ -32,10 +39,21 @@
 			"Id": "ClothesParam",
 			"Segments": [
 				0,
-				-10,
 				0,
+				1,
+				0.111,
+				0,
+				0.222,
+				8,
 				0.333,
-				-10
+				8,
+				1,
+				0.444,
+				8,
+				0.556,
+				0,
+				0.667,
+				0
 			]
 		},
 		{
@@ -45,8 +63,63 @@
 				0,
 				10,
 				0,
-				0.333,
+				0.667,
 				10
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "LeftParam1",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "LeftArmParam",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "RightParam1",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "RightArmParam",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "LeftLegParam1",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
 			]
 		},
 		{
@@ -56,8 +129,30 @@
 				0,
 				-30,
 				0,
-				0.333,
+				0.667,
 				-30
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "LeftLegParam3",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "RightLegParam1",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
 			]
 		},
 		{
@@ -67,8 +162,19 @@
 				0,
 				-30,
 				0,
-				0.333,
+				0.667,
 				-30
+			]
+		},
+		{
+			"Target": "Parameter",
+			"Id": "RightLegParam3",
+			"Segments": [
+				0,
+				0,
+				0,
+				0.667,
+				0
 			]
 		}
 	]
