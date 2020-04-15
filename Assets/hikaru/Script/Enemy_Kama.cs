@@ -5,6 +5,14 @@ using UnityEngine;
 
 public class Enemy_Kama : MonoBehaviour {
 
+    private enum Child
+    {
+        Player_Hit_patrol,
+        Hit_Upperbody,
+        Hit_Lowerbody,
+        Hit_WeakPoint,
+        count,
+    }
 
     [SerializeField] private float _HP = 10f;
     [SerializeField] private float _HitDamage = 2f;
@@ -256,6 +264,7 @@ public class Enemy_Kama : MonoBehaviour {
             AttackTime = _AttackRate;
             JumpTime = _jumpRate;
             patrolType = 1; //攻撃モード
+
         }
 
         if (collision.CompareTag("PatrolPoint"))
@@ -312,6 +321,10 @@ public class Enemy_Kama : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                for(int i = 0; i < (int)Child.count; i++)
+                {
+                    gameObject.transform.GetChild(i).transform.GetComponent<Collider2D>().enabled = false;
+                }
             }
         }
 
