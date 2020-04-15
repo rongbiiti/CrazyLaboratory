@@ -13,12 +13,14 @@ public class CheatMenu : MonoBehaviour
 	[SerializeField, CustomLabel("ノックバック無効")] private Text _nockBackText;
 	[SerializeField, CustomLabel("マシンガン")] private Text _machineGunText;
 	[SerializeField, CustomLabel("ボタンガイド")] private Text _buttonGuide;
+	[SerializeField, CustomLabel("無限ジャンプ")] private Text _superJumpText;
 
 	private Image panel;
 	private Text god;
 	private Text nockback;
 	private Text machine;
 	private Text guide;
+	private Text superJump;
 
 	void Start ()
 	{
@@ -29,6 +31,7 @@ public class CheatMenu : MonoBehaviour
 		nockback = Instantiate(_nockBackText, canvas.transform, false);
 		machine = Instantiate(_machineGunText, canvas.transform, false);
 		guide = Instantiate(_buttonGuide, canvas.transform, false);
+		superJump = Instantiate(_superJumpText, canvas.transform, false);
 	}
 	
 	void Update ()
@@ -53,6 +56,11 @@ public class CheatMenu : MonoBehaviour
 	public void machineTextOn(bool flag)
 	{
 		machine.gameObject.SetActive(flag);
+	}
+
+	public void SuperJumpTextOn(bool flag)
+	{
+		superJump.gameObject.SetActive(flag);
 	}
 	
 	

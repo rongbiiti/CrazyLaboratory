@@ -35,7 +35,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1780679425118474}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 83.5, y: 47.9, z: 0}
+  m_LocalPosition: {x: 79.32, y: 42.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -77,4 +77,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7a3a930bb780c94484c1a2b9ca96349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemySpawner: []
+  _fallBlockPrefab: {fileID: 1743010355135724, guid: 7188bbb5c1250d742bfc060a6c8b3c9c,
+    type: 2}
+  _fallBridgePrefab: {fileID: 1071031435794842, guid: a6a06e44c813c2d4bafde01e86a7f822,
+    type: 2}
+  _medkitPrefab: {fileID: 1614695683516216, guid: 631e8f5c4e031a44ea776fba9ebf9a4d,
+    type: 2}
+  _beakerPrefab: {fileID: 1584867665532888, guid: f9ef11c54ce69f14a8a75be0c028f44c,
+    type: 2}
+  _enemySpawner: []
+  _fallBlockTransform: []
+  _fallBridgeTransform: []
+  _medkitTransform: []
+  _beakerTransform: []

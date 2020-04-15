@@ -11,14 +11,18 @@ public class FallBlock : MonoBehaviour {
 
     private Explodable explodable;
     private GameObject medKit = null;
+    [SerializeField, CustomLabel("エフェクト")] private GameObject _effect;
+    private GameObject effect;
 
 	void Start () {
         explodable = GetComponent<Explodable>();
+        effect = Instantiate(_effect);
         if (transform.childCount == 0) return;
         if (transform.GetChild(0).gameObject.CompareTag("ItemMedkit"))
         {
             medKit = transform.GetChild(0).gameObject;
             medKit.SetActive(false);
+            medKit.transform.SetParent(transform.parent);
         }
     }
 
@@ -27,10 +31,13 @@ public class FallBlock : MonoBehaviour {
         if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("BreakBlock")) {
             if (medKit != null)
             {
+                medKit.transform.position = transform.position;
                 medKit.SetActive(true);
-                medKit.transform.SetParent(null);
-                medKit.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,0.03f),ForceMode2D.Impulse);
+                medKit.transform.GetChild(0).GetComponent<Rigidbody2D>().AddForce(new Vector2(0,0.03f),ForceMode2D.Impulse);
             }
+
+            effect.transform.position = transform.position;
+            effect.SetActive(true);
             explodable.explode();
             ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
             ef.doExplosion(transform.position);
