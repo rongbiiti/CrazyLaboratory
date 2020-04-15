@@ -43,7 +43,7 @@ public class TitleSceneManager : MonoBehaviour {
 
     public void NewGame()
     {
-        FadeManager.Instance.LoadScene("zikken3_Stage1", 2f);
+        FadeManager.Instance.LoadScene("Stage1", 2f);
         SoundManagerV2.Instance.PlaySE(16);
         _startMenu.SetActive(false);
         SaveManager.Instance.IsNewGame = true;
@@ -87,21 +87,21 @@ public class TitleSceneManager : MonoBehaviour {
     public void Stage1()
     {
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadScene("zikken3_Stage1", 2f);
+        FadeManager.Instance.LoadScene("Stage1", 2f);
         SaveManager.Instance.IsNewGame = false;
     }
     
     public void Stage2()
     {
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadScene("ArupinWorkScene_3", 2f);
+        FadeManager.Instance.LoadScene("Stage2", 2f);
         SaveManager.Instance.IsNewGame = false;
     }
     
     public void Stage3()
     {
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadScene("ArupinWorkScene_3", 2f);
+        FadeManager.Instance.LoadScene("Stage3", 2f);
         SaveManager.Instance.IsNewGame = false;
     }
 

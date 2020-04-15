@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour
         YAxisFixTime -= Time.deltaTime;
         var position = player.transform.position;
         newPosition.x = position.x + offset.x;
-        newPosition.y = position.y - offset.y;
+        newPosition.y = position.y + offset.y;
         newPosition.z = position.z + offset.z;
         transform.position = Vector3.Lerp(transform.position, newPosition, 2.5f * Time.deltaTime);
         if(YAxisFixTime <= 0f) {

@@ -47,12 +47,12 @@ public class button : MonoBehaviour {
 
     public void Stage1Load()
     {
-        FadeManager.Instance.LoadScene("zikken3_Stage1",0.5f);
+        FadeManager.Instance.LoadScene("Stage1",0.5f);
     }
 
     public void Stage2Load()
     {
-        FadeManager.Instance.LoadScene("ArupinWorkScene_3",0.5f);
+        FadeManager.Instance.LoadScene("Stage2",0.5f);
     }
 
     public void HPMAX()

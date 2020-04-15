@@ -390,7 +390,7 @@ public class PlayerController : MonoBehaviour
         // 地面と当たり判定をしている。
         isGrounded = rb.IsTouching(filter2d);
 
-        if ((isJumpingCheck && im.JumpKey == 1 && isGrounded) || (IsSuperJump && im.JumpKey == 2)) {
+        if (isJumpingCheck && im.JumpKey == 1 && isGrounded) {
             jumpTimeCounter = pm.JumpTime;
             isJumpingCheck = false;
             isJumping = true;
@@ -485,6 +485,20 @@ public class PlayerController : MonoBehaviour
 
         if (0 < invincibleTime) {
             invincibleTime -= Time.deltaTime;
+        }
+        
+        if (IsSuperJump && im.JumpKey == 2)
+        {
+            jumpTimeCounter = pm.JumpTime;
+            isJumpingCheck = false;
+            isJumping = true;
+            _jumpPower = pm.JumpPower;
+            anicount = 0.0f;
+            animator.SetBool("JumpUp", true);
+            animator.SetBool("JumpDown", false);
+            animator.SetBool("Run", false);
+            animator.SetBool("Stand", false);
+            animator.SetBool("Wait", false);      
         }
 
         // 地面にいるとき
