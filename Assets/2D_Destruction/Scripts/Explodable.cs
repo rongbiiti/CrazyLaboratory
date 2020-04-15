@@ -154,7 +154,7 @@ public class Explodable : MonoBehaviour
         {
             if (polygons.Count == 0 && fragments.Count != 0)
             {
-                setPolygonsForDrawing();
+                //setPolygonsForDrawing();
             }
 
             Gizmos.color = Color.blue;
