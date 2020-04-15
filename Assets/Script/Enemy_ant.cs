@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class Enemy_ant : MonoBehaviour {
 
+    private enum Child
+    {
+        PointA,
+        PointB,
+        Hit_Body,
+        Hit_WeakPoint,
+        Hit_Hindlegs,
+        Hit_Head,
+        PlayerHitBox,
+        count,
+    }
+
     [SerializeField] private float _HP = 10f;
     [SerializeField] private float _HitDamage = 2f;
     [SerializeField] private float _PlayerDamage = 2000f;
@@ -229,13 +241,6 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        /*
-        if (collision.CompareTag("PatrolPoint"))
-        {
-            isReachTargetPosition = true;
-            DecideTargetPotision();
-        }
-        */
         // 弱点のみ、IsTriggerをオンにしている。
         if (collision.CompareTag("AcidFlask"))
         {
@@ -246,6 +251,10 @@ public class Enemy_ant : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                Destroy(gameObject.transform.GetChild((int)Child.Hit_Body).gameObject);
+                gameObject.transform.GetChild((int)Child.Hit_WeakPoint).transform.GetComponent<CapsuleCollider2D>().enabled = false;
+                gameObject.transform.GetChild((int)Child.Hit_Hindlegs).transform.GetComponent<CapsuleCollider2D>().enabled = false;
+                gameObject.transform.GetChild((int)Child.Hit_Head).transform.GetComponent<Collider2D>().enabled = false;
             }
         }
 
@@ -287,6 +296,7 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
             Debug.Log(gameObject.name + "の非弱点にヒット");
