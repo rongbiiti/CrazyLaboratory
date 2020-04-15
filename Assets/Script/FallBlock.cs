@@ -11,9 +11,12 @@ public class FallBlock : MonoBehaviour {
 
     private Explodable explodable;
     private GameObject medKit = null;
+    [SerializeField, CustomLabel("エフェクト")] private GameObject _effect;
+    private GameObject effect;
 
 	void Start () {
         explodable = GetComponent<Explodable>();
+        effect = Instantiate(_effect);
         if (transform.childCount == 0) return;
         if (transform.GetChild(0).gameObject.CompareTag("ItemMedkit"))
         {
@@ -31,6 +34,9 @@ public class FallBlock : MonoBehaviour {
                 medKit.transform.SetParent(null);
                 medKit.GetComponent<Rigidbody2D>().AddForce(new Vector2(0,0.03f),ForceMode2D.Impulse);
             }
+
+            effect.transform.position = transform.position;
+            effect.SetActive(true);
             explodable.explode();
             ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
             ef.doExplosion(transform.position);
