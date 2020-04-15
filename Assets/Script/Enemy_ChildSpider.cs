@@ -5,6 +5,17 @@ using UnityEngine;
 
 public class Enemy_ChildSpider : MonoBehaviour {
 
+    private enum Child
+    {
+        PointA,
+        PointB,
+        PointC,
+        PointD,
+        PlayerHitBox,
+        Hit_WeakPoint,
+        count,
+    }
+
     [SerializeField] private float _HP = 1f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _PlayerDamage = 1000f;
@@ -282,7 +293,9 @@ public class Enemy_ChildSpider : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
-            }
+                transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
+                transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+            }   
         }
 
         if (collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
@@ -327,7 +340,20 @@ public class Enemy_ChildSpider : MonoBehaviour {
             }
         }
 
-        
+        if (collision.gameObject.CompareTag("Player") && stanTimeRemain <= 0)
+        {
+            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
+            Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
+            Vector2 targetPos = collision.gameObject.transform.position;
+            float y = _nockBuckUpperPower;
+            float x = targetPos.x;
+            Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
+            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            {
+                prb.velocity = direction * _nockBuckPower;
+            }
+            SoundManagerV2.Instance.PlaySE(2);
+        }
 
 
         if (collision.gameObject.CompareTag("Gareki"))
