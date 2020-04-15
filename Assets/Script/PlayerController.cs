@@ -441,6 +441,8 @@ public class PlayerController : MonoBehaviour
         // 地面にいるとき
         if (isGrounded && !isJumping) {
             rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
+            anicount += Time.deltaTime;
+
             if (im.MoveKey != 0)
             {
                 anicount = 0.0f;            
@@ -449,18 +451,19 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("Wait", false);
             }
-            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
+            else if (anicount >= 5.0f && im.MoveKey == 0)
+            {
+                if (anicount >= 12.0f) {anicount = 0.0f; }         
+                animator.SetBool("Wait", true);
+                animator.SetBool("Stand", false);
+            }
+            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x )
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
                 animator.SetBool("JumpDown", false);
-
-                anicount += Time.deltaTime;
-                if (anicount >= 5.0f && im.MoveKey == 0)
-                {
-                    animator.SetBool("Wait", true);
-                    animator.SetBool("Stand", false);
-                }
+                animator.SetBool("Wait", false);
+     
             }
             // 空中にいるとき
         } else {
