@@ -288,7 +288,7 @@ Transform:
   - {fileID: 783777821}
   - {fileID: 270010543}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &145656984
 Mesh:
@@ -1138,36 +1138,6 @@ Mesh:
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshOptimized: 0
---- !u!1 &457036823
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1071031435794842, guid: a6a06e44c813c2d4bafde01e86a7f822,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 457036824}
-  m_Layer: 0
-  m_Name: FallBridge
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &457036824
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4373024989853518, guid: a6a06e44c813c2d4bafde01e86a7f822,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 457036823}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.73, y: -12.168963, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1395,7 +1365,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4561035841827628, guid: bfb9123bfdc308e419530aef20412e49, type: 2}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bfb9123bfdc308e419530aef20412e49, type: 2}
@@ -2506,7 +2476,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4817296647120560, guid: c6dbd45c9ea742e46b96d0490430aa8d, type: 2}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 33634034183285310, guid: c6dbd45c9ea742e46b96d0490430aa8d,
         type: 2}
@@ -4308,7 +4278,7 @@ RectTransform:
   - {fileID: 1538477866}
   - {fileID: 1879209056}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
