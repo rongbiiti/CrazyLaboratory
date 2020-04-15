@@ -121,12 +121,23 @@ public class InputManager : MonoBehaviour
     {
         get { return cheatKey; }
     }
+    
+    /* -- L,Rトリガー入力 --------------------------------------------------------------------------------- */
+    private float trigger = 0;
+    public float Trigger
+    
+    {
+        get { return trigger; }
+    }
 
     void Update()
     {
         // 移動
         moveKey = Input.GetAxisRaw("Horizontal");
         upMoveKey = Input.GetAxisRaw("Vertical");
+        
+        // トリガー入力
+        trigger = Input.GetAxis ("L_R_Trigger");
 
         // 攻撃
         if (Input.GetButtonDown("LB")) {

@@ -120,4 +120,16 @@ public class button : MonoBehaviour {
     {
         _postProcess.enabled = false;
     }
+
+    public void SuperJumpON()
+    {
+        _playerController.IsSuperJump = true;
+        _cheatMenu.SuperJumpTextOn(true);
+    }
+    
+    public void SuperJumpOFF()
+    {
+        _playerController.IsSuperJump = false;
+        _cheatMenu.SuperJumpTextOn(false);
+    }
 }

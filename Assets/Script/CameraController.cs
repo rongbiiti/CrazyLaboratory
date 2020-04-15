@@ -16,8 +16,10 @@ public class CameraController : MonoBehaviour
     private Camera cam;
     private Vector3 offset = Vector3.zero;
     private bool isFloarChange = false;
+    private bool isFocasUnder = false;
     private float YAxisFixTime = 0f;
     private float setYAxisFixTime = 1f;
+    private float focasOffset = 12f;
 
     private void Awake()
     {
@@ -39,29 +41,44 @@ public class CameraController : MonoBehaviour
     {
         Vector3 newPosition = transform.position;
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
-        if (viewPos.y > 0.75f) {
+        if (viewPos.y > 0.75f && !isFocasUnder) {
             newPosition.y = player.transform.position.y - offset.y;
-        } else if (viewPos.y < 0.3f) {
+        } else if (viewPos.y < 0.3f && !isFocasUnder) {
             newPosition.y = player.transform.position.y + offset.y;
         }
         newPosition.x = player.transform.position.x + offset.x;
         newPosition.z = player.transform.position.z + offset.z;
         transform.position = Vector3.Lerp(transform.position, newPosition, 5.0f * Time.deltaTime);
         if (isFloarChange) {
-            FloarChange(newPosition, viewPos);
+            FloarChange(newPosition);
+        }
+
+        if (isFocasUnder)
+        {
+            FocasUnder(newPosition);
         }
     }
 
-    private void FloarChange(Vector3 newPosition, Vector3 viewPos)
+    private void FloarChange(Vector3 newPosition)
     {
         YAxisFixTime -= Time.deltaTime;
-        newPosition.x = player.transform.position.x + offset.x;
-        newPosition.y = player.transform.position.y + offset.y;
-        newPosition.z = player.transform.position.z + offset.z;
+        var position = player.transform.position;
+        newPosition.x = position.x + offset.x;
+        newPosition.y = position.y - offset.y;
+        newPosition.z = position.z + offset.z;
         transform.position = Vector3.Lerp(transform.position, newPosition, 2.5f * Time.deltaTime);
         if(YAxisFixTime <= 0f) {
             isFloarChange = false;
         }
+    }
+
+    private void FocasUnder(Vector3 newPosition)
+    {
+        var position = player.transform.position;
+        newPosition.x = position.x + offset.x;
+        newPosition.y = position.y - focasOffset;
+        newPosition.z = position.z + offset.z;
+        transform.position = Vector3.Lerp(transform.position, newPosition, 2.5f * Time.deltaTime);
     }
 
     public void SetIsFloarChange()
@@ -70,5 +87,10 @@ public class CameraController : MonoBehaviour
             isFloarChange = true;
             YAxisFixTime = setYAxisFixTime;
         }
+    }
+
+    public void SetIsFocasUnder(bool flag)
+    {
+        isFocasUnder = flag;
     }
 }

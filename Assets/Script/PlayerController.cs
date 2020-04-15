@@ -67,15 +67,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0f, 5f), CustomLabel("弾の発射間隔")] private float _fireRate = 0f;
 
     [SerializeField, Range(0.001f, 1f), CustomLabel("スティック上向きの閾値")] private float YStickUpDeadZone = 0.4f;
-    [SerializeField, Range(0.001f, 1f), CustomLabel("スティック真上の閾値")] private float YStickCeilDeadZone = 0.8f;
+    [SerializeField, Range(0.001f, 1f), CustomLabel("真上の閾値")] private float ceilDeadZone = 0.5f;
     [SerializeField, Range(-0.001f, -1f), CustomLabel("スティック下向きの閾値")] private float _YStickDownDeadZone = -0.4f;
+    [SerializeField, Range(0.001f, 1f), CustomLabel("真下の閾値")] private float floorDeadZone = -0.5f;
 
     [Serializable]
     private class CeilShot
     {
-        [SerializeField, Range(0f, 100f), CustomLabel("砲口初速・上")] private float _muzzleVelocity = 11.5f;
-        [SerializeField, Range(0f, 30f), CustomLabel("弾の落下しやすさ・上")] private float _gravityScale = 6f;
-        [SerializeField, Range(0f, 90f), CustomLabel("発射角度・上")] private float _fireAngle = 63f;
+        [SerializeField, Range(0f, 100f), CustomLabel("砲口初速・真上")] private float _muzzleVelocity = 11.5f;
+        [SerializeField, Range(0f, 30f), CustomLabel("弾の落下しやすさ・真上")] private float _gravityScale = 6f;
+        [SerializeField, Range(0f, 90f), CustomLabel("発射角度・真上")] private float _fireAngle = 90f;
 
         public float MuzzleVelocity
         {
@@ -90,14 +91,14 @@ public class PlayerController : MonoBehaviour
             get { return _fireAngle; }
         }
     }
-    [SerializeField, CustomLabel("上へ発射")] UpShot ceilShot;
+    [SerializeField, CustomLabel("真上へ発射")] UpShot ceilShot;
     
     [Serializable]
     private class UpShot
     {
         [SerializeField, Range(0f, 100f), CustomLabel("砲口初速・上")] private float _muzzleVelocity = 11.5f;
         [SerializeField, Range(0f, 30f), CustomLabel("弾の落下しやすさ・上")] private float _gravityScale = 6f;
-        [SerializeField, Range(0f, 90f), CustomLabel("発射角度・上")] private float _fireAngle = 90f;
+        [SerializeField, Range(0f, 90f), CustomLabel("発射角度・上")] private float _fireAngle = 63f;
 
         public float MuzzleVelocity
         {
@@ -157,6 +158,28 @@ public class PlayerController : MonoBehaviour
         }
     }
     [SerializeField, CustomLabel("下へ発射")] DownShot downShot;
+    
+    [Serializable]
+    private class FloorShot
+    {
+        [SerializeField, Range(0f, 100f), CustomLabel("砲口初速・真下")] private float _muzzleVelocity = 11.5f;
+        [SerializeField, Range(0f, 30f), CustomLabel("弾の落下しやすさ・真下")] private float _gravityScale = 4f;
+        [SerializeField, Range(0f, 90f), CustomLabel("発射角度・真下")] private float _fireAngle = -90f;
+
+        public float MuzzleVelocity
+        {
+            get { return _muzzleVelocity; }
+        }
+        public float GravityScale
+        {
+            get { return _gravityScale; }
+        }
+        public float FireAngle
+        {
+            get { return _fireAngle; }
+        }
+    }
+    [SerializeField, CustomLabel("真下へ発射")] FloorShot floorShot;
 
     private enum Equipment
     {
@@ -216,6 +239,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public bool IsMachinGun { get; set; }
+    
+    public bool IsSuperJump { get; set; }
 
     private void Awake()
     {
@@ -295,16 +320,29 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
 
         // 真上に発射
-        if (YStickCeilDeadZone < im.UpMoveKey && isGetGun)
+        if (ceilDeadZone < im.Trigger && isGetGun)
         {
             mainThrowPoint = transform.GetChild(3).transform.position;
             anicount = 0.0f;
             animator.SetBool("Wait", false);
-            if (state != State.Shot1){
+            // 仮で斜め上に撃つモーション入れてます
+            if (state != State.Shot1)
+            {
                 SetState(State.Shot1);
             }
-            
-            // 上に発射
+
+            // 真下に発射
+        } else if (floorDeadZone > im.Trigger && isGetGun) {
+            mainThrowPoint = transform.GetChild(2).transform.position;
+            anicount = 0.0f;
+            animator.SetBool("Wait", false);
+            // 仮で斜め下に撃つモーション入れてます
+            if (state != State.Shot3){
+                
+                SetState(State.Shot3);
+            }
+
+        // 上に発射
         } else if (YStickUpDeadZone < im.UpMoveKey && isGetGun) {
             mainThrowPoint = transform.GetChild(0).transform.position;
             anicount = 0.0f;
@@ -313,7 +351,7 @@ public class PlayerController : MonoBehaviour
                 SetState(State.Shot1);
             }
 
-            // 下に発射
+        // 下に発射
         } else if (im.UpMoveKey < _YStickDownDeadZone && isGetGun) {
             mainThrowPoint = transform.GetChild(2).transform.position;
             anicount = 0.0f;
@@ -352,7 +390,7 @@ public class PlayerController : MonoBehaviour
         // 地面と当たり判定をしている。
         isGrounded = rb.IsTouching(filter2d);
 
-        if (isJumpingCheck && im.JumpKey == 1 && isGrounded) {
+        if ((isJumpingCheck && im.JumpKey == 1 && isGrounded) || (IsSuperJump && im.JumpKey == 2)) {
             jumpTimeCounter = pm.JumpTime;
             isJumpingCheck = false;
             isJumping = true;
@@ -393,7 +431,7 @@ public class PlayerController : MonoBehaviour
             Model.Parts[11].Opacity = 1;
         }
 
-        if (im.ShotKey == 1 && fireTime <= 0) {
+        if ((im.ShotKey == 1 || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
 
             if(equipment == Equipment.Handgun && isGetGun) {
                 HandgunShot();
@@ -478,6 +516,11 @@ public class PlayerController : MonoBehaviour
             }
             // 空中にいるとき
         } else {
+
+            if (IsSuperJump && im.JumpKey == 2)
+            {
+                isJumping = true;
+            }
 
             // ジャンプキーが話されたらジャンプ中でないことにする
             if (im.JumpKey == 0) {
@@ -607,12 +650,17 @@ public class PlayerController : MonoBehaviour
         float rad = 0;
 
         // 上に発射
-        if (YStickCeilDeadZone < im.UpMoveKey)
+        if (ceilDeadZone < im.Trigger)
         {
             rad = ceilShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
             muzzleVelocity = ceilShot.MuzzleVelocity; //上へ発射時の初速を代入
             bRb.gravityScale = ceilShot.GravityScale; //上へ発射時の弾の重量を代入
             
+        } else if(im.Trigger < floorDeadZone){
+            rad = floorShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
+            muzzleVelocity = floorShot.MuzzleVelocity; //上へ発射時の初速を代入
+            bRb.gravityScale = floorShot.GravityScale; //上へ発射時の弾の重量を代入
+
         } else if (YStickUpDeadZone < im.UpMoveKey) {
             rad = upShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
             muzzleVelocity = upShot.MuzzleVelocity; //上へ発射時の初速を代入
