@@ -336,6 +336,8 @@ public class Enemy_Bee : MonoBehaviour
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                gameObject.transform.GetChild(0).transform.GetComponent<Collider2D>().enabled = false;
+                gameObject.transform.GetChild(1).transform.GetComponent<Collider2D>().enabled = false;
             }
         }
 
