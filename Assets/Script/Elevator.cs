@@ -40,6 +40,7 @@ public class Elevator : MonoBehaviour
 		cc.enabled = false;
 		isPlayerEnter = true;
 		yield return  new WaitForSeconds(1.5f);
-		FadeManager.Instance.LoadScene("zikken3_Stage1", 1f);
+		FadeManager.Instance.LoadScene("ArupinWorkScene_3", 1f);
+		SaveManager.Instance.Save(pc.Hp, 2);
 	}
 }

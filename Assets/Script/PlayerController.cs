@@ -173,6 +173,12 @@ public class PlayerController : MonoBehaviour
     private bool isGetHoleMaker = false;
     private Vector3 mainThrowPoint;
     private float HP;
+
+    public float Hp
+    {
+        get { return HP; }
+    }
+
     private float invincibleTime;
     private int bullets;
     private int hmBullets;
@@ -227,6 +233,11 @@ public class PlayerController : MonoBehaviour
         
         jumpTimeCounter = pm.JumpTime;
         HP = _maxHP;
+        if (!SaveManager.Instance.IsNewGame)
+        {
+            HP = SaveManager.Instance.save.playerHP;
+        }
+        
         _HPbar.maxValue = _maxHP;
         _HPbar.value = HP;
         if (!isBGMMute) {

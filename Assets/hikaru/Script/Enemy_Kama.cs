@@ -58,20 +58,9 @@ public class Enemy_Kama : MonoBehaviour {
         patrolType = 0;
         playerObject = GameObject.FindGameObjectWithTag("Player");
         targetPosition = _AttackPosition.transform.position;
-
-        var po = transform.position;
         _collisionDisplacePosition = transform.position.x - _WaitPosition.transform.position.x;
         
-        if (_directionChange == false)
-        {
-            _WaitPosition.transform.position = new Vector2(po.x + Mathf.Abs(_collisionDisplacePosition), po.y);
-        }
-        else
-        {
-            var scale = transform.localScale;
-            transform.localScale = new Vector2(-scale.x, scale.y);
-            _WaitPosition.transform.position = new Vector2(po.x - Mathf.Abs(_collisionDisplacePosition), po.y);
-        }
+        
         _AttackPosition.transform.parent = null;
         _AttackPosition.SetActive(false);
         _WaitPosition.transform.parent = null;
@@ -137,10 +126,23 @@ public class Enemy_Kama : MonoBehaviour {
 
             // transformを取得
             Transform myTransform = this.transform;
-
             switch (patrolType)
             {
                 case 0:     //パトロールの動き
+
+                    if(_directionChange != false && gameObject.transform.position.x >= playerObject.transform.position.x)
+                    {
+                        _directionChange = false;
+                        Vector2 ls = transform.localScale;
+                        transform.localScale = new Vector2(-ls.x, ls.y);
+                    }
+                    else if(_directionChange != true && gameObject.transform.position.x < playerObject.transform.position.x)
+                    {
+                        _directionChange = true;
+                        Vector2 ls = transform.localScale;
+                        transform.localScale = new Vector2(-ls.x, ls.y);
+                    }
+
                     animator.SetBool("Stand", true);
                     animator.SetBool("Stun", false);
                     animator.SetBool("Atack", false);
@@ -170,8 +172,6 @@ public class Enemy_Kama : MonoBehaviour {
 
                     if(JumpTime > 0)
                     {
-                        
-
                         Vector2 force = new Vector2(0, _jumpPower);
 
                         rb.AddForce(force);
@@ -266,12 +266,27 @@ public class Enemy_Kama : MonoBehaviour {
 
             if(patrolType == 1) //攻撃中にpatrolPointに当たった時に　もどる行動へ
             {
+                var po = startposition;
+                var scale = transform.localScale;
+                //現在のエネミーの向きによってWaitPositionの座標を変える
+                if (_directionChange == false)
+                {
+                    _WaitPosition.transform.position = new Vector2(po.x + Mathf.Abs(_collisionDisplacePosition), po.y);
+                    _directionChange = false;   //左
+                }
+                else
+                {
+                    _WaitPosition.transform.position = new Vector2(po.x - Mathf.Abs(_collisionDisplacePosition), po.y);
+                    _directionChange = true;    //右
+                }
+
+
                 _AttackPosition.SetActive(false);
                 _WaitPosition.SetActive(true);
                 rb.velocity = new Vector2(0f, 0f);
-                AfterAttackTime = _afterAttackRate;
+                AfterAttackTime = _afterAttackRate; //攻撃後のタイマー設定
                 JumpTime = _jumpRate;
-                patrolType = 2;
+                patrolType = 2; //戻るモーションへ
             }
 
             if (patrolType == 2 && 0 >= AfterAttackTime) //戻ってる最中にpatrolpointに当たった時に　待機行動へ
