@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Elevator : MonoBehaviour
 {
@@ -40,7 +41,14 @@ public class Elevator : MonoBehaviour
 		cc.enabled = false;
 		isPlayerEnter = true;
 		yield return  new WaitForSeconds(1.5f);
-		FadeManager.Instance.LoadScene("Stage2", 1f);
+		if (SceneManager.GetActiveScene().name == "Stage2")
+		{
+			FadeManager.Instance.LoadScene("Stage3", 1.5f);
+		}
+		else
+		{
+			FadeManager.Instance.LoadScene("Stage2", 1f);
+		}
 		SaveManager.Instance.Save(pc.Hp, 2);
 	}
 }

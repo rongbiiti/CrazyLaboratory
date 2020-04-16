@@ -111,16 +111,9 @@ public class BreakBlockPivot : MonoBehaviour
             //当たった場所を比較し　ピボット（親のオブジェクト）の位置を移動させる　X座標
             //Y座標の３分の一に分けて位置を指定
             var ThisX = spriteRenderer.size.x * gameObject.transform.localScale.x / 2 / 2;
-            Debug.Log(ThisX);
             if (transform.position.x + ThisX <= collision.transform.position.x) {
-                Debug.Log("+");
-                Debug.Log(gameObject.transform.position.x + ThisX);
-                Debug.Log(collision.transform.position.x);
                 worldPos.x = transform.position.x - spriteRenderer.size.x * transform.localScale.x / 2.0f;
             } else if (gameObject.transform.position.x - ThisX >= collision.transform.position.x) {
-                Debug.Log("-");
-                Debug.Log(gameObject.transform.position.x - ThisX);
-                Debug.Log(collision.transform.position.x);
 
                 worldPos.x = transform.position.x + spriteRenderer.size.x * transform.localScale.x / 2.0f;
             }

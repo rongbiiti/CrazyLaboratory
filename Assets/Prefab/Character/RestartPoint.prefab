@@ -79,6 +79,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fallBlockPrefab: {fileID: 1743010355135724, guid: 7188bbb5c1250d742bfc060a6c8b3c9c,
     type: 2}
+  _fallMedkitPrefab: {fileID: 1815957001890352, guid: a82ac4c327b9c3948ae5471331e7bd49,
+    type: 2}
   _fallBridgePrefab: {fileID: 1071031435794842, guid: a6a06e44c813c2d4bafde01e86a7f822,
     type: 2}
   _medkitPrefab: {fileID: 1614695683516216, guid: 631e8f5c4e031a44ea776fba9ebf9a4d,
@@ -87,6 +89,7 @@ MonoBehaviour:
     type: 2}
   _enemySpawner: []
   _fallBlockTransform: []
+  _fallMedkitTransform: []
   _fallBridgeTransform: []
   _medkitTransform: []
   _beakerTransform: []
