@@ -41,6 +41,8 @@ public class Enemy_Bee : MonoBehaviour
     private bool isZeroHP;
     [SerializeField] private float _destroyTime = 2f;
     private Vector2 startScale;
+    private Vector2 startPosition;
+    private Vector3 startRotation;
     private int patrolType = 0;     //0:パトロール 1:追尾 3:攻撃
     private GameObject playerObject;  //playerのオブジェクトを格納
     private Rigidbody2D rb;
@@ -58,6 +60,8 @@ public class Enemy_Bee : MonoBehaviour
     void Start()
     {
         startScale = transform.localScale;
+        startPosition = transform.position;
+        startRotation = transform.rotation.eulerAngles;
         Start_Rotation_Z = transform.rotation.eulerAngles.z;
         PatrolPointPosition = new Vector3[_PatrolPoint.Length];
         for (int i = 0; i < _PatrolPoint.Length; i++)
@@ -101,7 +105,51 @@ public class Enemy_Bee : MonoBehaviour
 
         Direction(playerObject.transform.position);
 
-}
+    }
+
+    private void OnEnable()
+    {
+        if (isZeroHP) 
+        {
+            transform.position = startPosition;
+            transform.localScale = startScale;
+            gameObject.transform.eulerAngles = startRotation;
+            AttackPhase = 0;
+            Count = 0;
+            _waitPosition.SetActive(false);
+            targetPosition = PatrolPointPosition[PointCount];
+            nowHP = _HP;
+            enemyHpbar.SetBarValue(_HP, nowHP);
+            enemyHpbar.hpbar.gameObject.SetActive(true);
+            isZeroHP = false;
+            gameObject.transform.GetChild(0).transform.GetComponent<Collider2D>().enabled = true;
+            gameObject.transform.GetChild(1).transform.GetComponent<Collider2D>().enabled = true;
+            var count = transform.childCount - 1;
+            for (int i = count; i > count - _childNullCount; i--)
+            {
+                transform.GetChild(i).gameObject.SetActive(false);
+            }
+
+
+            int z = (int)Start_Rotation_Z;
+            switch (z)
+            {
+                case 0:
+                case 90:
+                    _directionChange = false;
+                    break;
+                case 180:
+                case 270:
+                    _directionChange = true;
+                    break;
+            }
+
+            Direction(playerObject.transform.position);
+
+        }
+
+    }
+
 
     void FixedUpdate()
     {
@@ -326,6 +374,8 @@ public class Enemy_Bee : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!isZeroHP) return;
+
         // 弱点のみ、IsTriggerをオンにしている。
         if (collision.CompareTag("AcidFlask"))
         {
@@ -415,6 +465,8 @@ public class Enemy_Bee : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (!isZeroHP) return;
+
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
             _PlayerDamageTime += _PlayerDamageRate;
@@ -433,6 +485,8 @@ public class Enemy_Bee : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!isZeroHP) return;
+
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
             Debug.Log(gameObject.name + "の非弱点にヒット");

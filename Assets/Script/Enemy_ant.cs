@@ -38,6 +38,7 @@ public class Enemy_ant : MonoBehaviour {
     private EnemyHpbar enemyHpbar;
     private bool isZeroHP;
     [SerializeField] private float _destroyTime = 2f;
+    private Vector2 startPosition;
     private Vector2 startScale;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
@@ -46,7 +47,9 @@ public class Enemy_ant : MonoBehaviour {
     Animator animator;
 
     // Use this for initialization
-    void Start () {
+    void Start ()
+    {
+        startPosition = transform.position;
         startScale = transform.localScale;
         PointA_Position = transform.GetChild(0).gameObject.transform.position;
         PointB_Position = transform.GetChild(1).gameObject.transform.position;
@@ -80,8 +83,16 @@ public class Enemy_ant : MonoBehaviour {
         {
             transform.GetChild(0).gameObject.SetActive(false);
             transform.GetChild(1).gameObject.SetActive(false);
+            gameObject.transform.GetChild((int)Child.Hit_Body).gameObject.SetActive(true);
+            gameObject.transform.GetChild((int)Child.Hit_WeakPoint).transform.GetComponent<CapsuleCollider2D>().enabled = true;
+            gameObject.transform.GetChild((int)Child.Hit_Hindlegs).transform.GetComponent<CapsuleCollider2D>().enabled = true;
+            gameObject.transform.GetChild((int)Child.Hit_Head).transform.GetComponent<Collider2D>().enabled = true;
+            animator.SetBool("Walk", false);
+            animator.SetBool("Atack", false);
+            animator.SetBool("Stun", false);
             AttackPhase = 0;
             Count = 0;
+            patrolType = 0;
             transform.localScale = startScale;
             nowHP = _HP;
             enemyHpbar.SetBarValue(_HP,nowHP);
@@ -100,6 +111,8 @@ public class Enemy_ant : MonoBehaviour {
         }
         
     }
+
+
 
     void FixedUpdate()
     {
@@ -241,6 +254,8 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!isZeroHP) return;
+
         // 弱点のみ、IsTriggerをオンにしている。
         if (collision.CompareTag("AcidFlask"))
         {
@@ -251,7 +266,7 @@ public class Enemy_ant : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
-                Destroy(gameObject.transform.GetChild((int)Child.Hit_Body).gameObject);
+                gameObject.transform.GetChild((int)Child.Hit_Body).gameObject.SetActive(false);
                 gameObject.transform.GetChild((int)Child.Hit_WeakPoint).transform.GetComponent<CapsuleCollider2D>().enabled = false;
                 gameObject.transform.GetChild((int)Child.Hit_Hindlegs).transform.GetComponent<CapsuleCollider2D>().enabled = false;
                 gameObject.transform.GetChild((int)Child.Hit_Head).transform.GetComponent<Collider2D>().enabled = false;
@@ -274,7 +289,7 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-
+        if (!isZeroHP) return;
 
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
@@ -296,6 +311,7 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!isZeroHP) return;
 
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
