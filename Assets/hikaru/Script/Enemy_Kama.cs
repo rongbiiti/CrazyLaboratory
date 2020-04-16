@@ -80,6 +80,40 @@ public class Enemy_Kama : MonoBehaviour {
 
     }
 
+    private void OnEnable()
+    {
+        if (isZeroHP)
+        {
+            startScale = transform.localScale;
+            startposition = transform.position;
+            transform.localScale = startScale;
+            AttackPhase = 0;
+            patrolType = 0;
+            targetPosition = _AttackPosition.transform.position;
+            _AttackPosition.transform.parent = null;
+            _AttackPosition.SetActive(false);
+            _WaitPosition.transform.parent = null;
+            _WaitPosition.SetActive(false);
+            animator.SetBool("Stand", false);
+            animator.SetBool("Stun", false);
+            animator.SetBool("Atack", false);
+            animator.SetBool("Jump", false);
+
+            nowHP = _HP;
+            enemyHpbar.SetBarValue(_HP, nowHP);
+            enemyHpbar.hpbar.gameObject.SetActive(true);
+            isZeroHP = false;
+
+            for (int i = 0; i < (int)Child.count; i++)
+            {
+                gameObject.transform.GetChild(i).transform.GetComponent<Collider2D>().enabled = true;
+            }
+
+        }
+
+    }
+
+
     void FixedUpdate()
     {
         if (isZeroHP)
@@ -255,6 +289,7 @@ public class Enemy_Kama : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!isZeroHP) return;
 
         if (patrolType == 0 && collision.CompareTag("Player"))
         {
@@ -332,7 +367,7 @@ public class Enemy_Kama : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-
+        if (!isZeroHP) return;
 
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
@@ -354,6 +389,8 @@ public class Enemy_Kama : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (!isZeroHP) return;
+
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
             Debug.Log(gameObject.name + "の非弱点にヒット");
