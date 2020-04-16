@@ -47,16 +47,18 @@ public class Enemy_ChildSpider : MonoBehaviour {
     private EnemyHpbar enemyHpbar;
     private bool isZeroHP;
     [SerializeField] private float _destroyTime = 2f;
+    private Vector2 startPosition;
     private Vector2 startScale;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
 
     Animator animator;
-
+    
     // Use this for initialization
     void Start()
     {
+        startPosition = transform.position;
         startScale = transform.localScale;
         PatrolPointPosition = new Vector3[_PatrolPoint.Length];
         for (int i = 0; i < _PatrolPoint.Length; i++)
@@ -92,11 +94,27 @@ public class Enemy_ChildSpider : MonoBehaviour {
     {
         if (isZeroHP)
         {
+            transform.position = startPosition;
             transform.localScale = startScale;
             nowHP = _HP;
             enemyHpbar.SetBarValue(_HP,nowHP);
             enemyHpbar.hpbar.gameObject.SetActive(true);
             isZeroHP = false;
+            Point_Position = PatrolPointPosition[PointCount];     //最初のパトロールポイントの座標を格納
+            movetype = 2;
+            AttackPhase = 0;
+            Count = 0;
+            transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = true;
+            transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = true;
+            animator.SetBool("Walk", false);
+            animator.SetBool("Stand", false);
+            animator.SetBool("Stun", false);
+
+            for (int i = 0; i < _PatrolPoint.Length; i++)
+            {
+                _PatrolPoint[i].SetActive(false);
+            }
+
             if (Point_Position.x <= gameObject.transform.position.x)
             {
                 _direction = -1;     //左
@@ -277,14 +295,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        /*
-        if (collision.CompareTag("PatrolPoint"))
-        {
-            isReachTargetPosition = true;
-            DecideTargetPotision();
-        }
-        */
-        // 弱点のみ、IsTriggerをオンにしている。
+        if (isZeroHP) return;
+
         if (collision.CompareTag("AcidFlask"))
         {
             nowHP -= _HitDamage;
@@ -313,6 +325,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (isZeroHP) return;
+
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
             _PlayerDamageTime += _PlayerDamageRate;
@@ -331,6 +345,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (isZeroHP) return;
+
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
             Debug.Log(gameObject.name + "の非弱点にヒット");
