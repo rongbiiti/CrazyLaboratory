@@ -254,7 +254,7 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!isZeroHP) return;
+        if (isZeroHP) return;
 
         // 弱点のみ、IsTriggerをオンにしている。
         if (collision.CompareTag("AcidFlask"))
@@ -289,7 +289,7 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (!isZeroHP) return;
+        if (isZeroHP) return;
 
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
@@ -311,7 +311,7 @@ public class Enemy_ant : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!isZeroHP) return;
+        if (isZeroHP) return;
 
         if (collision.gameObject.CompareTag("AcidFlask"))
         {

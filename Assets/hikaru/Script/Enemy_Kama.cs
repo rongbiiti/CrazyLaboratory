@@ -289,7 +289,7 @@ public class Enemy_Kama : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!isZeroHP) return;
+        if (isZeroHP) return;
 
         if (patrolType == 0 && collision.CompareTag("Player"))
         {
@@ -367,7 +367,7 @@ public class Enemy_Kama : MonoBehaviour {
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (!isZeroHP) return;
+        if (isZeroHP) return;
 
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
@@ -389,7 +389,7 @@ public class Enemy_Kama : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!isZeroHP) return;
+        if (isZeroHP) return;
 
         if (collision.gameObject.CompareTag("AcidFlask"))
         {
