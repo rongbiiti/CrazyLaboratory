@@ -22,13 +22,26 @@ GameObject:
   - component: {fileID: 222318201033431198}
   - component: {fileID: 114830376516745190}
   - component: {fileID: 114723982844299160}
+  - component: {fileID: 114062796698396158}
   m_Layer: 5
-  m_Name: ButtonGuide
+  m_Name: ButtonGuide1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &114062796698396158
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1988053863609420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32bc87b3302a77b43aa18e31cac3272b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonGuide: {fileID: 0}
 --- !u!114 &114723982844299160
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -64,7 +77,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 34
+    m_FontSize: 28
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -74,8 +87,8 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
-    m_LineSpacing: 1
-  m_Text: "\u5DE6\u8EF8\u5DE6\u53F3\uFF1A\u79FB\u52D5\n\u5DE6\u8EF8\u4E0A\u4E0B\uFF1A\u4E0A\u4E0B\u3092\u72D9\u3046\nRB\uFF1A\u6483\u3064\nA\uFF1A\u30B8\u30E3\u30F3\u30D7\nB\uFF1AUI\u6C7A\u5B9A\nLB\uFF1A\u65B9\u5411\u5909\u3048\u305A\u79FB\u52D5\nLT\uFF1A\u771F\u4E0A\u306B\u6483\u3064\nRT\uFF1A\u771F\u4E0B\u306B\u6483\u3064"
+    m_LineSpacing: 1.3
+  m_Text: "\u30BF\u30A4\u30D7A\n\u5DE6\u8EF8\u5DE6\u53F3\uFF1A\u79FB\u52D5\n\u5DE6\u8EF8\u4E0A\u4E0B\uFF1A\u4E0A\u4E0B\u3092\u72D9\u3046\nR1\uFF1A\u6483\u3064\n\u2613\uFF1A\u30B8\u30E3\u30F3\u30D7\n\u25EF\uFF1AUI\u6C7A\u5B9A\nL1\uFF1A\u65B9\u5411\u5909\u3048\u305A\u79FB\u52D5\nL2\uFF1A\u771F\u4E0A\u306B\u6483\u3064\nR2\uFF1A\u771F\u4E0B\u306B\u6483\u3064\nSELECT\uFF1A\u30BF\u30A4\u30D7B\u306B\u5207\u308A\u66FF\u3048"
 --- !u!222 &222318201033431198
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -97,6 +110,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -863, y: -121}
+  m_AnchoredPosition: {x: -863, y: -46}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
