@@ -96,6 +96,7 @@ public class Enemy_Kama : MonoBehaviour {
             _WaitPosition.SetActive(false);
             animator.SetBool("Stand", false);
             animator.SetBool("Stun", false);
+            animator.SetBool("BeforeAtack", false);
             animator.SetBool("Atack", false);
             animator.SetBool("Jump", false);
 
@@ -147,6 +148,7 @@ public class Enemy_Kama : MonoBehaviour {
                 {
                     animator.SetBool("Stand", true);
                     animator.SetBool("Stun", false);
+                    animator.SetBool("BeforeAtack", false);
                     animator.SetBool("Atack", false);
                     animator.SetBool("Jump", false);
                 }
@@ -187,16 +189,18 @@ public class Enemy_Kama : MonoBehaviour {
 
                     animator.SetBool("Stand", true);
                     animator.SetBool("Stun", false);
+                    animator.SetBool("BeforeAtack", false);
                     animator.SetBool("Atack", false);
                     animator.SetBool("Jump", false);
 
                     break;
 
                 case 1: //攻撃
-                    if (AttackTime > 0)  return;
+                    if (AttackTime > 0) { animator.SetBool("BeforeAtack", true); return; }
 
                     animator.SetBool("Stand", false);
                     animator.SetBool("Stun", false);
+                    animator.SetBool("BeforeAtack", false);
                     animator.SetBool("Atack", true);
                     animator.SetBool("Jump", false);
 
@@ -241,6 +245,7 @@ public class Enemy_Kama : MonoBehaviour {
                     {
                         animator.SetBool("Stand", false);
                         animator.SetBool("Stun", false);
+                        animator.SetBool("BeforeAtack", false);
                         animator.SetBool("Atack", false);
                         animator.SetBool("Jump", true);
 
@@ -402,6 +407,7 @@ public class Enemy_Kama : MonoBehaviour {
         {
             animator.SetBool("Stand", false);
             animator.SetBool("Stun", true);
+            animator.SetBool("BeforeAtack", false);
             animator.SetBool("Atack", false);
             animator.SetBool("Jump", false);
 

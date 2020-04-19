@@ -196,6 +196,8 @@ public class PlayerController : MonoBehaviour
     private bool isGetHoleMaker = false;
     private Vector3 mainThrowPoint;
     private float HP;
+    private float startMoveSpeed;
+    private float startMoveForceMultiplier;
 
     public float Hp
     {
@@ -313,6 +315,9 @@ public class PlayerController : MonoBehaviour
 
         damageEffect = Instantiate(_damageEffect);
 
+        startMoveSpeed = pm.MoveSpeed;
+        startMoveForceMultiplier = pm.MoveForceMultiplier;
+
     }
 
     void Update()
@@ -404,11 +409,21 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Wait", false);            
         }
 
-        if (im.MoveKey >= 0.3 && !flip && im.MoveStopKey == 0) {
+        if (im.MoveStopKey == 2)
+        {
+            pm.MoveSpeed = 0;
+            pm.MoveForceMultiplier = 50;
+        } else if (im.MoveStopKey == 0)
+        {
+            pm.MoveSpeed = startMoveSpeed;
+            pm.MoveForceMultiplier = startMoveForceMultiplier;
+        }
+
+        if (im.MoveKey >= 0.3 && !flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = true;
         }
-        if (im.MoveKey <= -0.3 && flip && im.MoveStopKey == 0) {
+        if (im.MoveKey <= -0.3 && flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
@@ -520,7 +535,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Wait", true);
                 animator.SetBool("Stand", false);
             }
-            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x )
+            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);

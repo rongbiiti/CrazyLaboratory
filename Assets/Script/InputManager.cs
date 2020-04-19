@@ -8,6 +8,14 @@ using System;
 /// </summary>
 public class InputManager : MonoBehaviour
 {
+    public enum ControlMode
+    {
+        TypeA = 0,
+        TypeB
+    }
+
+    public ControlMode controlMode;
+    
     protected static readonly string[] findTags =
     {
         "InputManager",
@@ -100,14 +108,14 @@ public class InputManager : MonoBehaviour
         get { return moveStopKey; }
     }
 
-    /* -- 方向パッド右入力 --------------------------------------------------------------------------------- */
+    /* -- ホールメイカー装備 --------------------------------------------------------------------------------- */
     private bool equipHoleMaker = false;
     public bool EquipHoleMaker
     {
         get { return equipHoleMaker; }
     }
 
-    /* -- 方向パッド下入力 --------------------------------------------------------------------------------- */
+    /* -- ハンドガン装備 --------------------------------------------------------------------------------- */
     private bool equipHandGun = false;
     public bool EquipHandGun
     {
@@ -129,8 +137,40 @@ public class InputManager : MonoBehaviour
     {
         get { return trigger; }
     }
+    
+    /* -- 立ち止まる --------------------------------------------------------------------------------- */
+    private int moonWalkKey = 0;
+    public int MoonWalkKey
+    
+    {
+        get { return moonWalkKey; }
+    }
+    
+    /* -- 操作タイプ切り替え --------------------------------------------------------------------------------- */
+    private int controlTypeChange = 0;
+    public int ControlTypeChange
+    
+    {
+        get { return controlTypeChange; }
+    }
 
-    void Update()
+    private void Update()
+    {
+        switch (controlMode)
+        {
+            case ControlMode.TypeA:
+                ModeA();
+                break;
+            case ControlMode.TypeB:
+                ModeB();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
+    }
+
+    private void ModeA()
     {
         // 移動
         moveKey = Input.GetAxisRaw("Horizontal");
@@ -139,13 +179,13 @@ public class InputManager : MonoBehaviour
         // トリガー入力
         trigger = Input.GetAxis ("L_R_Trigger");
 
-        // 攻撃
+        // 方向を変えずに移動
         if (Input.GetButtonDown("LB")) {
-            moveStopKey = 1;
+            moonWalkKey = 1;
         } else if (Input.GetButton("LB")) {
-            moveStopKey = 2;
+            moonWalkKey = 2;
         } else if (Input.GetButtonUp("LB")) {
-            moveStopKey = 0;
+            moonWalkKey = 0;
         }
 
         // 攻撃
@@ -189,17 +229,112 @@ public class InputManager : MonoBehaviour
         
 
         // ホールメイカー装備
-        if (0 < Input.GetAxisRaw("DpadHorizontal")) {
-            equipHoleMaker = true;
-        } else {
-            equipHoleMaker = false;
-        }
+        equipHoleMaker = 0 < Input.GetAxisRaw("DpadHorizontal");
 
         // ホールメイカー装備
-        if (Input.GetAxisRaw("DpadVertical") < 0) {
-            equipHandGun = true;
-        } else {
-            equipHandGun = false;
+        equipHandGun = Input.GetAxisRaw("DpadVertical") < 0;
+
+        // 操作タイプ切り替え
+        if (Input.GetButtonDown("ControlTypeChange"))
+        {
+            controlTypeChange = 1;
+            controlMode = ControlMode.TypeB;
         }
+        else if (Input.GetButton("ControlTypeChange"))
+        {
+            controlTypeChange = 2;
+        }
+        else if (Input.GetButtonUp("ControlTypeChange"))
+        {
+            controlTypeChange = 0;
+        }
+    }
+
+    private void ModeB()
+    {
+        // 移動
+        moveKey = Input.GetAxisRaw("Horizontal");
+        upMoveKey = Input.GetAxisRaw("Vertical");
+        
+        // トリガー入力
+        trigger = Input.GetAxis ("DpadVertical");
+
+        // 方向を変えずに移動
+        if (Input.GetButtonDown("LB")) {
+            moonWalkKey = 1;
+        } else if (Input.GetButton("LB")) {
+            moonWalkKey = 2;
+        } else if (Input.GetButtonUp("LB")) {
+            moonWalkKey = 0;
+        }
+
+        // 攻撃
+        if (Input.GetButtonDown("Fire1")) {
+            shotKey = 1;
+        }
+        else if(Input.GetButton("Fire1")) {
+            shotKey = 2;
+        }
+        else if (Input.GetButtonUp("Fire1")) {
+            shotKey = 0;
+        }
+
+        // ジャンプ
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpKey = 1;
+        }
+        else if (Input.GetButton("Jump"))
+        {
+            jumpKey = 2;
+        }
+        else if (Input.GetButtonUp("Jump"))
+        {
+            jumpKey = 0;
+        }
+        
+        // 立ち止まる
+        if (Input.GetButtonDown("Stop"))
+        {
+            moveStopKey = 1;
+        }
+        else if (Input.GetButton("Stop"))
+        {
+            moveStopKey = 2;
+        }
+        else if (Input.GetButtonUp("Stop"))
+        {
+            moveStopKey = 0;
+        }
+
+        // チート
+        if (Input.GetButtonDown("RStickButton"))
+        {
+            cheatKey = 1;
+        } 
+        else if (Input.GetButton("RStickButton"))
+        {
+            cheatKey = 2;
+        } 
+        else if (Input.GetButtonUp("RStickButton"))
+        {
+            cheatKey = 0;
+        }
+        
+        // 操作タイプ切り替え
+        if (Input.GetButtonDown("ControlTypeChange"))
+        {
+            controlTypeChange = 1;
+            controlMode = ControlMode.TypeA;
+        }
+        else if (Input.GetButton("ControlTypeChange"))
+        {
+            controlTypeChange = 2;
+        }
+        else if (Input.GetButtonUp("ControlTypeChange"))
+        {
+            controlTypeChange = 0;
+        }
+        
     }
 }
