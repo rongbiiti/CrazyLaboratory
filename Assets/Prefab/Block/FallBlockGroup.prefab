@@ -234,7 +234,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1743010355135724}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -65.936005, y: 84.225, z: 0}
+  m_LocalPosition: {x: -91.90347, y: 10.107204, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4114481867989682}
@@ -404,10 +404,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.5
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
@@ -1165,7 +1165,7 @@ DistanceJoint2D:
   m_Anchor: {x: 0, y: 0}
   m_ConnectedAnchor: {x: 0, y: 0}
   m_AutoConfigureDistance: 1
-  m_Distance: 1.2199667
+  m_Distance: 1.2199647
   m_MaxDistanceOnly: 0
 --- !u!233 &233061690222304348
 HingeJoint2D:
@@ -1177,11 +1177,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 50970865022669652}
-  m_BreakForce: 35
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0.000008477105, y: -1.2539697}
+  m_ConnectedAnchor: {x: -0.000008477105, y: -1.2539682}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1189,7 +1189,7 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 70
+    m_UpperAngle: 30
 --- !u!233 &233107584884422790
 HingeJoint2D:
   m_ObjectHideFlags: 1
@@ -1200,11 +1200,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 50348218912455502}
-  m_BreakForce: 35
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2063406}
+  m_ConnectedAnchor: {x: 0, y: -1.2063496}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1212,7 +1212,7 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 70
+    m_UpperAngle: 30
 --- !u!233 &233120001832829352
 HingeJoint2D:
   m_ObjectHideFlags: 1
@@ -1223,11 +1223,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: 35
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -64.416, y: 91.034996}
+  m_ConnectedAnchor: {x: -90.38347, y: 16.917204}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1235,7 +1235,7 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 70
+    m_UpperAngle: 0
 --- !u!233 &233336817781806436
 HingeJoint2D:
   m_ObjectHideFlags: 1
@@ -1246,11 +1246,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 50643138101254590}
-  m_BreakForce: 35
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2539697}
+  m_ConnectedAnchor: {x: 0, y: -1.2539682}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1258,7 +1258,7 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 70
+    m_UpperAngle: 30
 --- !u!233 &233366582519916846
 HingeJoint2D:
   m_ObjectHideFlags: 1
@@ -1269,11 +1269,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 50425003950465440}
-  m_BreakForce: 35
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2761918}
+  m_ConnectedAnchor: {x: 0, y: -1.2761903}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1281,7 +1281,7 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 70
+    m_UpperAngle: 30
 --- !u!233 &233532081626260746
 HingeJoint2D:
   m_ObjectHideFlags: 1
@@ -1292,11 +1292,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 1
   m_ConnectedRigidBody: {fileID: 50812653937238814}
-  m_BreakForce: 75
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.016928779, y: -1.936304}
+  m_ConnectedAnchor: {x: 0.016928779, y: -1.936301}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1304,7 +1304,7 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 1
+    m_UpperAngle: 0
 --- !u!233 &233614414416918346
 HingeJoint2D:
   m_ObjectHideFlags: 1
@@ -1315,11 +1315,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 50449377066436730}
-  m_BreakForce: 35
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2539576}
+  m_ConnectedAnchor: {x: 0, y: -1.2539682}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1327,7 +1327,7 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 70
+    m_UpperAngle: 30
 --- !u!233 &233955021779468258
 HingeJoint2D:
   m_ObjectHideFlags: 1
@@ -1338,11 +1338,11 @@ HingeJoint2D:
   serializedVersion: 4
   m_EnableCollision: 0
   m_ConnectedRigidBody: {fileID: 50294545407052058}
-  m_BreakForce: 35
+  m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: -1.2857225}
+  m_ConnectedAnchor: {x: 0, y: -1.2857134}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -1350,4 +1350,4 @@ HingeJoint2D:
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 70
+    m_UpperAngle: 30
