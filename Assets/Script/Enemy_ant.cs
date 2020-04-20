@@ -63,6 +63,7 @@ public class Enemy_ant : MonoBehaviour {
         AttackPhase = 0;
         Count = 0;
         nowHP = _HP;
+        directionChangeFlag = false;
         if (_directionChange)
         {
             _direction = 1;
@@ -103,6 +104,7 @@ public class Enemy_ant : MonoBehaviour {
             enemyHpbar.SetBarValue(_HP,nowHP);
             enemyHpbar.hpbar.gameObject.SetActive(true);
             isZeroHP = false;
+            directionChangeFlag = false;
             if (_directionChange)
             {
                 _direction = 1;

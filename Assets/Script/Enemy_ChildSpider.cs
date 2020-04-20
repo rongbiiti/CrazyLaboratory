@@ -24,23 +24,23 @@ public class Enemy_ChildSpider : MonoBehaviour {
     [SerializeField] private float _nockBuckUpperPower = 0.38f;
     private float _PlayerDamageTime;
     [SerializeField] private float _MoveSpeed = 0.1f;
-    //[SerializeField] private bool _directionChange;     //false:LEFT true:RIGHT
+    private bool directionChange;     //false:LEFT true:RIGHT
     private int _direction;
+    [SerializeField] private float _directionRate = 3f;  //追跡中の反転時間
+    private float directionTime;                    //追跡中の反転時間の格納用
+    private bool directionChangeFlag;              //追跡中の反転するかしないか
     [SerializeField] private byte _AttackWait = 1;
     [SerializeField] private float _AttackTime = 0.45f;
     [SerializeField] private float _stanTime = 3f;
     private float stanTimeRemain = 0;
     private float nowHP;
-
     [SerializeField] private GameObject[] _PatrolPoint;
     private Vector3[] PatrolPointPosition;
     private byte movetype;    //0：次のパトロール位置を取得する待ち    1:取得した後、硬直する 3：動く
     private int PointCount;    //パトロールポイントのカウント PatrolPointの配列の数が最大値
     [SerializeField] private float _pointWaitRate = 2f;      //パトロール後の硬直
     private float pointWaitTime;      //パトロール後の硬直
-
     private Vector3 Point_Position;     //パトロールポイントの座標の格納用
-
     //private Vector3 PointB_Position;
     private byte AttackPhase;
     private float Count;
@@ -50,6 +50,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
     private Vector2 startPosition;
     private Vector2 startScale;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
+    [SerializeField] private float _trackingRate = 10f;       //追跡時間
+    private float trackingTime;   //追跡時間の格納用
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
 
@@ -76,11 +78,13 @@ public class Enemy_ChildSpider : MonoBehaviour {
         if (Point_Position.x <= gameObject.transform.position.x)
         {
             _direction = -1;     //左
+            directionChange = false;
             gameObject.transform.localScale = new Vector2(gameObject.transform.localScale.x, gameObject.transform.localScale.y);
         }
         else
         {
             _direction = 1;    //右
+            directionChange = true;
             gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
         }
         enemyHpbar = GetComponent<EnemyHpbar>();
@@ -118,11 +122,13 @@ public class Enemy_ChildSpider : MonoBehaviour {
             if (Point_Position.x <= gameObject.transform.position.x)
             {
                 _direction = -1;     //左
+                directionChange = false;
                 gameObject.transform.localScale = new Vector2(gameObject.transform.localScale.x, gameObject.transform.localScale.y);
             }
             else
             {
                 _direction = 1;    //右
+                directionChange = true;
                 gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
             }
         }
@@ -172,7 +178,31 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 animator.SetBool("Stun", false);
             }
 
-            if (movetype == 0)
+            if (patrolType == 1 && 0 < trackingTime)
+            {
+                
+                trackingTime -= Time.deltaTime;
+                if (trackingTime <= 0)
+                {
+                    Debug.Log("追跡解除");
+                    patrolType = 0;
+                }
+            }
+
+            if (directionChangeFlag && 0 < directionTime)
+            {
+                directionTime -= Time.deltaTime;
+                
+                if (directionTime <= 0)
+                {
+                    Debug.Log("方向転換準備");
+                    directionChangeFlag = false;
+                    _direction *= -1;
+                    gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                }
+            }
+
+            if (patrolType == 0 && movetype == 0)
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Walk", false);
@@ -184,12 +214,13 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 {
                     if(_direction == 1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     _direction = -1; //左
-                    
+                    directionChange = false;
                 }
                 else if (gameObject.transform.position.x <= Point_Position.x)
                 {
                     if (_direction == -1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     _direction = 1; //右
+                    directionChange = true;
                 }
 
                 movetype = 1;     //硬直へ
@@ -227,15 +258,22 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     break;
 
                 case 1:
-                    if (playerObject.transform.position.x >= transform.position.x && _direction == -1 && AttackPhase == 0 && stanTimeRemain <= 0)
+                    if (playerObject.transform.position.x >= transform.position.x && directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
                     {
-                        _direction *= -1;
-                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                        directionChangeFlag = true;
+                        directionTime = _directionRate;
+                        directionChange = false;
+                        //_direction *= -1;
+                        //_directionChange = true;
+                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
-                    else if (playerObject.transform.position.x <= transform.position.x && _direction == 1 && AttackPhase == 0 && stanTimeRemain <= 0)
+                    else if (playerObject.transform.position.x <= transform.position.x && !directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
                     {
-                        _direction *= -1;
-                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                        directionChangeFlag = true;
+                        directionTime = _directionRate;
+                        directionChange = true;
+                        //_direction *= -1;
+                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
 
 
@@ -281,6 +319,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
                             Count = 0;
                             stanTimeRemain += 2;
                             patrolType = 1;
+                            trackingTime = _trackingRate + stanTimeRemain;
                         }
                     }
                     break;
@@ -313,6 +352,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
         if (collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
         {
             patrolType = 1;     //敵を見つけて追いかけるモード
+            trackingTime = _trackingRate;
         }
 
         if (collision.CompareTag("Player") && patrolType == 1 && AttackPhase == 0 && stanTimeRemain <= 0)
