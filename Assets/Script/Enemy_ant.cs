@@ -26,6 +26,9 @@ public class Enemy_ant : MonoBehaviour {
     [SerializeField] private float _MoveSpeed = 0.1f;
     [SerializeField] private bool _directionChange = false;
     private int _direction;
+    [SerializeField] private float _directionRate = 3f;  //追跡中の反転時間
+    private float directionTime;                    //追跡中の反転時間の格納用
+    private bool directionChangeFlag;              //追跡中の反転するかしないか
     [SerializeField] private byte _AttackWait = 1;
     [SerializeField] private float _AttackTime = 0.45f;
     [SerializeField] private float _stanTime = 3f;
@@ -41,6 +44,8 @@ public class Enemy_ant : MonoBehaviour {
     private Vector2 startPosition;
     private Vector2 startScale;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
+    [SerializeField] private float _trackingRate = 10f;       //追跡時間
+    private float trackingTime;   //追跡時間の格納用
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
 
@@ -58,6 +63,7 @@ public class Enemy_ant : MonoBehaviour {
         AttackPhase = 0;
         Count = 0;
         nowHP = _HP;
+        directionChangeFlag = false;
         if (_directionChange)
         {
             _direction = 1;
@@ -98,6 +104,7 @@ public class Enemy_ant : MonoBehaviour {
             enemyHpbar.SetBarValue(_HP,nowHP);
             enemyHpbar.hpbar.gameObject.SetActive(true);
             isZeroHP = false;
+            directionChangeFlag = false;
             if (_directionChange)
             {
                 _direction = 1;
@@ -148,6 +155,27 @@ public class Enemy_ant : MonoBehaviour {
                 }
             }
 
+            if(patrolType == 1 && 0 < trackingTime)
+            {
+                trackingTime -= Time.deltaTime;
+                if (trackingTime <= 0)
+                {
+                    patrolType = 0;
+                }
+            }
+
+            if(directionChangeFlag && 0 < directionTime)
+            {
+                directionTime -= Time.deltaTime;
+                //Debug.Log("方向転換準備");
+                if (directionTime <= 0)
+                {
+                    directionChangeFlag = false;
+                    _direction *= -1;
+                    gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                }
+            }
+
             // transformを取得
             Transform myTransform = this.transform;
 
@@ -171,26 +199,27 @@ public class Enemy_ant : MonoBehaviour {
                     if(stanTimeRemain <= 0)
                     // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
                     myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
-
-
                     break;
 
                 case 1: //追尾の動き playerを追いかける
 
                     if (playerObject.transform.position.x >= transform.position.x && AttackPhase == 0 && !_directionChange && stanTimeRemain <= 0)
                     {
-                        _direction *= -1;
+                        directionChangeFlag = true;
+                        directionTime = _directionRate;
+                        //_direction *= -1;
                         _directionChange = true;
-                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
                     else if (playerObject.transform.position.x <= transform.position.x && AttackPhase == 0 && _directionChange && stanTimeRemain <= 0)
                     {
-                        _direction *= -1;
+                        directionChangeFlag = true;
+                        directionTime = _directionRate;
+
+                        //_direction *= -1;
                         _directionChange = false;
-                        gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
-
-
 
                     if (AttackPhase == 0 && stanTimeRemain <= 0)
                     {
@@ -240,6 +269,7 @@ public class Enemy_ant : MonoBehaviour {
                             Count = 0;
                             stanTimeRemain += 2;
                             patrolType = 1;
+                            trackingTime = _trackingRate + stanTimeRemain;
                         }
 
                     }
@@ -276,6 +306,7 @@ public class Enemy_ant : MonoBehaviour {
         if(collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
         {
             patrolType = 1;     //敵を見つけて追いかけるモード
+            trackingTime = _trackingRate;
         }
 
         if (collision.CompareTag("Player") && patrolType == 1 && AttackPhase == 0 && stanTimeRemain <= 0)
@@ -320,6 +351,7 @@ public class Enemy_ant : MonoBehaviour {
             if (patrolType == 0)   //パトロール中にplayerを見つけた時
             {
                 patrolType = 1;     //敵を見つけて追いかけるモード
+                trackingTime = _trackingRate;
             }
             
         }

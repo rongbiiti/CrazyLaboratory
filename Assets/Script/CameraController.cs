@@ -19,7 +19,7 @@ public class CameraController : MonoBehaviour
     private bool isFocasUnder = false;
     private float YAxisFixTime = 0f;
     private float setYAxisFixTime = 1f;
-    private float focasOffset = 12f;
+    private float focasOffset;
 
     private void Awake()
     {
@@ -89,8 +89,9 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void SetIsFocasUnder(bool flag)
+    public void SetIsFocasUnder(bool flag, float offset = 0f)
     {
         isFocasUnder = flag;
+        focasOffset = offset;
     }
 }

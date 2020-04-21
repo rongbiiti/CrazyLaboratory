@@ -54,6 +54,16 @@ public class button : MonoBehaviour {
     {
         FadeManager.Instance.LoadScene("Stage2",0.5f);
     }
+    
+    public void Stage3Load()
+    {
+        FadeManager.Instance.LoadScene("Stage3",0.5f);
+    }
+    
+    public void GotoEndingScene()
+    {
+        FadeManager.Instance.LoadScene("EndingScene",0.5f);
+    }
 
     public void HPMAX()
     {
