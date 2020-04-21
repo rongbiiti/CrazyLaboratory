@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0.001f, 1f), CustomLabel("真上の閾値")] private float ceilDeadZone = 0.5f;
     [SerializeField, Range(-0.001f, -1f), CustomLabel("スティック下向きの閾値")] private float _YStickDownDeadZone = -0.4f;
     [SerializeField, Range(0.001f, 1f), CustomLabel("真下の閾値")] private float floorDeadZone = -0.5f;
+    [SerializeField, CustomLabel("上下狙い中横移動デッドゾーン")] private float _moveDeadZone = 0.55f;
 
     [Serializable]
     private class CeilShot
@@ -198,6 +199,7 @@ public class PlayerController : MonoBehaviour
     private float HP;
     private float startMoveSpeed;
     private float startMoveForceMultiplier;
+    private float moveDeadZone;
 
     public float Hp
     {
@@ -347,27 +349,30 @@ public class PlayerController : MonoBehaviour
                 SetState(State.Shot3);
             }
 
-        // 上に発射
+            // 上に発射
         } else if (YStickUpDeadZone < im.UpMoveKey && isGetGun) {
             mainThrowPoint = transform.GetChild(0).transform.position;
             anicount = 0.0f;
             animator.SetBool("Wait", false);
+            moveDeadZone = _moveDeadZone;
             if (state != State.Shot1){
                 SetState(State.Shot1);
             }
 
-        // 下に発射
+            // 下に発射
         } else if (im.UpMoveKey < _YStickDownDeadZone && isGetGun) {
             mainThrowPoint = transform.GetChild(2).transform.position;
             anicount = 0.0f;
             animator.SetBool("Wait", false);
+            moveDeadZone = _moveDeadZone;
             if (state != State.Shot3){
                 SetState(State.Shot3);
             }
-            // 正面に発射
             
+            // 正面に発射
         } else if (isGetGun){
             mainThrowPoint = transform.GetChild(1).transform.position;
+            moveDeadZone = 0;
             if (state != State.Shot2){
                 SetState(State.Shot2);
             }
@@ -486,7 +491,7 @@ public class PlayerController : MonoBehaviour
  
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (!(0 < HP)) return;
         if(0 < fireTime) {
@@ -518,10 +523,18 @@ public class PlayerController : MonoBehaviour
 
         // 地面にいるとき
         if (isGrounded && !isJumping) {
-            rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
+            if (im.MoveKey <= -moveDeadZone || moveDeadZone <= im.MoveKey)
+            {
+                rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
+            }
+            else
+            {
+                rb.AddForce(new Vector2(pm.MoveForceMultiplier * (0 * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
+            }
+            
             anicount += Time.deltaTime;
 
-            if (im.MoveKey != 0)
+            if (im.MoveKey != 0)    // 移動中
             {
                 anicount = 0.0f;            
                 animator.SetBool("Run", true);
@@ -529,19 +542,18 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("Wait", false);
             }
-            else if (anicount >= 5.0f && im.MoveKey == 0)
+            else if (anicount >= 5.0f && im.MoveKey == 0)    // 待機モーション中
             {
                 if (anicount >= 12.0f) {anicount = 0.0f; }         
                 animator.SetBool("Wait", true);
                 animator.SetBool("Stand", false);
             }
-            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)
+            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)    // 停止中
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("Wait", false);
-     
             }
             // 空中にいるとき
         } else {
