@@ -84,8 +84,7 @@ public class Enemy_Kama : MonoBehaviour {
     {
         if (isZeroHP)
         {
-            startScale = transform.localScale;
-            startposition = transform.position;
+            transform.position = startposition;
             transform.localScale = startScale;
             AttackPhase = 0;
             patrolType = 0;
@@ -256,11 +255,7 @@ public class Enemy_Kama : MonoBehaviour {
 
                     break;
             }
-
-
         }
-
-
     }
 
     private void DecideTargetPotision()
