@@ -6,6 +6,8 @@ public class BreakBlock : MonoBehaviour {
 
     private bool isEnterAcid;
     [SerializeField] private float destroyTime = 2f;
+    [SerializeField, CustomLabel("これは糸です")] private bool _isThread;
+    [SerializeField, CustomLabel("ガレキ")] private FallBlock _gareki;
     private Vector2 startScale;
 
     void Start () {
@@ -14,10 +16,13 @@ public class BreakBlock : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (isEnterAcid) {
-            transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
-            if (transform.localScale.x <= 0) {
-                Destroy(gameObject);
+        if (!isEnterAcid) return;
+        transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+        if (transform.localScale.x <= 0) {
+            Destroy(gameObject);
+            if (_isThread && _gareki != null)
+            {
+                _gareki.IsThreadBreaked = true;
             }
         }
     }
@@ -31,7 +36,7 @@ public class BreakBlock : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (isEnterAcid == true)
+        if (isEnterAcid)
             return;
 
         if (collision.gameObject.CompareTag("AcidFlask")) {

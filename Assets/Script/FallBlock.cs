@@ -13,8 +13,14 @@ public class FallBlock : MonoBehaviour {
     private GameObject medKit = null;
     [SerializeField, CustomLabel("エフェクト")] private GameObject _effect;
     private GameObject effect;
+    private bool isThreadBreaked;
 
-	void Start () {
+    public bool IsThreadBreaked
+    {
+        set { isThreadBreaked = value; }
+    }
+
+    void Start () {
         explodable = GetComponent<Explodable>();
         effect = Instantiate(_effect);
         if (transform.childCount == 0) return;
@@ -28,7 +34,7 @@ public class FallBlock : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("BreakBlock")) {
+        if((collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("BreakBlock")) && isThreadBreaked) {
             if (medKit != null)
             {
                 medKit.transform.position = transform.position;

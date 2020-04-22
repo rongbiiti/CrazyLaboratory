@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 /// <summary>
@@ -11,13 +12,15 @@ using UnityEngine;
 /// </summary>
 public class CameraController : MonoBehaviour
 {
-    [SerializeField, CustomLabel("チートON")] private bool _isCheatEnable = false;
-    private GameObject player = null;
+    [SerializeField, CustomLabel("ステージ左端のX座標")] private float _stage_edge_x;
+    [SerializeField, CustomLabel("ステージ右端のX座標")] private float _stage_edge_x_right;
+    [SerializeField, CustomLabel("チートON")] private bool _isCheatEnable;
+    private GameObject player;
     private Camera cam;
     private Vector3 offset = Vector3.zero;
-    private bool isFloarChange = false;
-    private bool isFocasUnder = false;
-    private float YAxisFixTime = 0f;
+    private bool isFloarChange;
+    private bool isFocasUnder;
+    private float YAxisFixTime;
     private float setYAxisFixTime = 1f;
     private float focasOffset;
 
@@ -29,7 +32,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         offset = transform.position - player.transform.position;
@@ -37,7 +40,7 @@ public class CameraController : MonoBehaviour
         
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         Vector3 newPosition = transform.position;
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
@@ -46,20 +49,27 @@ public class CameraController : MonoBehaviour
         } else if (viewPos.y < 0.3f && !isFocasUnder) {
             newPosition.y = player.transform.position.y + offset.y;
         }
-        newPosition.x = player.transform.position.x + offset.x;
+
+        // Xがステージの端より内側だったらプレイヤーのX座標を追いかける
+        if ((_stage_edge_x <= player.transform.position.x && _stage_edge_x_right >= player.transform.position.x)
+            || (_stage_edge_x <= transform.position.x && _stage_edge_x_right >= transform.position.x))
+        {
+            newPosition.x = player.transform.position.x + offset.x;
+        }
+        
         newPosition.z = player.transform.position.z + offset.z;
         transform.position = Vector3.Lerp(transform.position, newPosition, 5.0f * Time.deltaTime);
         if (isFloarChange) {
-            FloarChange(newPosition);
+            FloorChange(newPosition);
         }
 
         if (isFocasUnder)
         {
-            FocasUnder(newPosition);
+            FocusUnder(newPosition);
         }
     }
 
-    private void FloarChange(Vector3 newPosition)
+    private void FloorChange(Vector3 newPosition)
     {
         YAxisFixTime -= Time.deltaTime;
         var position = player.transform.position;
@@ -72,7 +82,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void FocasUnder(Vector3 newPosition)
+    private void FocusUnder(Vector3 newPosition)
     {
         var position = player.transform.position;
         newPosition.x = position.x + offset.x;
@@ -81,15 +91,14 @@ public class CameraController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, newPosition, 2.5f * Time.deltaTime);
     }
 
-    public void SetIsFloarChange()
+    public void SetIsFloorChange()
     {
-        if (!isFloarChange) {
-            isFloarChange = true;
-            YAxisFixTime = setYAxisFixTime;
-        }
+        if (isFloarChange) return;
+        isFloarChange = true;
+        YAxisFixTime = setYAxisFixTime;
     }
 
-    public void SetIsFocasUnder(bool flag, float offset = 0f)
+    public void SetIsFocusUnder(bool flag, float offset = 0f)
     {
         isFocasUnder = flag;
         focasOffset = offset;
