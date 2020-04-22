@@ -324,7 +324,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 10
   m_GravityScale: 1
@@ -344,7 +344,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 10
   m_GravityScale: 1
@@ -364,7 +364,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 10
   m_GravityScale: 1
@@ -384,7 +384,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 10
   m_GravityScale: 1
@@ -407,7 +407,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 1
@@ -424,7 +424,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 10
   m_GravityScale: 1
@@ -444,7 +444,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 10
   m_GravityScale: 1
@@ -464,7 +464,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 10
   m_GravityScale: 1
@@ -685,6 +685,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 1
+  _gareki: {fileID: 114255302436041850}
 --- !u!114 &114051736621890610
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -697,6 +699,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 1
+  _gareki: {fileID: 114255302436041850}
 --- !u!114 &114188389801256712
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -709,6 +713,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 1
+  _gareki: {fileID: 114255302436041850}
 --- !u!114 &114255302436041850
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -733,6 +739,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 1
+  _gareki: {fileID: 114255302436041850}
 --- !u!114 &114569484406931656
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -745,6 +753,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 1
+  _gareki: {fileID: 114255302436041850}
 --- !u!114 &114720914293511000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -757,6 +767,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 1
+  _gareki: {fileID: 114255302436041850}
 --- !u!114 &114848777146426040
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -769,6 +781,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 1
+  _gareki: {fileID: 114255302436041850}
 --- !u!114 &114996269402322288
 MonoBehaviour:
   m_ObjectHideFlags: 1

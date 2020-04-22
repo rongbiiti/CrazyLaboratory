@@ -13,13 +13,13 @@ public class FocasUnder : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
         var cam = GameObject.Find("Main Camera");
-        cam.GetComponent<CameraController>().SetIsFocasUnder(true, _offset);
+        cam.GetComponent<CameraController>().SetIsFocusUnder(true, _offset);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
         var cam = GameObject.Find("Main Camera");
-        cam.GetComponent<CameraController>().SetIsFocasUnder(false);
+        cam.GetComponent<CameraController>().SetIsFocusUnder(false);
     }
 }

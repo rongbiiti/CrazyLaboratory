@@ -17,7 +17,7 @@ public class FixCameraYAxisScript : MonoBehaviour {
     {
         if(collision.CompareTag("Player")) {
             GameObject cam = GameObject.Find("Main Camera");
-            cam.GetComponent<CameraController>().SetIsFloarChange();
+            cam.GetComponent<CameraController>().SetIsFloorChange();
             _combiFixTrigger.SetActive(true);
             gameObject.SetActive(false);
         }
