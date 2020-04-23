@@ -21,11 +21,12 @@ public class Enemy_Boss : MonoBehaviour
         BodyPress,
     }
 
+
     [SerializeField] private float _HP = 12f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _AttackHitDamage = 3000f;        //攻撃のダメージ
     [SerializeField] private float _BodyPressHitDamage = 5000f;     //ボディプレスのダメージ
-    private float _PlayerDamage;    //ダメージ格納用
+    private float PlayerDamage;    //ダメージ格納用
     [SerializeField] private float _PlayerDamageRate = 3f;
     private float _PlayerDamageTime;
     [SerializeField] private float _nockBuckPower = 300f;
@@ -45,6 +46,10 @@ public class Enemy_Boss : MonoBehaviour
     [SerializeField] private float _playerX;    //playerのｘにプラスかマイナスする　効果時点の微調整用
     [SerializeField] private float _fallSpeed = 30f;  //降下スピード
     [SerializeField] private float _ascentSpeed = 30f;    //上昇スピード
+    /*******************BodyPress*********************/
+    [SerializeField] private float _bodyPressRate = 3f;
+    private float BodyPressTime;
+    [SerializeField] private float _bodyPressFallSpeed = 50f;
     /*******************Stan***********************/
     [SerializeField] private float _stanRate = 4f;  //ひるみの時間
     private float StanTime;   //ひるみの時間格納用
@@ -54,13 +59,14 @@ public class Enemy_Boss : MonoBehaviour
     [SerializeField] private float _jumpSpeed = 30f;  //ジャンプスピード
     /*******************ActivityTime***********************/
     private byte ActivityType;     //行動のタイプ
-    [SerializeField] e_ActivityType[]_activityTypeCount;
+    [SerializeField] e_ActivityType[] _activityTypeCount;
     private byte ActivityCount;     //カウントによって行動を登録
     [SerializeField] private float _activityRate;   //次に行動する時間
     private float ActivityTime;     //次に行動する時間の格納用
     /*******************GameObject**********************/
-    [SerializeField] private GameObject switchObject;   //上昇して行動を切り替えさせるためのオブジェクト
-    [SerializeField] private GameObject AttackObject;   //攻撃のオブジェクト
+    [SerializeField] private GameObject _switchObject;   //上昇して行動を切り替えさせるためのオブジェクト
+    [SerializeField] private GameObject _attackObject;   //攻撃のオブジェクト
+    [SerializeField] private GameObject _bodyPressEndObject;    //ボディプレスを止めるためのオブジェクト
     /**********************************************/
     [SerializeField] private float _destroyTime = 2f;
     private bool SwitchFlag;    //スイッチオブジェクトに当たった時の処理をするかしないか
@@ -81,12 +87,16 @@ public class Enemy_Boss : MonoBehaviour
         startScale = transform.localScale;
         startposition = transform.position;
         /*HP*/
+        nowHP = _HP;
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
+        
         /*GameObject*/
         playerObject = GameObject.FindGameObjectWithTag("Player");
-        switchObject.transform.parent = null;
-        AttackObject.SetActive(false);
+        _switchObject.transform.parent = null;
+        _bodyPressEndObject.transform.parent = null;
+        _bodyPressEndObject.SetActive(false);
+        _attackObject.SetActive(false);
         /**/
         var p = playerObject.transform.position;
         SwitchFlag = false;
@@ -109,6 +119,7 @@ public class Enemy_Boss : MonoBehaviour
             ActivityCount = 0;
             InitActivityType((byte)_activityTypeCount[ActivityCount]);
             JumpTime += _jumpRate;
+            _switchObject.SetActive(true);
         }
 
     }
@@ -149,27 +160,58 @@ public class Enemy_Boss : MonoBehaviour
                         case (byte)e_AttackType.move:
                             var BossP = transform.position;
                             var PlayerP = playerObject.transform.position;
-                            BossP.x = PlayerP.x;
+                            if(0.0f > playerObject.transform.localScale.x)
+                            {
+                                BossP.x = PlayerP.x + _playerX;
+                            }
+                            else
+                            {
+                                BossP.x = PlayerP.x - _playerX;
+                                var ls = gameObject.transform.localScale;   //localscaleの格納
+                                gameObject.transform.localScale = new Vector3(ls.x, -ls.y, ls.z);
+                            }
+                            
                             transform.position = BossP;
                             break;
                         case (byte)e_AttackType.BeforAttack:
                             AttackType = (byte)e_AttackType.Attack;
                             AttackTime = _AttackRate;
-                            AttackObject.SetActive(true);
+                            _attackObject.SetActive(true);
                             break;
                         case (byte)e_AttackType.Attack:
                             AttackType = (byte)e_AttackType.AfterAttack;
                             AttackTime = _afterAttackRate;
-                            AttackObject.SetActive(false);
+                            _attackObject.SetActive(false);
                             break;
                         case (byte)e_AttackType.AfterAttack:
                             moveSpeed = _ascentSpeed;   //上昇するスピードを格納
-                            switchObject.SetActive(true);
+                            _switchObject.SetActive(true);
                             SwitchFlag = false;
                             break;
                     }
                 }
             }
+
+            if(0 < BodyPressTime)
+            {
+                BodyPressTime -= Time.deltaTime;
+                if(BodyPressTime <= 0)
+                {
+                    var BossP = transform.position;
+                    var PlayerP = playerObject.transform.position;
+
+                    if(PlayerP.x < BossP.x)
+                    {
+                        var ls = gameObject.transform.localScale;   //localscaleの格納
+                        gameObject.transform.localScale = new Vector3(ls.x, -ls.y, ls.z);
+                    }
+
+                    BossP.x = PlayerP.x;
+                    transform.position = BossP;
+                }
+            }
+
+
             if (0 < StanTime)       //スタンの時間
             {
                 StanTime -= Time.deltaTime;
@@ -177,6 +219,11 @@ public class Enemy_Boss : MonoBehaviour
             if (0 < JumpTime)       //ジャンプをするまでの時間
             {
                 JumpTime -= Time.deltaTime;
+                if(JumpTime <= 0)
+                {
+                    _switchObject.SetActive(true);
+                    SwitchFlag = false;
+                }
             }
             if (0 < ActivityTime)   //行動までの時間
             {
@@ -215,6 +262,12 @@ public class Enemy_Boss : MonoBehaviour
 
                 case (byte)e_ActivityType.BodyPress:
 
+                    if(BodyPressTime <= 0)
+                    {
+                        Vector2 speed = new Vector2(0.0f, moveSpeed);
+                        rb.velocity = speed;
+                    }
+
                     break;
 
             }
@@ -230,18 +283,25 @@ public class Enemy_Boss : MonoBehaviour
             case (byte)e_ActivityType.Jump:
                 ActivityType = (byte)e_ActivityType.Jump;
                 AttackType = 0;
-                JumpTime += _jumpRate;
+                JumpTime = _jumpRate;
+                PlayerDamage = _AttackHitDamage;
                 break;
             case (byte)e_ActivityType.Attack:
                 ActivityType = (byte)e_ActivityType.Attack;
                 AttackType = (byte)e_AttackType.move;
                 int range = Random.Range(_rangeMin, _rangeMax);
                 AttackTime += range;
-                moveSpeed = -_fallSpeed;
                 transform.eulerAngles = new Vector3(0.0f, 0.0f, 90f);
+                moveSpeed = -_fallSpeed;
+                PlayerDamage = _AttackHitDamage;
                 break;
             case (byte)e_ActivityType.BodyPress:
                 ActivityType = (byte)e_ActivityType.BodyPress;
+                BodyPressTime = _bodyPressRate;
+                moveSpeed = -_bodyPressFallSpeed;
+                transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+                _bodyPressEndObject.SetActive(true);
+                PlayerDamage = _BodyPressHitDamage;
                 break;
         }
     }
@@ -264,10 +324,11 @@ public class Enemy_Boss : MonoBehaviour
             }
         }
 
-        if (collision.CompareTag("PatrolPoint") && !SwitchFlag)
+        if (collision.CompareTag("PatrolPoint") && !SwitchFlag)     //SwitchObjectとの当たり判定
         {
             SwitchFlag = true;
-            switchObject.gameObject.SetActive(false);
+            _switchObject.gameObject.SetActive(false);
+            gameObject.transform.localScale = startScale;
             if (_activityTypeCount.Length <= ++ActivityCount)
             {
                 ActivityCount = 0;
@@ -279,6 +340,17 @@ public class Enemy_Boss : MonoBehaviour
             
         }
 
+        if (collision.CompareTag("WaitingPoint"))
+        {
+            if (_activityTypeCount.Length <= ++ActivityCount)
+            {
+                ActivityCount = 0;
+            }
+
+            rb.velocity = new Vector2(0.0f, 0.0f);
+            InitActivityType((byte)_activityTypeCount[ActivityCount]);
+            _bodyPressEndObject.SetActive(false);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -288,7 +360,7 @@ public class Enemy_Boss : MonoBehaviour
         if (collision.CompareTag("Player") && _PlayerDamageTime <= 0 )
         {
             _PlayerDamageTime += _PlayerDamageRate;
-            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
+            collision.gameObject.GetComponent<PlayerController>().Damage(PlayerDamage);
             Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
             Vector2 targetPos = collision.gameObject.transform.position;
             float y = _nockBuckUpperPower;
@@ -327,7 +399,7 @@ public class Enemy_Boss : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
+            collision.gameObject.GetComponent<PlayerController>().Damage(PlayerDamage);
             Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
             Vector2 targetPos = collision.gameObject.transform.position;
             float y = _nockBuckUpperPower;
