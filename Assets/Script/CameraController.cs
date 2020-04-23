@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 /// <summary>
 /// カメラが少し遅れてプレイヤーに追従するようにしている。
@@ -16,6 +17,7 @@ public class CameraController : MonoBehaviour
     [SerializeField, CustomLabel("ステージ右端のX座標")] private float _stage_edge_x_right;
     [SerializeField, CustomLabel("チートON")] private bool _isCheatEnable;
     private GameObject player;
+    private PlayerController pc;
     private Camera cam;
     private Vector3 offset = Vector3.zero;
     private bool isFloarChange;
@@ -37,7 +39,7 @@ public class CameraController : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         offset = transform.position - player.transform.position;
         cam = GetComponent<Camera>();
-        
+        pc = player.GetComponent<PlayerController>();
     }
 
     private void LateUpdate()
@@ -46,7 +48,7 @@ public class CameraController : MonoBehaviour
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
         if (viewPos.y > 0.75f && !isFocasUnder) {
             newPosition.y = player.transform.position.y - offset.y;
-        } else if (viewPos.y < 0.3f && !isFocasUnder) {
+        } else if (viewPos.y < 0.3f && !isFocasUnder || pc.IsGhost) {
             newPosition.y = player.transform.position.y + offset.y;
         }
 
