@@ -15,6 +15,7 @@ public class AcidFlask : MonoBehaviour {
     }
     
     private GameObject acidEffect;
+    private ParticleSystem acidParticleSystem;
     private GameObject enemyHitEffect;
 
     private void Start()
@@ -22,6 +23,7 @@ public class AcidFlask : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         resetTime = _destroyTime;
         acidEffect = Instantiate(_acidEffect);
+        acidParticleSystem = acidEffect.GetComponent<ParticleSystem>();
         enemyHitEffect = Instantiate(_enemyHitEffect);
     }
 
@@ -44,8 +46,6 @@ public class AcidFlask : MonoBehaviour {
         gameObject.SetActive(false);
         resetTime = _destroyTime;
         rb.velocity = Vector2.zero;
-        transform.localPosition = Vector3.zero;
-        transform.rotation = Quaternion.identity;
     }
 
     /// <summary>
@@ -57,8 +57,10 @@ public class AcidFlask : MonoBehaviour {
     /// <param name="collision">当たった床や壁など</param>
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        acidParticleSystem.Simulate(0.0f, true, true);
         acidEffect.transform.position = transform.position;
         acidEffect.SetActive(true);
+        acidParticleSystem.Play();
         if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("MoveBlock")) {
             var sprite = collision.transform.parent.GetComponent<SpriteRenderer>().sprite;
             var halfY = sprite.bounds.extents.y;

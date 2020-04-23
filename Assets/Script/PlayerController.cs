@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEditor;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework;
+using Live2D.Cubism.Rendering;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -18,6 +19,9 @@ public class PlayerController : MonoBehaviour
     private PlayerManager pm;
     private ObjectPool pool;
     private GameObject cam;
+    private CapsuleCollider2D capcol;
+    private BoxCollider2D boxcol;
+    private CubismRenderController cubismRender;
     [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
 
     [SerializeField, CustomLabel("最初から銃を所持")] private bool isStartGetGun = false;
@@ -246,6 +250,13 @@ public class PlayerController : MonoBehaviour
     
     public bool IsSuperJump { get; set; }
 
+    private bool isGhost;
+
+    public bool IsGhost
+    {
+        get { return isGhost; }
+    }
+
     private void Awake()
     {
         pool = gameObject.AddComponent<ObjectPool>();
@@ -253,12 +264,15 @@ public class PlayerController : MonoBehaviour
         Instantiate(_rsdAcdPool);
     }
 
-    void Start()
+    private void Start()
     {
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
         cam = GameObject.Find("Main Camera");
         rb = GetComponent<Rigidbody2D>();
+        capcol = GetComponent<CapsuleCollider2D>();
+        boxcol = transform.GetChild(7).GetComponent<BoxCollider2D>();
+        cubismRender = GetComponent<CubismRenderController>();
         
         jumpTimeCounter = pm.JumpTime;
         HP = _maxHP;
@@ -322,7 +336,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void Update()
+    private void Update()
     {
         if (!(0 < HP)) return;
 
@@ -451,7 +465,7 @@ public class PlayerController : MonoBehaviour
             Model.Parts[11].Opacity = 1;
         }
 
-        if ((im.ShotKey == 1 || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
+        if ((im.ShotKey == 1 || (im.ShotKey == 2 && IsMachinGun) || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
 
             if(equipment == Equipment.Handgun && isGetGun) {
                 HandgunShot();
@@ -496,7 +510,7 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
-            if (IsMachinGun) fireTime = 0;
+            
         }
 
         if(0 < acidDamageTime) {
@@ -505,8 +519,25 @@ public class PlayerController : MonoBehaviour
 
         if (0 < invincibleTime) {
             invincibleTime -= Time.deltaTime;
+            if (invincibleTime <= 0)
+            {
+                cubismRender.Opacity = 1f;
+            }
+        }
+
+        if (isGhost)
+        {
+            GhostMove();
+        }
+        else
+        {
+            PlayerMove();
         }
         
+    }
+
+    private void PlayerMove()
+    {
         if (IsSuperJump && im.JumpKey == 2)
         {
             jumpTimeCounter = pm.JumpTime;
@@ -625,7 +656,33 @@ public class PlayerController : MonoBehaviour
         if (im.JumpKey == 0) {
             isJumpingCheck = true;
         }
-        
+    }
+
+    private void GhostMove()
+    {
+        rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed*2 - rb.velocity.x), pm.MoveForceMultiplier * (im.UpMoveKey * pm.MoveSpeed*2 - rb.velocity.y)));
+        if (im.JumpKey == 2)
+        {
+            rb.AddForce(new Vector2(rb.velocity.x, pm.MoveForceMultiplier * (pm.MoveSpeed*2 - rb.velocity.y)));
+        }
+    }
+
+    public void ChangeGhost(bool flag)
+    {
+        if (flag)
+        {
+            isGhost = true;
+            capcol.enabled = false;
+            boxcol.enabled = false;
+            cubismRender.Opacity = 0.3f;
+        }
+        else
+        {
+            isGhost = false;
+            capcol.enabled = true;
+            boxcol.enabled = true;
+            cubismRender.Opacity = 1f;
+        }
     }
 
     public void Damage(float damage, bool isAcidDamage = false)
@@ -641,6 +698,7 @@ public class PlayerController : MonoBehaviour
                 invincibleTime += _resetInvincibleTime;
                 damageEffect.transform.position = transform.position;
                 damageEffect.SetActive(true);
+                cubismRender.Opacity = 0.3f;
             }
 
             if (HP <= 0)
@@ -682,6 +740,7 @@ public class PlayerController : MonoBehaviour
     // ハンドガン発射
     private void HandgunShot()
     {
+        
         GameObject bullet = pool.GetObject();
         if (bullet != null) {
             bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
@@ -743,6 +802,7 @@ public class PlayerController : MonoBehaviour
         }
             
         fireTime += _fireRate;
+        if (IsMachinGun) fireTime = 0.068f;
     }
 
     // ホールメイカー発射

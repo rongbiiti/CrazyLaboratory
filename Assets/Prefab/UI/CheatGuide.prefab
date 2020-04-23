@@ -21,13 +21,28 @@ GameObject:
   - component: {fileID: 224857969547202960}
   - component: {fileID: 222591293591114108}
   - component: {fileID: 114437292513131968}
+  - component: {fileID: 114250786968372236}
   m_Layer: 5
   m_Name: CheatGuide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
+--- !u!114 &114250786968372236
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1104882263482176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!114 &114437292513131968
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -60,7 +75,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1.2
-  m_Text: "R\u30B9\u30C6\u30A3\u30C3\u30AF\u62BC\u3057\u8FBC\u307F\nTab\u30AD\u30FC\uFF1A\u30C1\u30FC\u30C8\u30E1\u30CB\u30E5\u30FC"
+  m_Text: "R\u30B9\u30C6\u30A3\u30C3\u30AF\u62BC\u3057\u8FBC\u307F\nTab\u30AD\u30FC\uFF1A\u30C1\u30FC\u30C8\u30E1\u30CB\u30E5\u30FC\u958B\u9589"
 --- !u!222 &222591293591114108
 CanvasRenderer:
   m_ObjectHideFlags: 1

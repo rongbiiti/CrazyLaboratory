@@ -193,7 +193,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
@@ -234,6 +234,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6aaf3a45d2552343843d9cc44f5ca64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stage_edge_x: 0
+  _stage_edge_x_right: 0
   _isCheatEnable: 1
 --- !u!20 &519420031
 Camera:
@@ -660,7 +662,7 @@ Prefab:
     - target: {fileID: 224225360668085576, guid: 9ec4196a70793e04f8707e84aa247bd5,
         type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -121
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 224225360668085576, guid: 9ec4196a70793e04f8707e84aa247bd5,
         type: 2}
@@ -797,7 +799,7 @@ RectTransform:
   - {fileID: 1269833713}
   - {fileID: 1879209056}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

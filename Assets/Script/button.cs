@@ -142,4 +142,14 @@ public class button : MonoBehaviour {
         _playerController.IsSuperJump = false;
         _cheatMenu.SuperJumpTextOn(false);
     }
+
+    public void GhostOn()
+    {
+        _playerController.ChangeGhost(true);
+    }
+
+    public void GhostOff()
+    {
+        _playerController.ChangeGhost(false);
+    }
 }
