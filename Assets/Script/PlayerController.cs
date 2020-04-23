@@ -253,7 +253,7 @@ public class PlayerController : MonoBehaviour
         Instantiate(_rsdAcdPool);
     }
 
-    void Start()
+    private void Start()
     {
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
@@ -322,7 +322,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void Update()
+    private void Update()
     {
         if (!(0 < HP)) return;
 
@@ -451,7 +451,7 @@ public class PlayerController : MonoBehaviour
             Model.Parts[11].Opacity = 1;
         }
 
-        if ((im.ShotKey == 1 || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
+        if ((im.ShotKey == 1 || (im.ShotKey == 2 && IsMachinGun) || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
 
             if(equipment == Equipment.Handgun && isGetGun) {
                 HandgunShot();
@@ -496,7 +496,7 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
-            if (IsMachinGun) fireTime = 0;
+            
         }
 
         if(0 < acidDamageTime) {
@@ -682,6 +682,7 @@ public class PlayerController : MonoBehaviour
     // ハンドガン発射
     private void HandgunShot()
     {
+        
         GameObject bullet = pool.GetObject();
         if (bullet != null) {
             bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
@@ -743,6 +744,7 @@ public class PlayerController : MonoBehaviour
         }
             
         fireTime += _fireRate;
+        if (IsMachinGun) fireTime = 0.068f;
     }
 
     // ホールメイカー発射

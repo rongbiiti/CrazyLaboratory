@@ -1370,7 +1370,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1804784916266212}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.005, y: 0.466, z: 0}
+  m_LocalPosition: {x: 0, y: 0.466, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4817296647120560}
@@ -1461,7 +1461,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1355416737646104}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.153, y: 0.214, z: 0}
+  m_LocalPosition: {x: 0, y: 0.172, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4817296647120560}
@@ -1513,7 +1513,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1009475253485402}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.139, y: 0.037, z: 0}
+  m_LocalPosition: {x: 0, y: 0.037, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4817296647120560}
@@ -1617,7 +1617,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1432322156971034}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -96.45, y: 7.86, z: 0}
+  m_LocalPosition: {x: -94.5, y: 6.25, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4833721811379570}
@@ -1651,7 +1651,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1706359983438424}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.135, y: 0.275, z: 0}
+  m_LocalPosition: {x: 0, y: 0.275, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4817296647120560}
@@ -3619,7 +3619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBGMMute: 0
-  isStartGetGun: 0
+  isStartGetGun: 1
   _HPbar: {fileID: 0}
   filter2d:
     useTriggers: 0
@@ -3646,11 +3646,12 @@ MonoBehaviour:
   _acidDamage: 500
   _acidDamageRate: 0.2
   _bulletCapacity: 10
-  _fireRate: 1.2
+  _fireRate: 0.8
   YStickUpDeadZone: 0.4
   ceilDeadZone: 0.5
   _YStickDownDeadZone: -0.4
   floorDeadZone: -0.5
+  _moveDeadZone: 0.55
   ceilShot:
     _muzzleVelocity: 11.5
     _gravityScale: 6
