@@ -58,6 +58,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4103298798167418}
+  - component: {fileID: 114910677719639682}
   m_Layer: 0
   m_Name: Stage1F2FallBridge
   m_TagString: Untagged
@@ -1866,6 +1867,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114262373188958142
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1878,6 +1881,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114288477455841936
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1890,6 +1895,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114352941103636440
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1902,6 +1909,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114383014007719198
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1914,6 +1923,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114551298842561256
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1926,6 +1937,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114597291587201288
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1938,6 +1951,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114682337995191792
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1950,6 +1965,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114825403370097696
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1962,6 +1979,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114874338290832900
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1974,6 +1993,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
+--- !u!114 &114910677719639682
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1089010141049810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a887b9f25c1c2749997de5b4b6062ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114955167553776394
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1986,6 +2018,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!212 &212003652783057898
 SpriteRenderer:
   m_ObjectHideFlags: 1

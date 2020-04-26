@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
+﻿using UnityEngine;
 
 /// <summary>
 /// カメラが少し遅れてプレイヤーに追従するようにしている。
@@ -13,6 +8,7 @@ using UnityEngine.Rendering.PostProcessing;
 /// </summary>
 public class CameraController : MonoBehaviour
 {
+    [SerializeField, CustomLabel("ポーズメニュー")] private GameObject _pauseMenu;
     [SerializeField, CustomLabel("ステージ左端のX座標")] private float _stage_edge_x;
     [SerializeField, CustomLabel("ステージ右端のX座標")] private float _stage_edge_x_right;
     [SerializeField, CustomLabel("チートON")] private bool _isCheatEnable;
@@ -48,7 +44,7 @@ public class CameraController : MonoBehaviour
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
         if (viewPos.y > 0.75f && !isFocasUnder) {
             newPosition.y = player.transform.position.y - offset.y;
-        } else if (viewPos.y < 0.3f && !isFocasUnder || pc.IsGhost) {
+        } else if ((viewPos.y < 0.3f && !isFocasUnder) || pc.IsGhost) {
             newPosition.y = player.transform.position.y + offset.y;
         }
 
@@ -75,7 +71,6 @@ public class CameraController : MonoBehaviour
     {
         YAxisFixTime -= Time.deltaTime;
         var position = player.transform.position;
-        newPosition.x = position.x + offset.x;
         newPosition.y = position.y + offset.y;
         newPosition.z = position.z + offset.z;
         transform.position = Vector3.Lerp(transform.position, newPosition, 2.5f * Time.deltaTime);
@@ -87,7 +82,6 @@ public class CameraController : MonoBehaviour
     private void FocusUnder(Vector3 newPosition)
     {
         var position = player.transform.position;
-        newPosition.x = position.x + offset.x;
         newPosition.y = position.y - focasOffset;
         newPosition.z = position.z + offset.z;
         transform.position = Vector3.Lerp(transform.position, newPosition, 2.5f * Time.deltaTime);
