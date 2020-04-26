@@ -428,15 +428,6 @@ public class PlayerController : MonoBehaviour
             pm.MoveSpeed = startMoveSpeed;
         }
 
-        if (im.MoveKey >= 0.2 && !flip && im.MoonWalkKey == 0) {
-            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
-            flip = true;
-        }
-        if (im.MoveKey <= -0.2 && flip && im.MoonWalkKey == 0) {
-            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
-            flip = false;
-        }
-
         //{11(6),3(7),手前}{15(10),14(11)奥側} 手のパーツ
         if (!isGetGun){                             //銃を持ってるとき、右手に銃を持たす
             Model.Parts[6].Opacity = 1;
@@ -500,7 +491,6 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
-            
         }
 
         if(0 < acidDamageTime) {
@@ -513,6 +503,15 @@ public class PlayerController : MonoBehaviour
             {
                 cubismRender.Opacity = 1f;
             }
+        }
+        
+        if (im.MoveKey >= 0.2 && !flip && im.MoonWalkKey == 0) {
+            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
+            flip = true;
+        }
+        if (im.MoveKey <= -0.2 && flip && im.MoonWalkKey == 0) {
+            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
+            flip = false;
         }
 
         if (isGhost)
