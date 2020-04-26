@@ -36,21 +36,27 @@ public class PlayerController : MonoBehaviour
     //アニメーション関連
     Animator animator;
     private State state;
+    private int Shot0Layer;
     private int Shot1Layer;
     private int Shot2Layer;
     private int Shot3Layer;
+    private int Shot4Layer;
+    private float weight0;
     private float weight1;
     private float weight2;
     private float weight3;
+    private float weight4;
     private bool smoothFlag;
     private CubismModel Model;
     private float anicount;
     enum State
     {
         None,
+        Shot0,
         Shot1,
         Shot2,
-        Shot3
+        Shot3,
+        Shot4
     }
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
@@ -294,12 +300,16 @@ public class PlayerController : MonoBehaviour
         //アニメーション関連
         Model = this.FindCubismModel();
         animator = GetComponent<Animator>();
+        Shot0Layer = animator.GetLayerIndex("Shot0 Layer");
         Shot1Layer = animator.GetLayerIndex("Shot1 Layer");
         Shot2Layer = animator.GetLayerIndex("Shot2 Layer");
         Shot3Layer = animator.GetLayerIndex("Shot3 Layer");
+        Shot4Layer = animator.GetLayerIndex("Shot4 Layer");
+        weight0 = 0f;
         weight1 = 0f;
         weight2 = 0f;
         weight3 = 0f;
+        weight4 = 0f;
         SetState(State.None, first: true);
 
         if (_isUIDisplay) {
@@ -346,10 +356,8 @@ public class PlayerController : MonoBehaviour
             mainThrowPoint = transform.GetChild(3).transform.position;
             anicount = 0.0f;
             animator.SetBool("Wait", false);
-            // 仮で斜め上に撃つモーション入れてます
-            if (state != State.Shot1)
-            {
-                SetState(State.Shot1);
+            if (state != State.Shot0){
+                SetState(State.Shot0);
             }
 
             // 真下に発射
@@ -357,10 +365,8 @@ public class PlayerController : MonoBehaviour
             mainThrowPoint = transform.GetChild(2).transform.position;
             anicount = 0.0f;
             animator.SetBool("Wait", false);
-            // 仮で斜め下に撃つモーション入れてます
-            if (state != State.Shot3){
-                
-                SetState(State.Shot3);
+            if (state != State.Shot4){     
+                SetState(State.Shot4);
             }
 
             // 上に発射
@@ -393,22 +399,42 @@ public class PlayerController : MonoBehaviour
         }
 
         if (smoothFlag){
-            if (state == State.Shot1){
-                weight1 = 1f;
+            if (state == State.Shot0){
+                weight0 = 1f;
+                weight1 = 0f;
                 weight2 = 0f;
                 weight3 = 0f;
+                weight4 = 0f;
+            }else if (state == State.Shot1){
+                weight1 = 1f;
+                weight0 = 0f;
+                weight2 = 0f;
+                weight3 = 0f;
+                weight4 = 0f;
             }else if (state == State.Shot2){
                 weight2 = 1f;
+                weight0 = 0f;
                 weight1 = 0f;
                 weight3 = 0f;
+                weight4 = 0f;
             }else if (state == State.Shot3){
                 weight3 = 1f;
+                weight0 = 0f;
                 weight1 = 0f;
                 weight2 = 0f;
+                weight4 = 0f;
+            }else if (state == State.Shot4){
+                weight4 = 1f;
+                weight0 = 0f;
+                weight1 = 0f;
+                weight2 = 0f;
+                weight3 = 0f;
             }
+            animator.SetLayerWeight(Shot0Layer, weight0);
             animator.SetLayerWeight(Shot1Layer, weight1);
             animator.SetLayerWeight(Shot2Layer, weight2);
             animator.SetLayerWeight(Shot3Layer, weight3);
+            animator.SetLayerWeight(Shot4Layer, weight4);
         }
 
         // 地面と当たり判定をしている。
@@ -1039,9 +1065,11 @@ public class PlayerController : MonoBehaviour
         {
             isGetGun = false;
             equipment = Equipment.None;
+            weight0 = 0f;
             weight1 = 0f;
             weight2 = 0f;
             weight3 = 0f;
+            weight4 = 0f;
             SetState(State.None, first: true);
             AnimStop();
             
