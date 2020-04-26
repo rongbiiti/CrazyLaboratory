@@ -73,6 +73,12 @@ public class SoundManagerV2 : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        volume.BGM = SaveManager.Instance.save.BGMVolume;
+        volume.SE = SaveManager.Instance.save.SEVolume;
+    }
+
     void Update()
     {
         // ミュート設定

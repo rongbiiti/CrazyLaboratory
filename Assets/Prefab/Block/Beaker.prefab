@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 61744247530360926}
   - component: {fileID: 114057090228953822}
   - component: {fileID: 114823454215883760}
+  - component: {fileID: 114874038584158764}
   m_Layer: 16
   m_Name: Beaker
   m_TagString: Beaker
@@ -211,6 +212,17 @@ MonoBehaviour:
   orderInLayer: 0
   shatterType: 0
   fragments: []
+--- !u!114 &114874038584158764
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1612418405046580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a887b9f25c1c2749997de5b4b6062ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212187460033103818
 SpriteRenderer:
   m_ObjectHideFlags: 1

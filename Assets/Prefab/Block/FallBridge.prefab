@@ -58,6 +58,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4373024989853518}
+  - component: {fileID: 114088049007551288}
   m_Layer: 0
   m_Name: FallBridge
   m_TagString: Untagged
@@ -1854,6 +1855,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.8}
   m_EdgeRadius: 0
+--- !u!114 &114088049007551288
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1071031435794842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a887b9f25c1c2749997de5b4b6062ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114256241600134472
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1866,6 +1878,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114256426433055978
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1878,6 +1892,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114370923855283606
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1890,6 +1906,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114415669428868122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1902,6 +1920,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114417215516881774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1914,6 +1934,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114430351678081908
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1926,6 +1948,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114515079870019050
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1938,6 +1962,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114602480979631102
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1950,6 +1976,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114632180925159144
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1962,6 +1990,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114754072404540660
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1974,6 +2004,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!114 &114921566819405286
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1986,6 +2018,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTime: 1
+  _isThread: 0
+  _gareki: {fileID: 0}
 --- !u!212 &212050606258859084
 SpriteRenderer:
   m_ObjectHideFlags: 1

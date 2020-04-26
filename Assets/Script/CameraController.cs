@@ -8,6 +8,7 @@
 /// </summary>
 public class CameraController : MonoBehaviour
 {
+    [SerializeField, CustomLabel("ポーズメニュー")] private GameObject _pauseMenu;
     [SerializeField, CustomLabel("ステージ左端のX座標")] private float _stage_edge_x;
     [SerializeField, CustomLabel("ステージ右端のX座標")] private float _stage_edge_x_right;
     [SerializeField, CustomLabel("チートON")] private bool _isCheatEnable;

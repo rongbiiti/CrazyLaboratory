@@ -11,6 +11,8 @@ public class SaveManager : MonoBehaviour {
 	{
 		public float playerHP;
 		public int stage;
+		public float BGMVolume = 0.7f;
+		public float SEVolume = 0.7f;
 	}
 	
 	protected static readonly string[] findTags =
@@ -83,6 +85,18 @@ public class SaveManager : MonoBehaviour {
 		save.playerHP = hp;
 		if(stage > save.stage)
 			save.stage = stage;
+		JsonSave();
+	}
+
+	public void OptionDataSave()
+	{
+		save.BGMVolume = SoundManagerV2.Instance.volume.BGM;
+		save.SEVolume = SoundManagerV2.Instance.volume.SE;
+		JsonSave();
+	}
+
+	private void JsonSave()
+	{
 		string json = JsonUtility.ToJson(save);
 		StreamWriter streamWriter = new StreamWriter(filePath);
 		streamWriter.Write(json);

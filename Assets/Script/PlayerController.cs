@@ -202,7 +202,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 mainThrowPoint;
     private float HP;
     private float startMoveSpeed;
-    private float startMoveForceMultiplier;
     private float moveDeadZone;
 
     public float Hp
@@ -213,17 +212,11 @@ public class PlayerController : MonoBehaviour
     private float invincibleTime;
     private int bullets;
     private int hmBullets;
-    public bool IsBulletsFull()
-    {
-        if (bullets >= _bulletCapacity) {
-            return true;
-        }
-        return false;
-    }
+    
     private float fireTime;
     private float acidDamageTime;
 
-    private bool isJumping = false;
+    private bool isJumping;
     private bool isJumpingCheck = true;
     private float jumpTimeCounter;
     private float _jumpPower;
@@ -332,7 +325,6 @@ public class PlayerController : MonoBehaviour
         damageEffect = Instantiate(_damageEffect);
 
         startMoveSpeed = pm.MoveSpeed;
-        startMoveForceMultiplier = pm.MoveForceMultiplier;
 
     }
 
@@ -431,18 +423,16 @@ public class PlayerController : MonoBehaviour
         if (im.MoveStopKey == 2)
         {
             pm.MoveSpeed = 0;
-            pm.MoveForceMultiplier = 50;
         } else if (im.MoveStopKey == 0)
         {
             pm.MoveSpeed = startMoveSpeed;
-            pm.MoveForceMultiplier = startMoveForceMultiplier;
         }
 
-        if (im.MoveKey >= 0.3 && !flip && im.MoonWalkKey == 0) {
+        if (im.MoveKey >= 0.2 && !flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = true;
         }
-        if (im.MoveKey <= -0.3 && flip && im.MoonWalkKey == 0) {
+        if (im.MoveKey <= -0.2 && flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
@@ -565,7 +555,7 @@ public class PlayerController : MonoBehaviour
             
             anicount += Time.deltaTime;
 
-            if (im.MoveKey != 0)    // 移動中
+            if (im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey)    // 移動中
             {
                 anicount = 0.0f;            
                 animator.SetBool("Run", true);
@@ -573,13 +563,13 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("Wait", false);
             }
-            else if (anicount >= 5.0f && im.MoveKey == 0)    // 待機モーション中
+            else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey)    // 待機モーション中
             {
                 if (anicount >= 12.0f) {anicount = 0.0f; }         
                 animator.SetBool("Wait", true);
                 animator.SetBool("Stand", false);
             }
-            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)    // 停止中
+            else if (im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey && rb.velocity.x <= 4f && -4f <= rb.velocity.x)    // 停止中
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
