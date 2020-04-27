@@ -218,13 +218,10 @@ public class Enemy_Boss : MonoBehaviour
             if (0 < AttackTime && ActivityType == (byte)e_ActivityType.Attack)     //攻撃時間
             {
                 AttackTime -= Time.deltaTime;
-                animator.SetBool("Stand1", false);
-                animator.SetBool("Stand2", false);
+                animator.SetBool("Stand1", false);              
                 animator.SetBool("BodyPress", false);
-                animator.SetBool("Atack", true);
                 animator.SetBool("Jump", false);
                 animator.SetBool("Stun", false);
-
                 if (AttackTime <= 0)
                 {
                     switch (AttackType)
@@ -257,6 +254,9 @@ public class Enemy_Boss : MonoBehaviour
                             transform.position = BossP;
                             break;
                         case (byte)e_AttackType.BeforAttack:
+                            animator.SetBool("Stand2", false);
+                            animator.SetBool("Atack", true);
+                            
                             AttackType = (byte)e_AttackType.Attack;
                             AttackTime = _AttackRate;       
                             _attackObject.SetActive(true);
@@ -269,8 +269,6 @@ public class Enemy_Boss : MonoBehaviour
                             break;
                         case (byte)e_AttackType.AfterAttack:
                             moveSpeed = _ascentSpeed;   //上昇するスピードを格納
-                            animator.SetBool("Stand2", true);
-                            animator.SetBool("Atack", false);
                             _switchObject.SetActive(true);
                             SwitchFlag = false;
                             break;
@@ -338,6 +336,15 @@ public class Enemy_Boss : MonoBehaviour
                     break;
 
                 case (byte)e_ActivityType.Jump:
+
+                    if(JumpTime <= 0.15f) {
+                        animator.SetBool("Stand1", false);
+                        animator.SetBool("Stand2", false);
+                        animator.SetBool("BodyPress", false);
+                        animator.SetBool("BeforeAtack", false);
+                        animator.SetBool("Atack", false);
+                        animator.SetBool("Jump", true);
+                        animator.SetBool("Stun", false); }
                     if (JumpTime <= 0)
                     {
                         Vector2 speed = new Vector2(0.0f, _jumpSpeed);
@@ -369,6 +376,8 @@ public class Enemy_Boss : MonoBehaviour
                     {            
                         Vector2 speed = new Vector2(0.0f, moveSpeed);
                         rb.velocity = speed;
+                        animator.SetBool("Stand2", true);
+                        animator.SetBool("Atack", false);
                     }
                     break;
 
