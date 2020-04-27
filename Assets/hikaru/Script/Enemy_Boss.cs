@@ -78,7 +78,7 @@ public class Enemy_Boss : MonoBehaviour
     private Vector3 startPlayerPosition;
     private GameObject playerObject;  //playerのオブジェクトを格納
     Rigidbody2D rb;
-    Animator animetor;
+    Animator animator;
 
     // Use this for initialization
     void Start()
@@ -104,6 +104,7 @@ public class Enemy_Boss : MonoBehaviour
         ActivityCount = 0;
         InitActivityType((byte)_activityTypeCount[ActivityCount]);
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -158,6 +159,7 @@ public class Enemy_Boss : MonoBehaviour
                     switch (AttackType)
                     {
                         case (byte)e_AttackType.move:
+
                             var BossP = transform.position;
                             var PlayerP = playerObject.transform.position;
                             if(0.0f > playerObject.transform.localScale.x)
@@ -184,6 +186,8 @@ public class Enemy_Boss : MonoBehaviour
                             _attackObject.SetActive(false);
                             break;
                         case (byte)e_AttackType.AfterAttack:
+
+
                             moveSpeed = _ascentSpeed;   //上昇するスピードを格納
                             _switchObject.SetActive(true);
                             SwitchFlag = false;
@@ -195,7 +199,8 @@ public class Enemy_Boss : MonoBehaviour
             if(0 < BodyPressTime)
             {
                 BodyPressTime -= Time.deltaTime;
-                if(BodyPressTime <= 0)
+                
+                if (BodyPressTime <= 0)
                 {
                     var BossP = transform.position;
                     var PlayerP = playerObject.transform.position;
@@ -280,7 +285,7 @@ public class Enemy_Boss : MonoBehaviour
         Debug.Log(SwitchFlag);
         switch (Type)
         {
-            case (byte)e_ActivityType.Jump:
+            case (byte)e_ActivityType.Jump:           
                 ActivityType = (byte)e_ActivityType.Jump;
                 AttackType = 0;
                 JumpTime = _jumpRate;
@@ -289,6 +294,7 @@ public class Enemy_Boss : MonoBehaviour
             case (byte)e_ActivityType.Attack:
                 ActivityType = (byte)e_ActivityType.Attack;
                 AttackType = (byte)e_AttackType.move;
+                
                 int range = Random.Range(_rangeMin, _rangeMax);
                 AttackTime += range;
                 transform.eulerAngles = new Vector3(0.0f, 0.0f, 90f);
@@ -296,6 +302,7 @@ public class Enemy_Boss : MonoBehaviour
                 PlayerDamage = _AttackHitDamage;
                 break;
             case (byte)e_ActivityType.BodyPress:
+                
                 ActivityType = (byte)e_ActivityType.BodyPress;
                 BodyPressTime = _bodyPressRate;
                 moveSpeed = -_bodyPressFallSpeed;
@@ -386,12 +393,6 @@ public class Enemy_Boss : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Gareki"))
         {
-            //animator.SetBool("Stand", false);
-            //animator.SetBool("Stun", true);
-            //animator.SetBool("BeforeAtack", false);
-            //animator.SetBool("Atack", false);
-            //animator.SetBool("Jump", false);
-
             StanTime += _stanRate;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
             SoundManagerV2.Instance.PlaySE(3);
