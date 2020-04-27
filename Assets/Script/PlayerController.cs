@@ -454,22 +454,22 @@ public class PlayerController : MonoBehaviour
             pm.MoveSpeed = startMoveSpeed;
         }
 
-        //{11(6),3(7),手前}{15(10),14(11)奥側} 手のパーツ
+        //{11(6),3(7),手前}{15(11),14(12)奥側} 手のパーツ
         if (!isGetGun){                             //銃を持ってるとき、右手に銃を持たす
             Model.Parts[6].Opacity = 1;
             Model.Parts[7].Opacity = 0;
-            Model.Parts[10].Opacity = 1;
-            Model.Parts[11].Opacity = 0;
+            Model.Parts[11].Opacity = 1;
+            Model.Parts[12].Opacity = 0;
         }else if (isGetGun && flip){                             //銃を持ってるとき、右手に銃を持たす
             Model.Parts[6].Opacity = 0;
             Model.Parts[7].Opacity = 1;
-            Model.Parts[10].Opacity = 1;
-            Model.Parts[11].Opacity = 0;
+            Model.Parts[11].Opacity = 1;
+            Model.Parts[12].Opacity = 0;
         }else if (isGetGun && !flip){                             //銃を持ってるとき、左手に銃を持たす
             Model.Parts[6].Opacity = 1;
             Model.Parts[7].Opacity = 0;
-            Model.Parts[10].Opacity = 0;
-            Model.Parts[11].Opacity = 1;
+            Model.Parts[11].Opacity = 0;
+            Model.Parts[12].Opacity = 1;
         }
 
         if ((im.ShotKey == 1 || (im.ShotKey == 2 && IsMachinGun) || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
