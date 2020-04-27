@@ -1,9 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngineInternal;
 
 public class TitleSceneManager : MonoBehaviour {
 
     private bool isAnyKeyPress;
+    private bool isDicide;
 
     [SerializeField, CustomLabel("Logoのアニメーター")]
     private Animator _animator;
@@ -16,6 +18,9 @@ public class TitleSceneManager : MonoBehaviour {
 
     [SerializeField, CustomLabel("StageSelect")]
     private GameObject _stageSelect;
+    
+    [SerializeField, CustomLabel("Option")]
+    private GameObject _option;
 
     [SerializeField, CustomLabel("Quit")]
     private GameObject _quit;
@@ -35,7 +40,7 @@ public class TitleSceneManager : MonoBehaviour {
             _plsAnyKey.SetActive(false);
             StartMenuOpen();
             isAnyKeyPress = true;
-        } else if (InputManager.Instance.JumpKey == 1 && isAnyKeyPress && !_startMenu.activeSelf)
+        } else if (InputManager.Instance.JumpKey == 1 && isAnyKeyPress && !_startMenu.activeSelf && !isDicide)
         {
             StartMenuOpen();
         }
@@ -48,6 +53,7 @@ public class TitleSceneManager : MonoBehaviour {
         _startMenu.SetActive(false);
         SaveManager.Instance.IsNewGame = true;
         SaveManager.Instance.Save(9999, 1);
+        isDicide = true;
     }
 
     public void StageSelectOpen()
@@ -75,7 +81,14 @@ public class TitleSceneManager : MonoBehaviour {
     {
         _startMenu.SetActive(true);
         _stageSelect.SetActive(false);
+        _option.SetActive(false);
         _quit.SetActive(false);
+    }
+    
+    public void OptionOpen()
+    {
+        _startMenu.SetActive(false);
+        _option.SetActive(true);
     }
 
     public void QuitOpen()
@@ -89,6 +102,7 @@ public class TitleSceneManager : MonoBehaviour {
         _stageSelect.SetActive(false);
         FadeManager.Instance.LoadScene("Stage1", 2f);
         SaveManager.Instance.IsNewGame = false;
+        isDicide = true;
     }
     
     public void Stage2()
@@ -96,6 +110,7 @@ public class TitleSceneManager : MonoBehaviour {
         _stageSelect.SetActive(false);
         FadeManager.Instance.LoadScene("Stage2", 2f);
         SaveManager.Instance.IsNewGame = false;
+        isDicide = true;
     }
     
     public void Stage3()
@@ -103,6 +118,7 @@ public class TitleSceneManager : MonoBehaviour {
         _stageSelect.SetActive(false);
         FadeManager.Instance.LoadScene("Stage3", 2f);
         SaveManager.Instance.IsNewGame = false;
+        isDicide = true;
     }
 
     public void Quit()

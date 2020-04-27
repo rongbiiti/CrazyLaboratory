@@ -36,21 +36,27 @@ public class PlayerController : MonoBehaviour
     //アニメーション関連
     Animator animator;
     private State state;
+    private int Shot0Layer;
     private int Shot1Layer;
     private int Shot2Layer;
     private int Shot3Layer;
+    private int Shot4Layer;
+    private float weight0;
     private float weight1;
     private float weight2;
     private float weight3;
+    private float weight4;
     private bool smoothFlag;
     private CubismModel Model;
     private float anicount;
     enum State
     {
         None,
+        Shot0,
         Shot1,
         Shot2,
-        Shot3
+        Shot3,
+        Shot4
     }
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
@@ -202,7 +208,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 mainThrowPoint;
     private float HP;
     private float startMoveSpeed;
-    private float startMoveForceMultiplier;
     private float moveDeadZone;
 
     public float Hp
@@ -213,17 +218,11 @@ public class PlayerController : MonoBehaviour
     private float invincibleTime;
     private int bullets;
     private int hmBullets;
-    public bool IsBulletsFull()
-    {
-        if (bullets >= _bulletCapacity) {
-            return true;
-        }
-        return false;
-    }
+    
     private float fireTime;
     private float acidDamageTime;
 
-    private bool isJumping = false;
+    private bool isJumping;
     private bool isJumpingCheck = true;
     private float jumpTimeCounter;
     private float _jumpPower;
@@ -294,12 +293,16 @@ public class PlayerController : MonoBehaviour
         //アニメーション関連
         Model = this.FindCubismModel();
         animator = GetComponent<Animator>();
+        Shot0Layer = animator.GetLayerIndex("Shot0 Layer");
         Shot1Layer = animator.GetLayerIndex("Shot1 Layer");
         Shot2Layer = animator.GetLayerIndex("Shot2 Layer");
         Shot3Layer = animator.GetLayerIndex("Shot3 Layer");
+        Shot4Layer = animator.GetLayerIndex("Shot4 Layer");
+        weight0 = 0f;
         weight1 = 0f;
         weight2 = 0f;
         weight3 = 0f;
+        weight4 = 0f;
         SetState(State.None, first: true);
 
         if (_isUIDisplay) {
@@ -332,7 +335,6 @@ public class PlayerController : MonoBehaviour
         damageEffect = Instantiate(_damageEffect);
 
         startMoveSpeed = pm.MoveSpeed;
-        startMoveForceMultiplier = pm.MoveForceMultiplier;
 
     }
 
@@ -346,10 +348,8 @@ public class PlayerController : MonoBehaviour
             mainThrowPoint = transform.GetChild(3).transform.position;
             anicount = 0.0f;
             animator.SetBool("Wait", false);
-            // 仮で斜め上に撃つモーション入れてます
-            if (state != State.Shot1)
-            {
-                SetState(State.Shot1);
+            if (state != State.Shot0){
+                SetState(State.Shot0);
             }
 
             // 真下に発射
@@ -357,10 +357,8 @@ public class PlayerController : MonoBehaviour
             mainThrowPoint = transform.GetChild(2).transform.position;
             anicount = 0.0f;
             animator.SetBool("Wait", false);
-            // 仮で斜め下に撃つモーション入れてます
-            if (state != State.Shot3){
-                
-                SetState(State.Shot3);
+            if (state != State.Shot4){     
+                SetState(State.Shot4);
             }
 
             // 上に発射
@@ -393,22 +391,42 @@ public class PlayerController : MonoBehaviour
         }
 
         if (smoothFlag){
-            if (state == State.Shot1){
-                weight1 = 1f;
+            if (state == State.Shot0){
+                weight0 = 1f;
+                weight1 = 0f;
                 weight2 = 0f;
                 weight3 = 0f;
+                weight4 = 0f;
+            }else if (state == State.Shot1){
+                weight1 = 1f;
+                weight0 = 0f;
+                weight2 = 0f;
+                weight3 = 0f;
+                weight4 = 0f;
             }else if (state == State.Shot2){
                 weight2 = 1f;
+                weight0 = 0f;
                 weight1 = 0f;
                 weight3 = 0f;
+                weight4 = 0f;
             }else if (state == State.Shot3){
                 weight3 = 1f;
+                weight0 = 0f;
                 weight1 = 0f;
                 weight2 = 0f;
+                weight4 = 0f;
+            }else if (state == State.Shot4){
+                weight4 = 1f;
+                weight0 = 0f;
+                weight1 = 0f;
+                weight2 = 0f;
+                weight3 = 0f;
             }
+            animator.SetLayerWeight(Shot0Layer, weight0);
             animator.SetLayerWeight(Shot1Layer, weight1);
             animator.SetLayerWeight(Shot2Layer, weight2);
             animator.SetLayerWeight(Shot3Layer, weight3);
+            animator.SetLayerWeight(Shot4Layer, weight4);
         }
 
         // 地面と当たり判定をしている。
@@ -431,20 +449,9 @@ public class PlayerController : MonoBehaviour
         if (im.MoveStopKey == 2)
         {
             pm.MoveSpeed = 0;
-            pm.MoveForceMultiplier = 50;
         } else if (im.MoveStopKey == 0)
         {
             pm.MoveSpeed = startMoveSpeed;
-            pm.MoveForceMultiplier = startMoveForceMultiplier;
-        }
-
-        if (im.MoveKey >= 0.3 && !flip && im.MoonWalkKey == 0) {
-            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
-            flip = true;
-        }
-        if (im.MoveKey <= -0.3 && flip && im.MoonWalkKey == 0) {
-            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
-            flip = false;
         }
 
         //{11(6),3(7),手前}{15(10),14(11)奥側} 手のパーツ
@@ -510,7 +517,6 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
-            
         }
 
         if(0 < acidDamageTime) {
@@ -523,6 +529,15 @@ public class PlayerController : MonoBehaviour
             {
                 cubismRender.Opacity = 1f;
             }
+        }
+        
+        if (im.MoveKey >= 0.2 && !flip && im.MoonWalkKey == 0) {
+            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
+            flip = true;
+        }
+        if (im.MoveKey <= -0.2 && flip && im.MoonWalkKey == 0) {
+            transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
+            flip = false;
         }
 
         if (isGhost)
@@ -565,7 +580,7 @@ public class PlayerController : MonoBehaviour
             
             anicount += Time.deltaTime;
 
-            if (im.MoveKey != 0)    // 移動中
+            if (im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey)    // 移動中
             {
                 anicount = 0.0f;            
                 animator.SetBool("Run", true);
@@ -573,13 +588,13 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("Wait", false);
             }
-            else if (anicount >= 5.0f && im.MoveKey == 0)    // 待機モーション中
+            else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey)    // 待機モーション中
             {
                 if (anicount >= 12.0f) {anicount = 0.0f; }         
                 animator.SetBool("Wait", true);
                 animator.SetBool("Stand", false);
             }
-            else if (im.MoveKey == 0 && rb.velocity.x <= 4f && -4f <= rb.velocity.x)    // 停止中
+            else if (im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey && rb.velocity.x <= 4f && -4f <= rb.velocity.x)    // 停止中
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
@@ -1039,9 +1054,11 @@ public class PlayerController : MonoBehaviour
         {
             isGetGun = false;
             equipment = Equipment.None;
+            weight0 = 0f;
             weight1 = 0f;
             weight2 = 0f;
             weight3 = 0f;
+            weight4 = 0f;
             SetState(State.None, first: true);
             AnimStop();
             

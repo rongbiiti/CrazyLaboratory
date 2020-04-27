@@ -153,7 +153,15 @@ public class InputManager : MonoBehaviour
     {
         get { return controlTypeChange; }
     }
+    
+    /* -- ポーズメニュー開閉 --------------------------------------------------------------------------------- */
+    private int pauseKey = 0;
+    public int PauseKey
 
+    {
+        get { return pauseKey; }
+    }
+    
     private void Update()
     {
         switch (controlMode)
@@ -248,6 +256,15 @@ public class InputManager : MonoBehaviour
         {
             controlTypeChange = 0;
         }
+        
+        // 方向を変えずに移動
+        if (Input.GetButtonDown("Pause")) {
+            pauseKey = 1;
+        } else if (Input.GetButton("Pause")) {
+            pauseKey = 2;
+        } else if (Input.GetButtonUp("Pause")) {
+            pauseKey = 0;
+        }
     }
 
     private void ModeB()
@@ -336,5 +353,13 @@ public class InputManager : MonoBehaviour
             controlTypeChange = 0;
         }
         
+        // 方向を変えずに移動
+        if (Input.GetButtonDown("Pause")) {
+            pauseKey = 1;
+        } else if (Input.GetButton("Pause")) {
+            pauseKey = 2;
+        } else if (Input.GetButtonUp("Pause")) {
+            pauseKey = 0;
+        }
     }
 }

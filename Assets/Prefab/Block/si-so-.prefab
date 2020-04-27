@@ -60,6 +60,7 @@ GameObject:
   - component: {fileID: 331802013592548858}
   - component: {fileID: 114854511654804448}
   - component: {fileID: 114078053962180082}
+  - component: {fileID: 114293101751301730}
   m_Layer: 0
   m_Name: si-so-
   m_TagString: BeakerStand
@@ -586,6 +587,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fab600d0e3d6d2e4ab12da0d115f401e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114293101751301730
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1540006173891028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a887b9f25c1c2749997de5b4b6062ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114854511654804448

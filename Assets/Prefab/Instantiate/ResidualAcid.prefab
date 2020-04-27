@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 212022098230422148}
   - component: {fileID: 61349354399631144}
   - component: {fileID: 114955732127045776}
+  - component: {fileID: 114789422344865332}
   m_Layer: 0
   m_Name: ResidualAcid
   m_TagString: ResidualAcid
@@ -67,6 +68,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.2, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &114789422344865332
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1349799545308152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a887b9f25c1c2749997de5b4b6062ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114955732127045776
 MonoBehaviour:
   m_ObjectHideFlags: 1
