@@ -90,7 +90,7 @@ public class Enemy_Boss : MonoBehaviour
     private Vector3 startPlayerPosition;
     private GameObject playerObject;  //playerのオブジェクトを格納
     Rigidbody2D rb;
-    Animator animetor;
+    Animator animator;
     Enemy_Boss_Thread Thread;
 
     // Use this for initialization
@@ -120,6 +120,7 @@ public class Enemy_Boss : MonoBehaviour
         StanType = (byte)e_StanType.Wait;
         InitActivityType((byte)_activityTypeCount[ActivityCount]);
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         Thread = _ThreadObject.transform.GetChild(0).GetComponent<Enemy_Boss_Thread>();
     }
 
@@ -138,6 +139,15 @@ public class Enemy_Boss : MonoBehaviour
             JumpTime += _jumpRate;
             _switchObject.SetActive(true);
             _ThreadObject.SetActive(false);
+
+            animator.SetBool("Stand1", false);
+            animator.SetBool("Stand2", false);
+            animator.SetBool("BodyPress", false);
+            animator.SetBool("BeforeAtack", false);
+            animator.SetBool("Atack", false);
+            animator.SetBool("AfterAtack", false);
+            animator.SetBool("Jump", false);
+            animator.SetBool("Stun", false);
         }
 
     }
@@ -188,6 +198,8 @@ public class Enemy_Boss : MonoBehaviour
 
                         case (byte)e_StanType.afterStan:
                             InitActivityType((byte)e_ActivityType.Jump);
+                            animator.SetBool("Stand1", true);
+                            animator.SetBool("Stun", false);
                             StanType = (byte)e_StanType.Wait;
                             ActivityCount--;    //スタンした時の行動に戻す
                             break;
@@ -207,7 +219,7 @@ public class Enemy_Boss : MonoBehaviour
                 {
                     switch (AttackType)
                     {
-                        case (byte)e_AttackType.move:
+                        case (byte)e_AttackType.move:     
                             var BossP = transform.position;
                             var PlayerP = playerObject.transform.position;
                             if(0.0f > playerObject.transform.localScale.x)
@@ -234,10 +246,10 @@ public class Enemy_Boss : MonoBehaviour
                             break;
                         case (byte)e_AttackType.BeforAttack:
                             AttackType = (byte)e_AttackType.Attack;
-                            AttackTime = _AttackRate;
+                            AttackTime = _AttackRate;       
                             _attackObject.SetActive(true);
                             break;
-                        case (byte)e_AttackType.Attack:
+                        case (byte)e_AttackType.Attack:                         
                             AttackType = (byte)e_AttackType.AfterAttack;
                             AttackTime = _afterAttackRate;
                             _attackObject.SetActive(false);
@@ -273,8 +285,15 @@ public class Enemy_Boss : MonoBehaviour
             if (0 < JumpTime)       //ジャンプをするまでの時間
             {
                 JumpTime -= Time.deltaTime;
+                animator.SetBool("Stand1", true);
+                animator.SetBool("Stand2", false);
+                animator.SetBool("BodyPress", false);
+                animator.SetBool("Jump", false);
+                animator.SetBool("Stun", false);
                 if(JumpTime <= 0)
                 {
+                    animator.SetBool("Stand1", false);
+                    animator.SetBool("Jump", true);
                     _switchObject.SetActive(true);
                     SwitchFlag = false;
                 }
@@ -289,6 +308,11 @@ public class Enemy_Boss : MonoBehaviour
                 case (byte)e_ActivityType.Stan:
                     if (StanType == (byte)e_StanType.move && StanTime <= 0)
                     {
+                        animator.SetBool("Stand1", false);
+                        animator.SetBool("Stand2", false);
+                        animator.SetBool("BodyPress", false);                        
+                        animator.SetBool("Jump", false);
+                        animator.SetBool("Stun", true);
                         Vector2 speed = new Vector2(0.0f, -_StanFallSpeed);
                         rb.velocity = speed;
                     }
@@ -298,6 +322,11 @@ public class Enemy_Boss : MonoBehaviour
                 case (byte)e_ActivityType.Jump:
                     if (JumpTime <= 0)
                     {
+                        animator.SetBool("Stand1", false);
+                        animator.SetBool("Stand2", false);
+                        animator.SetBool("BodyPress", false);                        
+                        animator.SetBool("Jump", true);
+                        animator.SetBool("Stun", false);
                         Vector2 speed = new Vector2(0.0f, _jumpSpeed);
                         rb.velocity = speed;
                     }
@@ -306,6 +335,14 @@ public class Enemy_Boss : MonoBehaviour
                 case (byte)e_ActivityType.Attack:
                     if(AttackType == (byte)e_AttackType.move && AttackTime <= 0)
                     {
+                        animator.SetBool("Stand1", false);
+                        animator.SetBool("Stand2", true);
+                        animator.SetBool("BodyPress", false);
+                        animator.SetBool("BeforeAtack", false);
+                        animator.SetBool("Atack", false);
+                        animator.SetBool("AfterAtack", false);
+                        animator.SetBool("Jump", false);
+                        animator.SetBool("Stun", false);
                         Vector2 speed = new Vector2(0.0f, moveSpeed);
                         rb.velocity = speed;
                         if (startPlayerPosition.y + _playerY >= transform.position.y)
@@ -327,6 +364,11 @@ public class Enemy_Boss : MonoBehaviour
 
                     if(BodyPressTime <= 0)
                     {
+                        animator.SetBool("Stand1", false);
+                        animator.SetBool("Stand2", false);
+                        animator.SetBool("BodyPress", true);                        
+                        animator.SetBool("Jump", false);
+                        animator.SetBool("Stun", false);
                         Vector2 speed = new Vector2(0.0f, moveSpeed);
                         rb.velocity = speed;
                     }
@@ -349,6 +391,7 @@ public class Enemy_Boss : MonoBehaviour
                 ActivityType = (byte)e_ActivityType.Jump;
                 AttackType = 0;
                 JumpTime = _jumpRate;
+                
                 PlayerDamage = _AttackHitDamage;
                 if(transform.localScale.y < 0)
                 {
@@ -508,11 +551,11 @@ public class Enemy_Boss : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Gareki"))
         {
-            //animator.SetBool("Stand", false);
-            //animator.SetBool("Stun", true);
-            //animator.SetBool("BeforeAtack", false);
-            //animator.SetBool("Atack", false);
-            //animator.SetBool("Jump", false);
+            animator.SetBool("Stand", false);
+            animator.SetBool("Stun", true);
+            animator.SetBool("BeforeAtack", false);
+            animator.SetBool("Atack", false);
+            animator.SetBool("Jump", false);
 
             StanTime += _stanRate;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
