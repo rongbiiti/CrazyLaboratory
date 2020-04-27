@@ -13,10 +13,12 @@ public class PausePanel : MonoBehaviour
 
 	private InputManager im;
 	private Image panel;
+	private PlayerController pc;
 
 	private void Start () {
 		im = InputManager.Instance;
 		panel = GetComponent<Image>();
+		pc = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
 	}
 
 	private void Update () {
@@ -42,6 +44,7 @@ public class PausePanel : MonoBehaviour
 		_pauseMenu.SetActive(true);
 		panel.enabled = true;
 		Time.timeScale = 0;
+		pc.enabled = false;
 		Pauser.Pause();
 	}
 
@@ -53,6 +56,7 @@ public class PausePanel : MonoBehaviour
 		_quitPanel.SetActive(false);
 		panel.enabled = false;
 		Time.timeScale = 1;
+		pc.enabled = true;
 		Pauser.Resume();
 	}
 
