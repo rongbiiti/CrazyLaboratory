@@ -143,7 +143,6 @@ public class Enemy_Boss : MonoBehaviour
             animator.SetBool("Stand1", false);
             animator.SetBool("Stand2", false);
             animator.SetBool("BodyPress", false);
-            animator.SetBool("BeforeAtack", false);
             animator.SetBool("Atack", false);
             animator.SetBool("Jump", false);
             animator.SetBool("Stun", false);
@@ -188,7 +187,6 @@ public class Enemy_Boss : MonoBehaviour
                 animator.SetBool("Stand1", false);
                 animator.SetBool("Stand2", false);
                 animator.SetBool("BodyPress", false);
-                //animator.SetBool("BeforeAtack", false);
                 animator.SetBool("Atack", false);
                 animator.SetBool("Jump", false);
                 animator.SetBool("Stun", true);
@@ -268,6 +266,8 @@ public class Enemy_Boss : MonoBehaviour
                             _attackObject.SetActive(false);
                             break;
                         case (byte)e_AttackType.AfterAttack:
+                            animator.SetBool("Stand2", true);
+                            animator.SetBool("Atack", false);
                             moveSpeed = _ascentSpeed;   //上昇するスピードを格納
                             _switchObject.SetActive(true);
                             SwitchFlag = false;
@@ -337,7 +337,7 @@ public class Enemy_Boss : MonoBehaviour
 
                 case (byte)e_ActivityType.Jump:
 
-                    if(JumpTime <= 0.15f) {
+                    if(JumpTime <= 0.18f) {
                         animator.SetBool("Stand1", false);
                         animator.SetBool("Stand2", false);
                         animator.SetBool("BodyPress", false);
