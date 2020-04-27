@@ -25,11 +25,11 @@ public class BreakBlockPivot : MonoBehaviour
 
     void Start()
     {
-        parent1 = transform.parent.gameObject;
-        startScale = parent1.transform.localScale;
-        Startposition = parent1.transform.position;
-        Startzikkenposition = gameObject.transform.position;
-        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        parent1 = transform.parent.gameObject;                      //親のオブジェクト格納用
+        startScale = parent1.transform.localScale;                  //親の初期サイズ格納
+        Startposition = parent1.transform.position;                 //親の初期ポジション格納
+        Startzikkenposition = gameObject.transform.position;        //子の初期ポジション
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>(); 
     }
 
     private void FixedUpdate()
@@ -120,9 +120,6 @@ public class BreakBlockPivot : MonoBehaviour
 
             //Y座標の３分の一に分けて位置を指定
             var ThisY = spriteRenderer.size.y * gameObject.transform.localScale.y / 2 / 2;
-
-
-
             //Y座標
             if (gameObject.transform.position.y + ThisY <= collision.transform.position.y) {
                 worldPos.y = transform.position.y - spriteRenderer.size.y * gameObject.transform.localScale.y / 2.0f;
