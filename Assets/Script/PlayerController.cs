@@ -259,7 +259,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         pool = gameObject.AddComponent<ObjectPool>();
-        pool.CreatePool(_acidbulletPrefab, 2);
+        pool.CreatePool(_acidbulletPrefab, 6);
         Instantiate(_rsdAcdPool);
     }
 
@@ -517,6 +517,7 @@ public class PlayerController : MonoBehaviour
         if (!(0 < HP)) return;
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
+            
         }
 
         if(0 < acidDamageTime) {
@@ -762,7 +763,7 @@ public class PlayerController : MonoBehaviour
         }
         Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
-        float rad = 0;
+        float rad;
 
         // 上に発射
         if (ceilDeadZone < im.Trigger)
@@ -874,6 +875,7 @@ public class PlayerController : MonoBehaviour
             _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
         }
         fireTime += _hmFireRate;
+        if (IsMachinGun) fireTime = 0.2f;
         if (hmBullets <= 0) {
             _handgunUI.Select();
             equipment = Equipment.Handgun;
