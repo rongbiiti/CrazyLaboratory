@@ -9,6 +9,7 @@ public class EnemyHpbar : MonoBehaviour {
     [HideInInspector] public Slider hpbar;
     [SerializeField, CustomLabel("HPバーのY軸オフセット")] private float _YposOffset = 3.0f;  // Enemyの頭上にHPバーを表示するためのオフセットの値
     private Camera cam;
+    private RectTransform rect;
 
     /// <summary>
     /// 最初に、シーンに内にあるカメラを探す。
@@ -21,6 +22,7 @@ public class EnemyHpbar : MonoBehaviour {
         hpbar = Instantiate(HPbar) as Slider;
         GameObject canvas = GameObject.Find("Canvas");
         hpbar.transform.SetParent(canvas.transform, false);
+        rect = hpbar.GetComponent<RectTransform>();
     }
 
     /// <summary>
@@ -33,6 +35,7 @@ public class EnemyHpbar : MonoBehaviour {
     {
         hpbar.maxValue = maxHP;
         hpbar.value = nowHP;
+        rect.localScale = new Vector3((maxHP * 0.2f),1,1);
     }
 
     /// <summary>

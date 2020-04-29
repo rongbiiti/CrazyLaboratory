@@ -870,7 +870,6 @@ public class PlayerController : MonoBehaviour
         }
 
         StartCoroutine("HoleMakerSound");
-        --hmBullets;
         if (_isUIDisplay) {
             _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
         }
