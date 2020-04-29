@@ -136,11 +136,14 @@ public class AcidFlask : MonoBehaviour {
             if (!isConflictDestroy) return;
             enemyHitEffect.transform.position = transform.position;
             enemyHitEffect.SetActive(true);
-            ResetPosition();
+            if(isConflictDestroy)
+            {
+                StartCoroutine("ResetPosition");
+            }
         } else if (collision.CompareTag("Beaker")) {
             Debug.Log("中に入った");
             if (isConflictDestroy) {
-                ResetPosition();
+                StartCoroutine("ResetPosition");
             }
         }
     }
