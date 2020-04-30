@@ -46,6 +46,7 @@ public class PausePanel : MonoBehaviour
 		Time.timeScale = 0;
 		pc.enabled = false;
 		Pauser.Pause();
+		SoundManagerV2.Instance.PlaySE(24);
 	}
 
 	public void ClosePausePanel()
@@ -58,42 +59,49 @@ public class PausePanel : MonoBehaviour
 		Time.timeScale = 1;
 		pc.enabled = true;
 		Pauser.Resume();
+		SoundManagerV2.Instance.PlaySE(23);
 	}
 
 	public void OpenRestartPanel()
 	{
 		_pauseMenu.SetActive(false);
 		_restartPanel.SetActive(true);
+		SoundManagerV2.Instance.PlaySE(21);
 	}
 	
 	public void CloseRestartPanel()
 	{
 		_pauseMenu.SetActive(true);
 		_restartPanel.SetActive(false);
+		SoundManagerV2.Instance.PlaySE(23);
 	}
 	
 	public void OpenOptionPanel()
 	{
 		_pauseMenu.SetActive(false);
 		_optionPanel.SetActive(true);
+		SoundManagerV2.Instance.PlaySE(21);
 	}
 	
 	public void CloseOptionPanel()
 	{
 		_pauseMenu.SetActive(true);
 		_optionPanel.SetActive(false);
+		SoundManagerV2.Instance.PlaySE(23);
 	}
 	
 	public void OpenQuitPanel()
 	{
 		_pauseMenu.SetActive(false);
 		_quitPanel.SetActive(true);
+		SoundManagerV2.Instance.PlaySE(21);
 	}
 	
 	public void CloseQuitPanel()
 	{
 		_pauseMenu.SetActive(true);
 		_quitPanel.SetActive(false);
+		SoundManagerV2.Instance.PlaySE(23);
 	}
 
 	public void Restart()

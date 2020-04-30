@@ -386,6 +386,8 @@ public class Enemy_Bee : MonoBehaviour
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                ScoreManager.Instance.KillCnt++;
+                ScoreManager.Instance.TotalKillCnt++;
                 gameObject.transform.GetChild(0).transform.GetComponent<Collider2D>().enabled = false;
                 gameObject.transform.GetChild(1).transform.GetComponent<Collider2D>().enabled = false;
             }
@@ -520,6 +522,8 @@ public class Enemy_Bee : MonoBehaviour
             animator.SetBool("Stun", true);
 
             stanTimeRemain += _stanTime;
+            ScoreManager.Instance.StunCnt++;
+            ScoreManager.Instance.TotalStunCnt++;
             AttackPhase = 0;
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");

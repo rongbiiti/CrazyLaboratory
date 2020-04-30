@@ -43,12 +43,16 @@ public class Elevator : MonoBehaviour
 		yield return  new WaitForSeconds(1.5f);
 		if (SceneManager.GetActiveScene().name == "Stage2")
 		{
-			FadeManager.Instance.LoadScene("Stage3", 1.5f);
+			SaveManager.Instance.Save(pc.Hp, 3);
+			ScoreManager.Instance.SceneName = SceneManager.GetActiveScene().name;
+			FadeManager.Instance.LoadScene("HayatoScene_16", 1.5f);
 		}
 		else
 		{
-			FadeManager.Instance.LoadScene("Stage2", 1f);
+			SaveManager.Instance.Save(pc.Hp, 2);
+			ScoreManager.Instance.SceneName = SceneManager.GetActiveScene().name;
+			FadeManager.Instance.LoadScene("HayatoScene_16", 1f);
 		}
-		SaveManager.Instance.Save(pc.Hp, 2);
+		
 	}
 }

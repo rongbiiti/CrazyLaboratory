@@ -344,6 +344,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                ScoreManager.Instance.KillCnt++;
+                ScoreManager.Instance.TotalKillCnt++;
                 transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
                 transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
             }   
@@ -418,6 +420,8 @@ public class Enemy_ChildSpider : MonoBehaviour {
             animator.SetBool("Stand", false);
             animator.SetBool("Walk", false);
             stanTimeRemain += _stanTime;
+            ScoreManager.Instance.StunCnt++;
+            ScoreManager.Instance.TotalStunCnt++;
             AttackPhase = 0;
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");

@@ -15,6 +15,7 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private ScoreManager sm;
     private InputManager im;
     private PlayerManager pm;
     private ObjectPool pool;
@@ -265,6 +266,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        sm = ScoreManager.Instance;
+        sm.StageScoreReset();
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
         cam = GameObject.Find("Main Camera");
@@ -472,7 +475,7 @@ public class PlayerController : MonoBehaviour
             Model.Parts[12].Opacity = 1;
         }
 
-        if ((im.ShotKey == 1 || (im.ShotKey == 2 && IsMachinGun) || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
+        if ((im.ShotKey == 1 || (im.ShotKey == 2 && IsMachinGun)) && fireTime <= 0) {
 
             if(equipment == Equipment.Handgun && isGetGun) {
                 HandgunShot();
@@ -515,6 +518,10 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (!(0 < HP)) return;
+        
+        sm.PlayTime += Time.deltaTime;
+        sm.GameClearTime += Time.deltaTime;
+        
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
             
@@ -1036,6 +1043,8 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Restart(float interval)
     {
         yield return new WaitForSeconds(interval);
+        sm.RetryCnt++;
+        sm.TotalRetryCnt++;
         foreach (var rps in restartPoints)
         {
             RestartPoint rp = rps.GetComponent<RestartPoint>();

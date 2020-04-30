@@ -37,6 +37,7 @@ public class TitleSceneManager : MonoBehaviour {
     void Update () {
 		if(Input.anyKey && !isAnyKeyPress) {
             _animator.SetTrigger("Decide");
+            SoundManagerV2.Instance.PlaySE(21);
             _plsAnyKey.SetActive(false);
             StartMenuOpen();
             isAnyKeyPress = true;
@@ -54,10 +55,12 @@ public class TitleSceneManager : MonoBehaviour {
         SaveManager.Instance.IsNewGame = true;
         SaveManager.Instance.Save(9999, 1);
         isDicide = true;
+        ScoreManager.Instance.AllReset();
     }
 
     public void StageSelectOpen()
     {
+        SoundManagerV2.Instance.PlaySE(21);
         switch (SaveManager.Instance.save.stage)
         {
             case 1:
@@ -79,6 +82,7 @@ public class TitleSceneManager : MonoBehaviour {
 
     public void StartMenuOpen()
     {
+        SoundManagerV2.Instance.PlaySE(21);
         _startMenu.SetActive(true);
         _stageSelect.SetActive(false);
         _option.SetActive(false);
@@ -87,38 +91,46 @@ public class TitleSceneManager : MonoBehaviour {
     
     public void OptionOpen()
     {
+        SoundManagerV2.Instance.PlaySE(21);
         _startMenu.SetActive(false);
         _option.SetActive(true);
     }
 
     public void QuitOpen()
     {
+        SoundManagerV2.Instance.PlaySE(21);
         _startMenu.SetActive(false);
         _quit.SetActive(true);
     }
 
     public void Stage1()
     {
+        SoundManagerV2.Instance.PlaySE(21);
         _stageSelect.SetActive(false);
         FadeManager.Instance.LoadScene("Stage1", 2f);
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
+        ScoreManager.Instance.AllReset();
     }
     
     public void Stage2()
     {
+        SoundManagerV2.Instance.PlaySE(21);
         _stageSelect.SetActive(false);
         FadeManager.Instance.LoadScene("Stage2", 2f);
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
+        ScoreManager.Instance.AllReset();
     }
     
     public void Stage3()
     {
+        SoundManagerV2.Instance.PlaySE(21);
         _stageSelect.SetActive(false);
         FadeManager.Instance.LoadScene("Stage3", 2f);
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
+        ScoreManager.Instance.AllReset();
     }
 
     public void Quit()
