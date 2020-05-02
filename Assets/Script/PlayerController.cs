@@ -439,8 +439,10 @@ public class PlayerController : MonoBehaviour
         // ジャンプボタンを押した瞬間は、アニメーションだけ先に動作させます！
         if (isJumpingCheck && im.JumpKey == 1 && isGrounded && jumpWaitTime < 0) {
             anicount = 0.0f;
-            animator.SetBool("JumpUp", true);
+            animator.SetBool("JumpStart", true);
+            animator.SetBool("JumpUp", false);
             animator.SetBool("JumpDown", false);
+            animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
@@ -453,6 +455,11 @@ public class PlayerController : MonoBehaviour
             jumpWaitTime -= Time.deltaTime;
             if (isJumpingCheck && jumpWaitTime < 0)
             {
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", true);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
+
                 isJumpingCheck = false;
                 jumpTimeCounter = pm.JumpTime;
                 isJumping = true;
@@ -589,8 +596,10 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             _jumpPower = pm.JumpPower;
             anicount = 0.0f;
+            animator.SetBool("JumpStart", false);
             animator.SetBool("JumpUp", true);
             animator.SetBool("JumpDown", false);
+            animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);      
@@ -614,6 +623,10 @@ public class PlayerController : MonoBehaviour
 
             if (0 < groundingTime && groundingTime < 5)
             {
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", true);
                 // ここに着地した瞬間の処理書くといいかも
             }
             else if ((im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey) && jumpWaitTime < 0 && im.MoveStopKey == 0)    // 移動中
@@ -621,7 +634,10 @@ public class PlayerController : MonoBehaviour
                 anicount = 0.0f;            
                 animator.SetBool("Run", true);
                 animator.SetBool("Stand", false);
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", false);
                 animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
             }
             else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey  && jumpWaitTime < 0)    // 待機モーション中
@@ -634,7 +650,10 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", false);
                 animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
             }
             // 空中にいるとき
@@ -653,9 +672,11 @@ public class PlayerController : MonoBehaviour
             
             // ジャンプしてない
             if (!isJumping) {
+                animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
-                if (!isGrounded && !isJumping){
+                if (!isGrounded && !isJumping){                   
                     animator.SetBool("JumpDown", true);
+                    animator.SetBool("JumpEnd", false);
                     animator.SetBool("Run", false);
                 }
 
@@ -1065,7 +1086,10 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Stand", true);
         animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
+        animator.SetBool("JumpStart", false);
+        animator.SetBool("JumpUp", false);
         animator.SetBool("JumpDown", false);
+        animator.SetBool("JumpEnd", false);
         rb.velocity = Vector2.zero;
         
     }
