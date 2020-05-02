@@ -336,8 +336,8 @@ public class Enemy_ant : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
+                SoundManagerV2.Instance.PlaySE(2);
             }
-            SoundManagerV2.Instance.PlaySE(2);
         }
     }
 
