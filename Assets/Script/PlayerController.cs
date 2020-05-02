@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D capcol;
     private BoxCollider2D boxcol;
     private CubismRenderController cubismRender;
+    public bool _Debug;
     [SerializeField] private Text _debug;
     [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
 
@@ -707,7 +708,7 @@ public class PlayerController : MonoBehaviour
             isJumpingCheck = true;
         }
 
-        _debug.text = groundingTime.ToString();
+        if(_Debug) _debug.text = groundingTime.ToString();
     }
 
     private void GhostMove()
