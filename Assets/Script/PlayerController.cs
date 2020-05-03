@@ -231,6 +231,7 @@ public class PlayerController : MonoBehaviour
     private bool isJumpingCheck = true;
     private float jumpTimeCounter;
     private float _jumpPower;
+    private float jumpMinTime;
 
     private Vector3 restartPosition;
     private float restartHP;
@@ -446,14 +447,14 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
-            jumpWaitTime = jumpWaitTime * 0 + 0.0501f;
+            jumpWaitTime = jumpWaitTime * 0 + 0.1169f;
         }
 
         // ジャンプの本処理はこっち。
         if (0 <= jumpWaitTime)
         {
             jumpWaitTime -= Time.deltaTime;
-            if (isJumpingCheck && jumpWaitTime < 0)
+            if (isJumpingCheck && jumpWaitTime < 0 && jumpMinTime <= 0)
             {
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", true);
@@ -464,6 +465,7 @@ public class PlayerController : MonoBehaviour
                 jumpTimeCounter = pm.JumpTime;
                 isJumping = true;
                 _jumpPower = pm.JumpPower;
+                jumpMinTime = pm.JumpMinTime;
                 SoundManagerV2.Instance.PlaySE(9);
             }
         }
@@ -569,12 +571,9 @@ public class PlayerController : MonoBehaviour
             flip = false;
         }
         
-        // 地面と当たり判定をしている。
-        if (jumpWaitTime < 0)
-        {
-            isGrounded = rb.IsTouching(filter2d);
-        }
-        
+        // 地面と当たり判定をしている
+        isGrounded = rb.IsTouching(filter2d);
+
         if (isGhost)
         {
             GhostMove();
@@ -608,9 +607,9 @@ public class PlayerController : MonoBehaviour
         // 地面にいるとき
         if (isGrounded && !isJumping && jumpWaitTime < 0)
         {
-            if(groundingTime < 5) groundingTime++;
+            if(groundingTime < 10) groundingTime++;
 
-            if (im.MoveKey <= -moveDeadZone || moveDeadZone <= im.MoveKey)
+            if ((im.MoveKey <= -moveDeadZone || moveDeadZone <= im.MoveKey) && jumpWaitTime < 0)
             {
                 rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
             }
@@ -621,7 +620,7 @@ public class PlayerController : MonoBehaviour
             
             anicount += Time.deltaTime;
 
-            if (0 < groundingTime && groundingTime < 5)
+            if (0 < groundingTime && groundingTime < 10)
             {
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
@@ -666,14 +665,16 @@ public class PlayerController : MonoBehaviour
             }
 
             // ジャンプキーが話されたらジャンプ中でないことにする
-            if (im.JumpKey == 0) {
+            if (im.JumpKey == 0  && jumpWaitTime < 0 && jumpMinTime < 0) {
                 isJumping = false;
             }
             
             // ジャンプしてない
-            if (!isJumping) {
+            if (!isJumping  && jumpWaitTime < 0) {
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
                 if (!isGrounded && !isJumping){                   
                     animator.SetBool("JumpDown", true);
                     animator.SetBool("JumpEnd", false);
@@ -690,7 +691,7 @@ public class PlayerController : MonoBehaviour
                     // ジャンプパワーがまだあるときは小ジャンプ実現のためにジャンプパワー軽減率を使う
                     if (0 <= _jumpPower) {
                         _jumpPower -= pm.JumpPowerAttenuation * 2;
-                        rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
+                        rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), _jumpPower));
                     // ジャンプパワーがないときは重力を使って落とす
                     } else {
                         rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), Physics.gravity.y * pm.GravityRate));
@@ -705,17 +706,18 @@ public class PlayerController : MonoBehaviour
             groundingTime = 0;
             // ジャンプキーを押し続けていられる時間をへらす
             jumpTimeCounter -= Time.deltaTime;
+            jumpMinTime -= Time.deltaTime;
             anicount = 0.0f;
             animator.SetBool("Run", false);
 
             // ジャンプキーを押し続けている間は通常のジャンプパワー軽減率がはたらく
-            if (im.JumpKey == 2) {
+            if (im.JumpKey == 2 || 0 <= jumpMinTime) {
                 _jumpPower -= pm.JumpPowerAttenuation;
-                rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
+                rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), _jumpPower));
             }
 
             // ジャンプキーを押し続けていられる時間がくると、ジャンプ中を解除する
-            if (jumpTimeCounter < 0) {
+            if (jumpTimeCounter < 0 && jumpMinTime < 0) {
                 isJumping = false;
             }
 
@@ -729,7 +731,7 @@ public class PlayerController : MonoBehaviour
             isJumpingCheck = true;
         }
 
-        if(_Debug) _debug.text = groundingTime.ToString();
+        if(_Debug) _debug.text = isJumping.ToString();
     }
 
     private void GhostMove()
