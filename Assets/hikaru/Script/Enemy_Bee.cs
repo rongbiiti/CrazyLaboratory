@@ -15,7 +15,7 @@ public class Enemy_Bee : MonoBehaviour
     [SerializeField] private float _moveSpeed = 20f;
     [SerializeField] private float _moveDashSpeed = 40f;
 
-    private bool _directionChange;     //false:LEFT true:RIGHT
+    [SerializeField] private bool _directionChange;     //false:LEFT true:RIGHT
     //private int _direction;
     private float Start_Rotation_Z;   //Zの回転情報
     [SerializeField] private float _stanTime = 3f;
@@ -198,7 +198,7 @@ public class Enemy_Bee : MonoBehaviour
 
                     if (waitType == true)
                     {
-                        Direction(playerObject.transform.position);
+                        //Direction(playerObject.transform.position);
                     }
 
                     if (waitType == true) break;
@@ -346,7 +346,7 @@ public class Enemy_Bee : MonoBehaviour
                     gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     _directionChange = false;
                 }
-                else if(_directionChange == false && gameObject.transform.position.x < playerObject.transform.position.x)
+                else if (_directionChange == false && gameObject.transform.position.x < playerObject.transform.position.x)
                 {
                     gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     _directionChange = true;
