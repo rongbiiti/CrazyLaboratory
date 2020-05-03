@@ -441,13 +441,15 @@ public class PlayerController : MonoBehaviour
         if (isJumpingCheck && im.JumpKey == 1 && isGrounded && jumpWaitTime < 0) {
             anicount = 0.0f;
             animator.SetBool("JumpStart", true);
+            animator.SetBool("JumpStart-run", true);
             animator.SetBool("JumpUp", false);
+            animator.SetBool("JumpUp-run", false);
             animator.SetBool("JumpDown", false);
             animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
-            jumpWaitTime = jumpWaitTime * 0 + 0.1169f;
+            jumpWaitTime = jumpWaitTime * 0 + 0.17f;
         }
 
         // ジャンプの本処理はこっち。
@@ -457,6 +459,8 @@ public class PlayerController : MonoBehaviour
             if (isJumpingCheck && jumpWaitTime < 0 && jumpMinTime <= 0)
             {
                 animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", true);
                 animator.SetBool("JumpUp", true);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
@@ -597,6 +601,8 @@ public class PlayerController : MonoBehaviour
             anicount = 0.0f;
             animator.SetBool("JumpStart", false);
             animator.SetBool("JumpUp", true);
+            animator.SetBool("JumpStart-run", false);
+            animator.SetBool("JumpUp-run", true);
             animator.SetBool("JumpDown", false);
             animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
@@ -624,6 +630,8 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", true);
                 // ここに着地した瞬間の処理書くといいかも
@@ -635,6 +643,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Stand", false);
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
@@ -651,6 +661,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Run", false);
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
@@ -673,10 +685,13 @@ public class PlayerController : MonoBehaviour
             if (!isJumping  && jumpWaitTime < 0) {
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 if (!isGrounded && !isJumping){                   
                     animator.SetBool("JumpDown", true);
+                    animator.SetBool("JumpUp-run", false);
                     animator.SetBool("JumpEnd", false);
                     animator.SetBool("Run", false);
                 }
@@ -1089,6 +1104,8 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
         animator.SetBool("JumpStart", false);
+        animator.SetBool("JumpStart-run", false);
+        animator.SetBool("JumpUp-run", false);
         animator.SetBool("JumpUp", false);
         animator.SetBool("JumpDown", false);
         animator.SetBool("JumpEnd", false);
