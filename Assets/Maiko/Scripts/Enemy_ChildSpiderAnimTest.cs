@@ -15,6 +15,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         count,
     }
 
+    [SerializeField, CustomLabel("死亡時煙エフェクト")] private GameObject _smokeEffect;
     [SerializeField] private float _HP = 1f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _PlayerDamage = 1000f;
@@ -362,6 +363,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 isZeroHP = true;
                 transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
                 transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
             }
         }
 

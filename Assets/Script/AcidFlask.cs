@@ -134,6 +134,10 @@ public class AcidFlask : MonoBehaviour {
     {
         if (collision.CompareTag("EnemyHitBox")) {
             if (!isConflictDestroy) return;
+            acidParticleSystem.Simulate(0.0f, true, true);
+            acidEffect.transform.position = transform.position;
+            acidEffect.SetActive(true);
+            acidParticleSystem.Play();
             enemyHitEffect.transform.position = transform.position;
             enemyHitEffect.SetActive(true);
             if(isConflictDestroy)
