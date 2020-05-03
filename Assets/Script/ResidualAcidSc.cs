@@ -7,10 +7,16 @@ using UnityEngine;
 public class ResidualAcidSc : MonoBehaviour {
 
     [SerializeField, Range(0f, 60f), CustomLabel("当たり判定消えるまでの時間")] private float _destroyTime = 5f;
+
+    [SerializeField, CustomLabel("大きくなる時間")]
+    private float _increaseTime = 0.5f;
+        
     [SerializeField, Range(0f, 4f), CustomLabel("フェードアウトする時間")] private float _fadeTime = 0.5f;
+    [SerializeField, CustomLabel("煙のエフェクト")] private GameObject _effect;
     private float resetTime;
     private float fadeResetTime;
     private Vector3 startScale;
+    private Vector3 initScale;
     private SpriteRenderer sprite;
     private Color color;
     private BoxCollider2D col;
@@ -22,7 +28,6 @@ public class ResidualAcidSc : MonoBehaviour {
 
     private void Start()
     {
-        
         sprite = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         resetTime = _destroyTime;
@@ -39,6 +44,11 @@ public class ResidualAcidSc : MonoBehaviour {
             }
         } else {
             resetTime -= Time.deltaTime;
+            if (transform.localScale.x <= initScale.x)
+            {
+                transform.localScale += new Vector3(initScale.x / _increaseTime * Time.deltaTime, initScale.y / _increaseTime * Time.deltaTime);
+            }
+            
             if (resetTime <= 0) {
                 col.enabled = false;
             }
@@ -60,7 +70,9 @@ public class ResidualAcidSc : MonoBehaviour {
         vec.x = loVec.x / paVec.x * vec.x;
         vec.y = loVec.y / paVec.y * vec.y;
         vec.z = loVec.z / paVec.z * vec.z;
-        transform.localScale = vec;
+        initScale = vec;
+        transform.localScale = Vector3.zero;
+        Instantiate(_effect, transform.position, transform.rotation);
     }
 
     private void ResetPosition()

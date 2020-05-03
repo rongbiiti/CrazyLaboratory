@@ -356,6 +356,8 @@ public class Enemy_Kama : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                ScoreManager.Instance.KillCnt++;
+                ScoreManager.Instance.TotalKillCnt++;
                 for(int i = 0; i < (int)Child.count; i++)
                 {
                     gameObject.transform.GetChild(i).transform.GetComponent<Collider2D>().enabled = false;
@@ -381,8 +383,8 @@ public class Enemy_Kama : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
+                SoundManagerV2.Instance.PlaySE(2);
             }
-            SoundManagerV2.Instance.PlaySE(2);
         }
     }
 
@@ -407,6 +409,8 @@ public class Enemy_Kama : MonoBehaviour {
             animator.SetBool("Jump", false);
 
             stanTimeRemain += _stanTime;
+            ScoreManager.Instance.StunCnt++;
+            ScoreManager.Instance.TotalStunCnt++;
             AttackPhase = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
             SoundManagerV2.Instance.PlaySE(3);
@@ -423,8 +427,8 @@ public class Enemy_Kama : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
+                SoundManagerV2.Instance.PlaySE(2);
             }
-            SoundManagerV2.Instance.PlaySE(2);
         }
     }
 

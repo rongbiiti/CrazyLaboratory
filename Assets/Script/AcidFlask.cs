@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class AcidFlask : MonoBehaviour {
 
@@ -9,6 +10,8 @@ public class AcidFlask : MonoBehaviour {
     private float resetTime;
     private bool isConflictDestroy = true;
     private Rigidbody2D rb;
+    private BoxCollider2D col;
+    private SpriteRenderer sr;
     public bool SetConflictDestroyFalse
     {
         set{ isConflictDestroy = false; }
@@ -21,6 +24,8 @@ public class AcidFlask : MonoBehaviour {
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<BoxCollider2D>();
+        sr = GetComponent<SpriteRenderer>();
         resetTime = _destroyTime;
         acidEffect = Instantiate(_acidEffect);
         acidParticleSystem = acidEffect.GetComponent<ParticleSystem>();
@@ -41,11 +46,17 @@ public class AcidFlask : MonoBehaviour {
         transform.rotation = Quaternion.identity;
     }
 
-    private void ResetPosition()
+    private IEnumerator ResetPosition()
     {
-        gameObject.SetActive(false);
-        resetTime = _destroyTime;
+        col.enabled = false;
+        sr.enabled = false;
         rb.velocity = Vector2.zero;
+        resetTime = _destroyTime;
+        rb.gravityScale = 0f;
+        yield return new WaitForSeconds(0.2f);
+        gameObject.SetActive(false);
+        col.enabled = true;
+        sr.enabled = true;
     }
 
     /// <summary>
@@ -112,8 +123,9 @@ public class AcidFlask : MonoBehaviour {
             Debug.Log("側面に当たった");
         }
 
-        if(isConflictDestroy) {
-            ResetPosition();
+        if(isConflictDestroy)
+        {
+            StartCoroutine("ResetPosition");
         }
         
     }
@@ -122,13 +134,20 @@ public class AcidFlask : MonoBehaviour {
     {
         if (collision.CompareTag("EnemyHitBox")) {
             if (!isConflictDestroy) return;
+            acidParticleSystem.Simulate(0.0f, true, true);
+            acidEffect.transform.position = transform.position;
+            acidEffect.SetActive(true);
+            acidParticleSystem.Play();
             enemyHitEffect.transform.position = transform.position;
             enemyHitEffect.SetActive(true);
-            ResetPosition();
+            if(isConflictDestroy)
+            {
+                StartCoroutine("ResetPosition");
+            }
         } else if (collision.CompareTag("Beaker")) {
             Debug.Log("中に入った");
             if (isConflictDestroy) {
-                ResetPosition();
+                StartCoroutine("ResetPosition");
             }
         }
     }

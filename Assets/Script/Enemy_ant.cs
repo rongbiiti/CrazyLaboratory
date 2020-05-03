@@ -296,6 +296,8 @@ public class Enemy_ant : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                ScoreManager.Instance.KillCnt++;
+                ScoreManager.Instance.TotalKillCnt++;
                 gameObject.transform.GetChild((int)Child.Hit_Body).gameObject.SetActive(false);
                 gameObject.transform.GetChild((int)Child.Hit_WeakPoint).transform.GetComponent<CapsuleCollider2D>().enabled = false;
                 gameObject.transform.GetChild((int)Child.Hit_Hindlegs).transform.GetComponent<CapsuleCollider2D>().enabled = false;
@@ -334,8 +336,8 @@ public class Enemy_ant : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
+                SoundManagerV2.Instance.PlaySE(2);
             }
-            SoundManagerV2.Instance.PlaySE(2);
         }
     }
 
@@ -362,6 +364,8 @@ public class Enemy_ant : MonoBehaviour {
             animator.SetBool("Stun", true);
 
             stanTimeRemain += _stanTime;
+            ScoreManager.Instance.StunCnt++;
+            ScoreManager.Instance.TotalStunCnt++;
             AttackPhase = 0;
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");

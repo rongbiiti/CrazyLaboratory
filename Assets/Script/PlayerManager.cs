@@ -112,6 +112,14 @@ public class PlayerManager : MonoBehaviour
         get { return jumpPowerAttenuation; }
         set { jumpPowerAttenuation = value; }
     }
+    
+    /* -- 最小ジャンプ時間 ------------------------------------------------------------------------------- */
+    [SerializeField, CustomLabel("最小ジャンプ時間")] private float jumpMinTime = 0.35f;
+    public float JumpMinTime
+    {
+        get { return jumpMinTime; }
+        set { jumpMinTime = value; }
+    }
 
     /* -- 重力倍率 --------------------------------------------------------------------------------- */
     [SerializeField, Range(0f, 50f), CustomLabel("非ジャンプ時落下しやすさ")] private float gravityRate = 1.8f;

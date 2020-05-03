@@ -15,6 +15,7 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private ScoreManager sm;
     private InputManager im;
     private PlayerManager pm;
     private ObjectPool pool;
@@ -22,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D capcol;
     private BoxCollider2D boxcol;
     private CubismRenderController cubismRender;
+    public bool _Debug;
+    [SerializeField] private Text _debug;
     [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
 
     [SerializeField, CustomLabel("最初から銃を所持")] private bool isStartGetGun = false;
@@ -61,6 +64,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
+    private int groundingTime;
 
     [SerializeField, CustomLabel("残留酸プール")] private GameObject _rsdAcdPool;
     [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
@@ -222,10 +226,12 @@ public class PlayerController : MonoBehaviour
     private float fireTime;
     private float acidDamageTime;
 
+    private float jumpWaitTime = -0.1f;
     private bool isJumping;
     private bool isJumpingCheck = true;
     private float jumpTimeCounter;
     private float _jumpPower;
+    private float jumpMinTime;
 
     private Vector3 restartPosition;
     private float restartHP;
@@ -259,12 +265,14 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         pool = gameObject.AddComponent<ObjectPool>();
-        pool.CreatePool(_acidbulletPrefab, 2);
+        pool.CreatePool(_acidbulletPrefab, 6);
         Instantiate(_rsdAcdPool);
     }
 
     private void Start()
     {
+        sm = ScoreManager.Instance;
+        sm.StageScoreReset();
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
         cam = GameObject.Find("Main Camera");
@@ -429,21 +437,41 @@ public class PlayerController : MonoBehaviour
             animator.SetLayerWeight(Shot4Layer, weight4);
         }
 
-        // 地面と当たり判定をしている。
-        isGrounded = rb.IsTouching(filter2d);
-
-        if (isJumpingCheck && im.JumpKey == 1 && isGrounded) {
-            jumpTimeCounter = pm.JumpTime;
-            isJumpingCheck = false;
-            isJumping = true;
-            _jumpPower = pm.JumpPower;
-            SoundManagerV2.Instance.PlaySE(9);
+        // ジャンプボタンを押した瞬間は、アニメーションだけ先に動作させます！
+        if (isJumpingCheck && im.JumpKey == 1 && isGrounded && jumpWaitTime < 0) {
             anicount = 0.0f;
-            animator.SetBool("JumpUp", true);
+            animator.SetBool("JumpStart", true);
+            animator.SetBool("JumpStart-run", true);
+            animator.SetBool("JumpUp", false);
+            animator.SetBool("JumpUp-run", false);
             animator.SetBool("JumpDown", false);
+            animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
-            animator.SetBool("Wait", false);            
+            animator.SetBool("Wait", false);
+            jumpWaitTime = jumpWaitTime * 0 + 0.17f;
+        }
+
+        // ジャンプの本処理はこっち。
+        if (0 <= jumpWaitTime)
+        {
+            jumpWaitTime -= Time.deltaTime;
+            if (isJumpingCheck && jumpWaitTime < 0 && jumpMinTime <= 0)
+            {
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", true);
+                animator.SetBool("JumpUp", true);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
+
+                isJumpingCheck = false;
+                jumpTimeCounter = pm.JumpTime;
+                isJumping = true;
+                _jumpPower = pm.JumpPower;
+                jumpMinTime = pm.JumpMinTime;
+                SoundManagerV2.Instance.PlaySE(9);
+            }
         }
 
         if (im.MoveStopKey == 2)
@@ -472,7 +500,7 @@ public class PlayerController : MonoBehaviour
             Model.Parts[12].Opacity = 1;
         }
 
-        if ((im.ShotKey == 1 || (im.ShotKey == 2 && IsMachinGun) || im.Trigger > ceilDeadZone || im.Trigger < floorDeadZone) && fireTime <= 0) {
+        if ((im.ShotKey == 1 || (im.ShotKey == 2 && IsMachinGun)) && fireTime <= 0) {
 
             if(equipment == Equipment.Handgun && isGetGun) {
                 HandgunShot();
@@ -515,8 +543,13 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (!(0 < HP)) return;
+        
+        sm.PlayTime += Time.deltaTime;
+        sm.GameClearTime += Time.deltaTime;
+        
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
+            
         }
 
         if(0 < acidDamageTime) {
@@ -525,9 +558,11 @@ public class PlayerController : MonoBehaviour
 
         if (0 < invincibleTime) {
             invincibleTime -= Time.deltaTime;
+            IsNotNockBack = true;
             if (invincibleTime <= 0)
             {
                 cubismRender.Opacity = 1f;
+                IsNotNockBack = false;
             }
         }
         
@@ -539,6 +574,9 @@ public class PlayerController : MonoBehaviour
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
+        
+        // 地面と当たり判定をしている
+        isGrounded = rb.IsTouching(filter2d);
 
         if (isGhost)
         {
@@ -553,6 +591,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerMove()
     {
+        // 無限ジャンプのチート用処理
         if (IsSuperJump && im.JumpKey == 2)
         {
             jumpTimeCounter = pm.JumpTime;
@@ -560,16 +599,23 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
             _jumpPower = pm.JumpPower;
             anicount = 0.0f;
+            animator.SetBool("JumpStart", false);
             animator.SetBool("JumpUp", true);
+            animator.SetBool("JumpStart-run", false);
+            animator.SetBool("JumpUp-run", true);
             animator.SetBool("JumpDown", false);
+            animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);      
         }
 
         // 地面にいるとき
-        if (isGrounded && !isJumping) {
-            if (im.MoveKey <= -moveDeadZone || moveDeadZone <= im.MoveKey)
+        if (isGrounded && !isJumping && jumpWaitTime < 0)
+        {
+            if(groundingTime < 10) groundingTime++;
+
+            if ((im.MoveKey <= -moveDeadZone || moveDeadZone <= im.MoveKey) && jumpWaitTime < 0)
             {
                 rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.MoveSpeed - rb.velocity.x), rb.velocity.y));
             }
@@ -580,29 +626,50 @@ public class PlayerController : MonoBehaviour
             
             anicount += Time.deltaTime;
 
-            if (im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey)    // 移動中
+            if (0 < groundingTime && groundingTime < 10)
+            {
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", true);
+                // ここに着地した瞬間の処理書くといいかも
+            }
+            else if ((im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey) && jumpWaitTime < 0 && im.MoveStopKey == 0)    // 移動中
             {
                 anicount = 0.0f;            
                 animator.SetBool("Run", true);
                 animator.SetBool("Stand", false);
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
             }
-            else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey)    // 待機モーション中
+            else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey  && jumpWaitTime < 0)    // 待機モーション中
             {
                 if (anicount >= 12.0f) {anicount = 0.0f; }         
                 animator.SetBool("Wait", true);
                 animator.SetBool("Stand", false);
             }
-            else if (im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey && rb.velocity.x <= 4f && -4f <= rb.velocity.x)    // 停止中
+            else if (im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey && rb.velocity.x <= 4f && -4f <= rb.velocity.x  && jumpWaitTime < 0 || im.MoveStopKey != 0)    // 停止中
             {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Run", false);
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
             }
             // 空中にいるとき
         } else {
+            groundingTime = 0;
 
             if (IsSuperJump && im.JumpKey == 2)
             {
@@ -610,14 +677,22 @@ public class PlayerController : MonoBehaviour
             }
 
             // ジャンプキーが話されたらジャンプ中でないことにする
-            if (im.JumpKey == 0) {
+            if (im.JumpKey == 0  && jumpWaitTime < 0 && jumpMinTime < 0) {
                 isJumping = false;
             }
+            
             // ジャンプしてない
-            if (!isJumping) {
+            if (!isJumping  && jumpWaitTime < 0) {
+                animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
-                if (!isGrounded && !isJumping){
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
+                if (!isGrounded && !isJumping){                   
                     animator.SetBool("JumpDown", true);
+                    animator.SetBool("JumpUp-run", false);
+                    animator.SetBool("JumpEnd", false);
                     animator.SetBool("Run", false);
                 }
 
@@ -631,7 +706,7 @@ public class PlayerController : MonoBehaviour
                     // ジャンプパワーがまだあるときは小ジャンプ実現のためにジャンプパワー軽減率を使う
                     if (0 <= _jumpPower) {
                         _jumpPower -= pm.JumpPowerAttenuation * 2;
-                        rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
+                        rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), _jumpPower));
                     // ジャンプパワーがないときは重力を使って落とす
                     } else {
                         rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), Physics.gravity.y * pm.GravityRate));
@@ -641,24 +716,23 @@ public class PlayerController : MonoBehaviour
         }
 
         // ジャンプ中
-        if (isJumping) {
-            
+        if (isJumping)
+        {
+            groundingTime = 0;
             // ジャンプキーを押し続けていられる時間をへらす
             jumpTimeCounter -= Time.deltaTime;
+            jumpMinTime -= Time.deltaTime;
             anicount = 0.0f;
             animator.SetBool("Run", false);
 
             // ジャンプキーを押し続けている間は通常のジャンプパワー軽減率がはたらく
-            if (im.JumpKey == 2) {
+            if (im.JumpKey == 2 || 0 <= jumpMinTime) {
                 _jumpPower -= pm.JumpPowerAttenuation;
-                rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), 1 * _jumpPower));
-            } else if(im.JumpKey == 0) {
-                _jumpPower -= pm.JumpPowerAttenuation;
-
+                rb.AddForce(new Vector2(pm.MoveForceMultiplier * (im.MoveKey * pm.JumpMoveSpeed - rb.velocity.x), _jumpPower));
             }
 
             // ジャンプキーを押し続けていられる時間がくると、ジャンプ中を解除する
-            if (jumpTimeCounter < 0) {
+            if (jumpTimeCounter < 0 && jumpMinTime < 0) {
                 isJumping = false;
             }
 
@@ -668,9 +742,11 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (im.JumpKey == 0) {
+        if (im.JumpKey == 0 && jumpWaitTime < 0) {
             isJumpingCheck = true;
         }
+
+        if(_Debug) _debug.text = isJumping.ToString();
     }
 
     private void GhostMove()
@@ -762,19 +838,19 @@ public class PlayerController : MonoBehaviour
         }
         Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
-        float rad = 0;
+        float rad;
 
         // 上に発射
         if (ceilDeadZone < im.Trigger)
         {
             rad = ceilShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
-            muzzleVelocity = ceilShot.MuzzleVelocity; //上へ発射時の初速を代入
-            bRb.gravityScale = ceilShot.GravityScale; //上へ発射時の弾の重量を代入
+            muzzleVelocity = ceilShot.MuzzleVelocity; //真上へ発射時の初速を代入
+            bRb.gravityScale = ceilShot.GravityScale; //真上へ発射時の弾の重量を代入
             
         } else if(im.Trigger < floorDeadZone){
             rad = floorShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
-            muzzleVelocity = floorShot.MuzzleVelocity; //上へ発射時の初速を代入
-            bRb.gravityScale = floorShot.GravityScale; //上へ発射時の弾の重量を代入
+            muzzleVelocity = floorShot.MuzzleVelocity; //真下へ発射時の初速を代入
+            bRb.gravityScale = floorShot.GravityScale; //真下へ発射時の弾の重量を代入
 
         } else if (YStickUpDeadZone < im.UpMoveKey) {
             rad = upShot.FireAngle * Mathf.Deg2Rad; //角度をラジアン角に変換
@@ -869,11 +945,11 @@ public class PlayerController : MonoBehaviour
         }
 
         StartCoroutine("HoleMakerSound");
-        --hmBullets;
         if (_isUIDisplay) {
             _bulletsRemain.text = hmBullets + " / " + _hmBulletCapacity;
         }
         fireTime += _hmFireRate;
+        if (IsMachinGun) fireTime = 0.2f;
         if (hmBullets <= 0) {
             _handgunUI.Select();
             equipment = Equipment.Handgun;
@@ -1027,7 +1103,12 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Stand", true);
         animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
+        animator.SetBool("JumpStart", false);
+        animator.SetBool("JumpStart-run", false);
+        animator.SetBool("JumpUp-run", false);
+        animator.SetBool("JumpUp", false);
         animator.SetBool("JumpDown", false);
+        animator.SetBool("JumpEnd", false);
         rb.velocity = Vector2.zero;
         
     }
@@ -1035,6 +1116,8 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Restart(float interval)
     {
         yield return new WaitForSeconds(interval);
+        sm.RetryCnt++;
+        sm.TotalRetryCnt++;
         foreach (var rps in restartPoints)
         {
             RestartPoint rp = rps.GetComponent<RestartPoint>();

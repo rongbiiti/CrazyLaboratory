@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 /// <summary>
 /// HP回復アイテム。触れるとプレイヤーの回復関数を起動して、
@@ -19,7 +20,9 @@ public class ItemMedkitScript : MonoBehaviour {
     {
         if (collision.CompareTag("Player")) {
             collision.GetComponent<PlayerController>().Heal(_healPercent);
-            SoundManagerV2.Instance.PlaySE(11);
+            ScoreManager.Instance.MedGetCnt++;
+            ScoreManager.Instance.TotalMedGetCnt++;
+            SoundManagerV2.Instance.PlaySE(20);
             Destroy(gameObject);
         }
     }
