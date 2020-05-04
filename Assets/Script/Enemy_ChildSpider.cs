@@ -54,6 +54,9 @@ public class Enemy_ChildSpider : MonoBehaviour {
     private float trackingTime;   //追跡時間の格納用
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
+    [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 1f;
+    [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
+    private float acidDamageTime;
 
     Animator animator;
     
@@ -164,6 +167,11 @@ public class Enemy_ChildSpider : MonoBehaviour {
             if (0 < stanTimeRemain)
             {
                 stanTimeRemain -= Time.deltaTime;
+            }
+
+            if (0 < acidDamageTime)
+            {
+                acidDamageTime -= Time.deltaTime;
             }
 
             if (0 < pointWaitTime)
@@ -381,6 +389,63 @@ public class Enemy_ChildSpider : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
+            }
+        }
+
+        if (collision.CompareTag("ResidualAcid"))
+        {
+            if (acidDamageTime <= 0)
+            {
+                GameObject acidParentBlock = collision.transform.parent.gameObject;
+                var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
+                var _sprite = sprite.sprite;
+                var halfX = _sprite.bounds.extents.x;
+                var _vec = new Vector3(-halfX, 0f, 0f); // これは左上
+                var _unvec = new Vector3(halfX, 0f, 0f); // これは右上
+                var _pos = sprite.transform.TransformPoint(_vec);
+                var _unpos = sprite.transform.TransformPoint(_unvec);
+                if (transform.position.x >= _pos.x && transform.position.x <= _unpos.x)
+                {
+                    acidDamageTime += _acidDamageRate;
+                    nowHP -= _acidDamage;
+                    enemyHpbar.SetBarValue(_HP, nowHP);
+                    if (nowHP <= 0)
+                    {
+                        isZeroHP = true;
+                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
+                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                    }
+                    SoundManagerV2.Instance.PlaySE(4);
+                    Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
+                }
+            }
+        }
+        else if (collision.CompareTag("WallReAcid"))
+        {
+            if (acidDamageTime <= 0)
+            {
+                GameObject acidParentBlock = collision.transform.parent.gameObject;
+                var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
+                var _sprite = sprite.sprite;
+                var _halfY = _sprite.bounds.extents.y;
+                var _vec = new Vector3(0f, -_halfY, 0f); // これは上
+                var _unvec = new Vector3(0f, _halfY, 0f); // これは下
+                var _pos = sprite.transform.TransformPoint(_vec);
+                var _unpos = sprite.transform.TransformPoint(_unvec);
+                if (transform.position.y >= _pos.y && transform.position.y <= _unpos.y)
+                {
+                    acidDamageTime += _acidDamageRate;
+                    nowHP -= _acidDamage;
+                    enemyHpbar.SetBarValue(_HP, nowHP);
+                    if (nowHP <= 0)
+                    {
+                        isZeroHP = true;
+                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
+                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                    }
+                    SoundManagerV2.Instance.PlaySE(4);
+                    Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
+                }
             }
         }
     }
