@@ -61,6 +61,11 @@ public class PlayerController : MonoBehaviour
         Shot3,
         Shot4
     }
+    private GameObject drawables;    // キャラクターの見た目
+
+    [SerializeField, CustomLabel("見た目の位置オフセット銃未取得")] private Vector3 _drwablOffsetNormal;
+    [SerializeField, CustomLabel("見た目の位置オフセット銃取得済")] private Vector3 _drwablOffsetGetGun;
+    private Vector3 drwablsStartOffset;
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
@@ -312,6 +317,8 @@ public class PlayerController : MonoBehaviour
         weight3 = 0f;
         weight4 = 0f;
         SetState(State.None, first: true);
+        drawables = transform.GetChild(5).gameObject;
+        drwablsStartOffset = drawables.transform.localPosition;
 
         if (_isUIDisplay) {
             _bulletsRemain.text = " ∞ ";
@@ -450,13 +457,18 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
             jumpWaitTime = jumpWaitTime * 0 + 0.17f;
+            if (isGetGun) {
+                drawables.transform.localPosition = _drwablOffsetGetGun;
+            } else {
+                drawables.transform.localPosition = _drwablOffsetNormal;
+            }
         }
 
         // ジャンプの本処理はこっち。
         if (0 <= jumpWaitTime)
         {
             jumpWaitTime -= Time.deltaTime;
-            if (isJumpingCheck && jumpWaitTime < 0 && jumpMinTime <= 0)
+            if (isJumpingCheck && jumpWaitTime < 0 && jumpMinTime <= 0 && !isJumping) 
             {
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpStart-run", false);
@@ -471,6 +483,7 @@ public class PlayerController : MonoBehaviour
                 _jumpPower = pm.JumpPower;
                 jumpMinTime = pm.JumpMinTime;
                 SoundManagerV2.Instance.PlaySE(9);
+                drawables.transform.localPosition = drwablsStartOffset;
             }
         }
 
