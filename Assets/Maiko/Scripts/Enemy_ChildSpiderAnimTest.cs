@@ -143,11 +143,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
     {
         if (isZeroHP)
         {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Stand", false);
-            animator.SetBool("Stun", false);
-            animator.SetBool("Death", true);
-
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
@@ -364,6 +359,10 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                animator.SetBool("Walk", false);
+                animator.SetBool("Stand", false);
+                animator.SetBool("Stun", false);
+                animator.SetBool("Death", true);
                 transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
                 transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
                 Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
