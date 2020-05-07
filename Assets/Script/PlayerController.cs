@@ -64,12 +64,13 @@ public class PlayerController : MonoBehaviour
     private GameObject drawables;    // キャラクターの見た目
 
     [SerializeField, CustomLabel("見た目の位置オフセット銃未取得")] private Vector3 _drwablOffsetNormal;
+    [SerializeField, CustomLabel("見た目の位置オフセット銃未取得走り時")] private Vector3 _drwablOffsetNormalRunning;
     [SerializeField, CustomLabel("見た目の位置オフセット銃取得済")] private Vector3 _drwablOffsetGetGun;
     private Vector3 drwablsStartOffset;
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
-    private int groundingTime;
+    private int groundingTime = 11;
 
     [SerializeField, CustomLabel("残留酸プール")] private GameObject _rsdAcdPool;
     [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
@@ -350,7 +351,6 @@ public class PlayerController : MonoBehaviour
         damageEffect = Instantiate(_damageEffect);
 
         startMoveSpeed = pm.MoveSpeed;
-
     }
 
     private void Update()
@@ -447,21 +447,27 @@ public class PlayerController : MonoBehaviour
         // ジャンプボタンを押した瞬間は、アニメーションだけ先に動作させます！
         if (isJumpingCheck && im.JumpKey == 1 && isGrounded && jumpWaitTime < 0) {
             anicount = 0.0f;
-            animator.SetBool("JumpStart", true);
             animator.SetBool("JumpStart-run", true);
+            animator.SetBool("JumpStart", true);
             animator.SetBool("JumpUp", false);
             animator.SetBool("JumpUp-run", false);
             animator.SetBool("JumpDown", false);
             animator.SetBool("JumpEnd", false);
+            if (isGetGun) {
+                drawables.transform.localPosition = _drwablOffsetGetGun;
+            } else {
+                if (animator.GetBool("Run")) {
+                    drawables.transform.localPosition = _drwablOffsetNormalRunning;
+                } else {
+                    drawables.transform.localPosition = _drwablOffsetNormal;
+                }
+            }
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
             jumpWaitTime = jumpWaitTime * 0 + 0.17f;
-            if (isGetGun) {
-                drawables.transform.localPosition = _drwablOffsetGetGun;
-            } else {
-                drawables.transform.localPosition = _drwablOffsetNormal;
-            }
+            groundingTime = 0;
+            
         }
 
         // ジャンプの本処理はこっち。
@@ -476,6 +482,9 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp", true);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
+                animator.SetBool("Run", false);
+                animator.SetBool("Stand", false);
+                animator.SetBool("Wait", false);
 
                 isJumpingCheck = false;
                 jumpTimeCounter = pm.JumpTime;
@@ -484,6 +493,7 @@ public class PlayerController : MonoBehaviour
                 jumpMinTime = pm.JumpMinTime;
                 SoundManagerV2.Instance.PlaySE(9);
                 drawables.transform.localPosition = drwablsStartOffset;
+                groundingTime = 0;
             }
         }
 
@@ -626,7 +636,7 @@ public class PlayerController : MonoBehaviour
         // 地面にいるとき
         if (isGrounded && !isJumping && jumpWaitTime < 0)
         {
-            if(groundingTime < 10) groundingTime++;
+            if(groundingTime < 12) groundingTime++;
 
             if ((im.MoveKey <= -moveDeadZone || moveDeadZone <= im.MoveKey) && jumpWaitTime < 0)
             {
@@ -639,8 +649,9 @@ public class PlayerController : MonoBehaviour
             
             anicount += Time.deltaTime;
 
-            if (0 < groundingTime && groundingTime < 10)
+            if (0 < groundingTime && groundingTime < 12 && jumpWaitTime < 0)
             {
+                anicount = 0.0f;
                 animator.SetBool("JumpStart", false);
                 animator.SetBool("JumpUp", false);
                 animator.SetBool("JumpStart-run", false);
@@ -702,6 +713,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
+                animator.SetBool("Run", false);
                 if (!isGrounded && !isJumping){                   
                     animator.SetBool("JumpDown", true);
                     animator.SetBool("JumpUp-run", false);
