@@ -20,6 +20,7 @@ public class Enemy_Boss : MonoBehaviour
         Attack,         //攻撃
         BodyPress,      //ボディプレス
     }
+
     private enum e_StanType
     {
         Wait,           //待つ
@@ -79,6 +80,7 @@ public class Enemy_Boss : MonoBehaviour
     [SerializeField] private GameObject _attackObject;   //攻撃のオブジェクト
     [SerializeField] private GameObject _bodyPressEndObject;    //ボディプレスを止めるためのオブジェクト
     [SerializeField] private GameObject _ThreadObject;  //糸のオブジェクト
+    [SerializeField] private GameObject[] _PatrolPoint;
     /**********************************************/
     [SerializeField] private float _destroyTime = 2f;
     private bool SwitchFlag;    //スイッチオブジェクトに当たった時の処理をするかしないか
@@ -91,7 +93,7 @@ public class Enemy_Boss : MonoBehaviour
     private GameObject playerObject;  //playerのオブジェクトを格納
     Rigidbody2D rb;
     Animator animator;
-    Enemy_Boss_Thread Thread;
+    Enemy_Boss_Thread Thread;   //ボスのクモの糸のスクリプト
 
     // Use this for initialization
     void Start()
