@@ -150,7 +150,6 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         else
         {
             //弱点の点滅タイマー
-            anitime += Time.deltaTime;
             if (++anitime < 11) {
                 Model.Parts[7].Opacity = 1;
                 Model.Parts[8].Opacity = 0;
