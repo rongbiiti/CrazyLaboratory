@@ -217,6 +217,7 @@ public class PlayerController : MonoBehaviour
     private bool isGetGun = false;
     private bool isGetHoleMaker = false;
     private Vector3 mainThrowPoint;
+    private GameObject fireCheckPoint;
     private float HP;
     private float startMoveSpeed;
     private float moveDeadZone;
@@ -286,6 +287,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         capcol = GetComponent<CapsuleCollider2D>();
         boxcol = transform.GetChild(7).GetComponent<BoxCollider2D>();
+        fireCheckPoint = transform.GetChild(8).gameObject;
         cubismRender = GetComponent<CubismRenderController>();
         
         jumpTimeCounter = pm.JumpTime;
@@ -567,13 +569,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (!(0 < HP)) return;
-        
         sm.PlayTime += Time.deltaTime;
         sm.GameClearTime += Time.deltaTime;
         
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
-            
         }
 
         if(0 < acidDamageTime) {
@@ -860,11 +860,13 @@ public class PlayerController : MonoBehaviour
     {
         GameObject bullet = pool.GetObject();
         if (bullet != null) {
-            if (Physics2D.Linecast(transform.position, mainThrowPoint, _layerMask))
+            if (Physics2D.Linecast(fireCheckPoint.transform.position, mainThrowPoint, _layerMask))
             {
-                bullet.GetComponent<AcidFlask>().Init(transform.position, true);
+                bullet.GetComponent<AcidFlask>().Init(fireCheckPoint.transform.position, true);
+                Debug.Log("撃った瞬間に壁に当たっていた");
             } else {
                 bullet.GetComponent<AcidFlask>().Init(mainThrowPoint, false);
+                Debug.Log("正常に発射された");
             }
             
         }
