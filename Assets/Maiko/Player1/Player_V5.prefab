@@ -1437,7 +1437,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1342321403025794}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -100.04777, y: 7.61073, z: 0}
+  m_LocalPosition: {x: -95.8, y: 12.71, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4688181660852494}
@@ -1549,7 +1549,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1764835985776832}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.05, z: 0}
+  m_LocalPosition: {x: -0.344, y: -0.033, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4498644026076364}
@@ -1614,7 +1614,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1916687645779084}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.18, z: 0}
+  m_LocalPosition: {x: -0.231, y: 0.674, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4498644026076364}
@@ -1718,7 +1718,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1192203348995344}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.466, z: 0}
+  m_LocalPosition: {x: 0.022, y: 0.739, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4498644026076364}
@@ -1744,7 +1744,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1859017774003902}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.15, z: 0}
+  m_LocalPosition: {x: -0.453, y: 0.273, z: 0}
   m_LocalScale: {x: -0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4498644026076364}
@@ -3492,6 +3492,7 @@ MonoBehaviour:
   jumpPower: 120
   jumpTime: 0.45
   jumpPowerAttenuation: 6.7
+  jumpMinTime: 0.35
   gravityRate: 11
   maxFallSpeed: 16
 --- !u!114 &114638397047491052
@@ -3711,9 +3712,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd2ed085d85b3f43b24486e83883113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _Debug: 0
+  _debug: {fileID: 0}
   isBGMMute: 0
   isStartGetGun: 0
   _HPbar: {fileID: 0}
+  _drwablOffsetNormal: {x: 0, y: -0.15, z: 0}
+  _drwablOffsetNormalRunning: {x: 0, y: 0, z: 0}
+  _drwablOffsetGetGun: {x: 0, y: 0, z: 0}
   filter2d:
     useTriggers: 0
     useLayerMask: 1
@@ -3750,9 +3756,9 @@ MonoBehaviour:
     _gravityScale: 6
     _fireAngle: 90
   upShot:
-    _muzzleVelocity: 11.5
-    _gravityScale: 6
-    _fireAngle: 63
+    _muzzleVelocity: 11
+    _gravityScale: 7.4
+    _fireAngle: 61
   horizontalShot:
     _muzzleVelocity: 11
     _gravityScale: 12

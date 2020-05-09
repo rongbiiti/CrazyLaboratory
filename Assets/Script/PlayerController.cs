@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D boxcol;
     private CubismRenderController cubismRender;
     public bool _Debug;
+    [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Text _debug;
     [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
 
@@ -857,10 +858,15 @@ public class PlayerController : MonoBehaviour
     // ハンドガン発射
     private void HandgunShot()
     {
-        
         GameObject bullet = pool.GetObject();
         if (bullet != null) {
-            bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
+            if (Physics2D.Linecast(transform.position, mainThrowPoint, _layerMask))
+            {
+                bullet.GetComponent<AcidFlask>().Init(transform.position, true);
+            } else {
+                bullet.GetComponent<AcidFlask>().Init(mainThrowPoint, false);
+            }
+            
         }
         Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
@@ -928,7 +934,7 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < _hmShotBullets; i++) {
             GameObject bullet = pool.GetObject();
             if (bullet != null) {
-                bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
+                bullet.GetComponent<AcidFlask>().Init(mainThrowPoint,false);
             }
             Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 

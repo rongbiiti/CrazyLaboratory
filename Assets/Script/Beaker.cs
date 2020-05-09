@@ -104,7 +104,7 @@ public class Beaker : MonoBehaviour
 			var bullet = pool.GetObject();
 			if (bullet != null)
 			{
-				bullet.GetComponent<AcidFlask>().Init(transform.position);
+				bullet.GetComponent<AcidFlask>().Init(transform.position, false);
 			}
 
 			var right = bullet.transform.right;
