@@ -18,6 +18,8 @@ public class Enemy_AntAnimTest : MonoBehaviour {
         count,
     }
 
+    [SerializeField, CustomLabel("死亡時エフェクト")] private GameObject _deathEffect;
+    [SerializeField, CustomLabel("死亡時エフェクト反転")] private GameObject _deathEffectReverse;
     [SerializeField] private float _HP = 10f;
     [SerializeField] private float _HitDamage = 2f;
     [SerializeField] private float _PlayerDamage = 2000f;
@@ -358,6 +360,9 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                 gameObject.transform.GetChild((int)Child.Hit_WeakPoint).transform.GetComponent<CapsuleCollider2D>().enabled = false;
                 gameObject.transform.GetChild((int)Child.Hit_Hindlegs).transform.GetComponent<CapsuleCollider2D>().enabled = false;
                 gameObject.transform.GetChild((int)Child.Hit_Head).transform.GetComponent<Collider2D>().enabled = false;
+                if(0 < transform.localScale.x) Instantiate(_deathEffect, transform.position, Quaternion.identity);
+                else Instantiate(_deathEffectReverse, transform.position, Quaternion.identity);
+
             }
         }
 
