@@ -659,7 +659,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", true);
-                animator.SetBool("Run", true);
                 // ここに着地した瞬間の処理書くといいかも
             }
             else if ((im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey) && jumpWaitTime < 0 && im.MoveStopKey == 0)    // 移動中
