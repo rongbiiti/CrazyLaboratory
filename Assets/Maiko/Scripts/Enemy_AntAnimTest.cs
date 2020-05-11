@@ -18,6 +18,8 @@ public class Enemy_AntAnimTest : MonoBehaviour {
         count,
     }
 
+    [SerializeField, CustomLabel("ヒット時エフェクト")] private GameObject _hitEffect;
+    [SerializeField, CustomLabel("ヒット時エフェクト反転")] private GameObject _hitEffectReverse;
     [SerializeField, CustomLabel("死亡時エフェクト")] private GameObject _deathEffect;
     [SerializeField, CustomLabel("死亡時エフェクト反転")] private GameObject _deathEffectReverse;
     [SerializeField] private float _HP = 10f;
@@ -363,6 +365,15 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                 if(0 < transform.localScale.x) Instantiate(_deathEffect, transform.position, Quaternion.identity);
                 else Instantiate(_deathEffectReverse, transform.position, Quaternion.identity);
 
+            } else {
+                if (0 < transform.localScale.x) {
+                    GameObject obj = Instantiate(_hitEffect, transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
+                } else {
+                    GameObject obj = Instantiate(_hitEffectReverse, transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
+                }
+                
             }
         }
 
