@@ -1593,7 +1593,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1629012883887054}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -95.35001, y: 12.89, z: 0}
+  m_LocalPosition: {x: -29.2, y: -14.1, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4279260677113340}
@@ -3745,11 +3745,13 @@ MonoBehaviour:
     m_Bits: 33792
   _debug: {fileID: 0}
   isBGMMute: 0
-  isStartGetGun: 1
+  isStartGetGun: 0
   _HPbar: {fileID: 0}
-  _drwablOffsetNormal: {x: 0, y: -0.2, z: 0}
-  _drwablOffsetNormalRunning: {x: 0, y: 0.04, z: 0}
-  _drwablOffsetGetGun: {x: 0, y: 0.04, z: 0}
+  _drwablOffsetNormal: {x: 0, y: -0.18, z: 0}
+  _drwablOffsetNormalRunning: {x: 0, y: 0.03, z: 0}
+  _drwablOffsetGetGun: {x: 0, y: -0.18, z: 0}
+  _drwablOffsetGetGunRunning: {x: 0, y: 0.03, z: 0}
+  _drwablOffsetGraunding: {x: 0, y: -0.18, z: 0}
   filter2d:
     useTriggers: 0
     useLayerMask: 1
