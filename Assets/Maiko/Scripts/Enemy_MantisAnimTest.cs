@@ -15,6 +15,10 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         count,
     }
 
+    [SerializeField, CustomLabel("死亡時エフェクト")] private GameObject _deathEffect;
+    [SerializeField, CustomLabel("死亡時エフェクト反転")] private GameObject _deathEffectReverse;
+    [SerializeField, CustomLabel("ヒット時エフェクト")] private GameObject _hitEffect;
+    [SerializeField, CustomLabel("ヒット時エフェクト反転")] private GameObject _hitEffectReverse;
     [SerializeField] private float _HP = 10f;
     [SerializeField] private float _HitDamage = 2f;
     [SerializeField] private float _PlayerDamage = 3000f;
@@ -409,6 +413,23 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
                 for (int i = 0; i < (int)Child.count; i++)
                 {
                     gameObject.transform.GetChild(i).transform.GetComponent<Collider2D>().enabled = false;
+                }
+                if (0 < transform.localScale.x) {
+                    GameObject obj = Instantiate(_deathEffect, transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
+                } else {
+                    GameObject obj = Instantiate(_deathEffectReverse, transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
+                }
+
+
+            } else {
+                if (0 < transform.localScale.x) {
+                    GameObject obj = Instantiate(_hitEffect, transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
+                } else {
+                    GameObject obj = Instantiate(_hitEffectReverse, transform.position, Quaternion.identity) as GameObject;
+                    obj.transform.parent = transform;
                 }
             }
         }
