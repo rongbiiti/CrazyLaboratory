@@ -1595,7 +1595,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1057982577436034}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.003, y: 0, z: 0}
+  m_LocalPosition: {x: 0.003, y: 0.012, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 4742759679887472}
@@ -1621,7 +1621,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1014868752896028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -29.2, y: -14.1, z: 0}
+  m_LocalPosition: {x: -108.7, y: 14.3, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4116506147007204}
@@ -2783,8 +2783,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.06}
-  m_Size: {x: 0.28919327, y: 0.9726039}
+  m_Offset: {x: 0, y: -0.05712235}
+  m_Size: {x: 0.28919327, y: 0.9668486}
   m_Direction: 0
 --- !u!95 &95895859109700296
 Animator:
@@ -3604,11 +3604,13 @@ MonoBehaviour:
     m_Bits: 33792
   _debug: {fileID: 0}
   isBGMMute: 0
-  isStartGetGun: 1
+  isStartGetGun: 0
   _HPbar: {fileID: 0}
-  _drwablOffsetNormal: {x: 0, y: -0.2, z: 0}
-  _drwablOffsetNormalRunning: {x: 0, y: 0.04, z: 0}
-  _drwablOffsetGetGun: {x: 0, y: 0.04, z: 0}
+  _drwablOffsetNormal: {x: 0, y: -0.18, z: 0}
+  _drwablOffsetNormalRunning: {x: 0, y: 0.03, z: 0}
+  _drwablOffsetGetGun: {x: 0, y: -0.18, z: 0}
+  _drwablOffsetGetGunRunning: {x: 0, y: 0.03, z: 0}
+  _drwablOffsetGraunding: {x: 0, y: -0.18, z: 0}
   filter2d:
     useTriggers: 0
     useLayerMask: 1
