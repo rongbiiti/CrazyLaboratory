@@ -347,7 +347,7 @@ public class Enemy_AntAnimTest : MonoBehaviour {
         {
             nowHP -= _HitDamage;
             Debug.Log(gameObject.name + "の弱点にヒット");
-            SoundManagerV2.Instance.PlaySE(4);
+            SoundManagerV2.Instance.PlaySE(36);
             enemyHpbar.SetBarValue(_HP, nowHP);
             if (nowHP <= 0)
             {
@@ -364,7 +364,8 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                 gameObject.transform.GetChild((int)Child.Hit_Head).transform.GetComponent<Collider2D>().enabled = false;
                 if(0 < transform.localScale.x) Instantiate(_deathEffect, transform.position, Quaternion.identity);
                 else Instantiate(_deathEffectReverse, transform.position, Quaternion.identity);
-
+                SoundManagerV2.Instance.PlaySE(28);
+                SoundManagerV2.Instance.PlaySE(37);
             } else {
                 if (0 < transform.localScale.x) {
                     GameObject obj = Instantiate(_hitEffect, transform.position, Quaternion.identity) as GameObject;
@@ -387,7 +388,7 @@ public class Enemy_AntAnimTest : MonoBehaviour {
         {
             AttackPhase = 1;
             patrolType = 2;
-
+            SoundManagerV2.Instance.PlaySE(27);
         }
 
     }

@@ -329,6 +329,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                         {
                             AttackPhase = 2;
                             Count = 0;
+                            SoundManagerV2.Instance.PlaySE(25);
                         }
                     }
                     else if (AttackPhase == 2 && stanTimeRemain <= 0)   //敵に攻撃
@@ -379,6 +380,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
                 Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
                 Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+                SoundManagerV2.Instance.PlaySE(26);
+                SoundManagerV2.Instance.PlaySE(37);
             }   
         }
 
@@ -434,6 +437,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     enemyHpbar.SetBarValue(_HP, nowHP);
                     if (nowHP <= 0)
                     {
+                        SoundManagerV2.Instance.PlaySE(26);
+                        SoundManagerV2.Instance.PlaySE(37);
                         isZeroHP = true;
                         animator.SetBool("Walk", false);
                         animator.SetBool("Stand", false);
@@ -472,6 +477,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     enemyHpbar.SetBarValue(_HP, nowHP);
                     if (nowHP <= 0)
                     {
+                        SoundManagerV2.Instance.PlaySE(26);
+                        SoundManagerV2.Instance.PlaySE(37);
                         isZeroHP = true;
                         animator.SetBool("Walk", false);
                         animator.SetBool("Stand", false);

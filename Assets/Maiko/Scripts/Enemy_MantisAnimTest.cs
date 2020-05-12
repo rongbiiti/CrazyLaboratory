@@ -198,6 +198,9 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             if (0 < AttackTime)
             {
                 AttackTime -= Time.deltaTime;
+                if(AttackTime <= 0) {
+                    SoundManagerV2.Instance.PlaySE(33);
+                }
             }
 
             if (0 < AfterAttackTime)
@@ -208,6 +211,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             if (0 < JumpTime)
             {
                 JumpTime -= Time.deltaTime;
+                
             }
 
             // transformを取得
@@ -239,7 +243,10 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
                     break;
 
                 case 1: //攻撃
-                    if (AttackTime > 0) { animator.SetBool("BeforeAtack", true); return; }
+                    if (AttackTime > 0) {
+                        animator.SetBool("BeforeAtack", true);
+                        return;
+                    }
 
                     animator.SetBool("Stand", false);
                     animator.SetBool("Stun", false);
@@ -263,7 +270,6 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
                     if (JumpTime > 0)
                     {
                         Vector2 force = new Vector2(0, _jumpPower);
-
                         rb.AddForce(force);
                     }
 
@@ -344,8 +350,8 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             _AttackPosition.transform.position = collision.transform.position;
             AttackTime = _AttackRate;
             JumpTime = _jumpRate;
+            SoundManagerV2.Instance.PlaySE(32);
             patrolType = 1; //攻撃モード
-
         }
 
         if (collision.CompareTag("PatrolPoint"))
@@ -397,7 +403,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         {
             nowHP -= _HitDamage;
             Debug.Log(gameObject.name + "の弱点にヒット");
-            SoundManagerV2.Instance.PlaySE(4);
+            SoundManagerV2.Instance.PlaySE(36);
             enemyHpbar.SetBarValue(_HP, nowHP);
             if (nowHP <= 0)
             {
@@ -421,7 +427,8 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
                     GameObject obj = Instantiate(_deathEffectReverse, transform.position, Quaternion.identity) as GameObject;
                     obj.transform.parent = transform;
                 }
-
+                SoundManagerV2.Instance.PlaySE(35);
+                SoundManagerV2.Instance.PlaySE(37);
 
             } else {
                 if (0 < transform.localScale.x) {
@@ -452,7 +459,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
-                SoundManagerV2.Instance.PlaySE(2);
+                SoundManagerV2.Instance.PlaySE(34);
             }
         }
     }
@@ -497,7 +504,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
-                SoundManagerV2.Instance.PlaySE(2);
+                SoundManagerV2.Instance.PlaySE(34);
             }
         }
     }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy_BeeAnimTest : MonoBehaviour {
 
+    [SerializeField, CustomLabel("死亡時エフェクト")] private GameObject _deathEffect;
     [SerializeField] private float _HP = 1f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _PlayerDamage = 1000f;
@@ -194,6 +195,9 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             if (0 < attackWaitTime)
             {
                 attackWaitTime -= Time.deltaTime;
+                if(attackWaitTime <= 0) {
+                    SoundManagerV2.Instance.PlaySE(30);
+                }
             }
 
             Transform myTransform = this.transform;
@@ -265,12 +269,10 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                             animator.SetBool("Sting", true);
                             animator.SetBool("Stun", false);
                             animator.SetBool("Death", false);
-
                             _PatrolPoint[PointCount].transform.position = playerObject.transform.position;
-
                             break;
                         }
-
+                        
                         targetPos = _PatrolPoint[PointCount].transform.position;
                         // 巡回ポイントのx座標
                         x = targetPos.x;
@@ -280,16 +282,10 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                         direction = new Vector2(x - transform.position.x, y - transform.position.y).normalized;
                         // ENEMYのRigidbody2Dに移動速度を指定する
                         rb.velocity = direction * _moveDashSpeed;
-
                     }
                     break;
             }
-
-
-
         }
-
-
     }
 
     private void DecideTargetPotision()
@@ -311,6 +307,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             attackWaitTime += _attackWaitRate;
             rb.velocity = new Vector2(0.0f, 0.0f);
             Direction(targetPosition);
+
             return;
         }
 
@@ -408,6 +405,14 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                 ScoreManager.Instance.TotalKillCnt++;
                 gameObject.transform.GetChild(0).transform.GetComponent<Collider2D>().enabled = false;
                 gameObject.transform.GetChild(1).transform.GetComponent<Collider2D>().enabled = false;
+                GameObject obj = Instantiate(_deathEffect, transform.position, Quaternion.identity) as GameObject;
+                obj.transform.parent = transform;
+                rb.bodyType = RigidbodyType2D.Dynamic;
+                rb.gravityScale = 3f;
+                rb.mass = 0.1f;
+                rb.freezeRotation = false;
+                SoundManagerV2.Instance.PlaySE(31);
+                SoundManagerV2.Instance.PlaySE(37);
             }
         }
 
@@ -425,7 +430,6 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                 animator.SetBool("Sting", false);
                 animator.SetBool("Stun", false);
                 animator.SetBool("Death", false);
-
                 patrolType = 0;
                 _PatrolPoint[PointCount].transform.position = PatrolPointPosition[PointCount];
                 _PatrolPoint[PointCount].gameObject.SetActive(false);
@@ -479,6 +483,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             targetPosition = _PatrolPoint[0].transform.position;
             isReachTargetPosition = true;
             _player_Hit_Patrol.SetActive(false);
+            SoundManagerV2.Instance.PlaySE(29);
         }
 
 
@@ -500,6 +505,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
+                SoundManagerV2.Instance.PlaySE(2);
             }
         }
     }
