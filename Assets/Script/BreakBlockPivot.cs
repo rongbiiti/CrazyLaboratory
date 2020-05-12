@@ -16,8 +16,6 @@ public class BreakBlockPivot : MonoBehaviour
     private SpriteRenderer spriteRenderer;  // スプライトレンダラーコンポーネント
     private Color changeColorDst;   // 消滅時にだんだん黒くするための変数
     private Color changeColorRst;   // 復活時にだんだん白くするための変数
-    private Vector3 changeScaleDst; // 消滅時にだんだん小さくするための変数
-    private Vector3 changeScaleRst; // 復活時にだんだん大きくするための変数
     private enum Status
     {
         Normal,
@@ -34,15 +32,13 @@ public class BreakBlockPivot : MonoBehaviour
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         changeColorDst = new Color(spriteRenderer.color.r / destroyTime * Time.deltaTime, spriteRenderer.color.g / destroyTime * Time.deltaTime, spriteRenderer.color.b / destroyTime * Time.deltaTime, 0);
         changeColorRst = new Color(spriteRenderer.color.r / restorTime * Time.deltaTime, spriteRenderer.color.g / restorTime * Time.deltaTime, spriteRenderer.color.b / restorTime * Time.deltaTime, 0);
-        changeScaleDst = new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
-        changeScaleRst = new Vector3(startScale.x / restorTime * Time.deltaTime, startScale.y / restorTime * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
         if (status == Status.Normal) {
             if (isEnterAcid) {
-                parent1.transform.localScale -= changeScaleDst;
+                parent1.transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime); ;
                 spriteRenderer.color -= changeColorDst;
                 if (parent1.transform.localScale.x <= 0) {
                     SetRestoring();
@@ -50,7 +46,7 @@ public class BreakBlockPivot : MonoBehaviour
             }
         } else if(status == Status.Restoring) {
             if (!isPlayerStay) {
-                parent1.transform.localScale += changeScaleRst;
+                parent1.transform.localScale += new Vector3(startScale.x / restorTime * Time.deltaTime, startScale.y / restorTime * Time.deltaTime); ;
                 spriteRenderer.color += changeColorRst;
                 if (startScale.x <= parent1.transform.localScale.x) {
                     parent1.transform.position = Startposition;
