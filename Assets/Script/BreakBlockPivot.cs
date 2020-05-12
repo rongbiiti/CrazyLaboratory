@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// ひっかー、見てたら説明書いといて＾。＾
-/// </summary>
 public class BreakBlockPivot : MonoBehaviour
 {
-    private bool isEnterAcid;
-    private bool isPlayerStay;
-    [SerializeField, CustomLabel("消えるまでの時間")] private float destroyTime = 2f;
-    [SerializeField, CustomLabel("元に戻るまでの時間")] private float restorTime = 5f;
-    private Vector2 startScale;
-    private Vector2 Startposition;
-    private Vector2 Startzikkenposition;
-    private GameObject parent1;
-    private SpriteRenderer spriteRenderer;
+    private bool isEnterAcid;   // 酸弾に当たったか
+    private bool isPlayerStay;  // 復活時プレイヤーが重なっているか
+    [SerializeField, CustomLabel("消滅時エフェクト")] private GameObject _dstEffect;    // 消滅時エフェクト
+    [SerializeField, CustomLabel("消えるまでの時間")] private float destroyTime = 2f;   // 消えるまでの時間
+    [SerializeField, CustomLabel("元に戻るまでの時間")] private float restorTime = 5f;   // 元に戻るまでの時間
+    private Vector2 startScale; // 初期の大きさ
+    private Vector2 Startposition;  // 初期の位置
+    private Vector2 Startzikkenposition;    // スタート実験ポジション（直訳）
+    private GameObject parent1; // 親1
+    private SpriteRenderer spriteRenderer;  // スプライトレンダラーコンポーネント
+    private Color changeColorDst;   // 消滅時にだんだん黒くするための変数
+    private Color changeColorRst;   // 復活時にだんだん白くするための変数
+    private Vector3 changeScaleDst; // 消滅時にだんだん小さくするための変数
+    private Vector3 changeScaleRst; // 復活時にだんだん大きくするための変数
     private enum Status
     {
         Normal,
         Restoring
     }
-    private Status status;
+    private Status status;  // 通常時か、復活時か。
 
     void Start()
     {
@@ -29,21 +31,27 @@ public class BreakBlockPivot : MonoBehaviour
         startScale = parent1.transform.localScale;                  //親の初期サイズ格納
         Startposition = parent1.transform.position;                 //親の初期ポジション格納
         Startzikkenposition = gameObject.transform.position;        //子の初期ポジション
-        spriteRenderer = gameObject.GetComponent<SpriteRenderer>(); 
+        spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        changeColorDst = new Color(spriteRenderer.color.r / destroyTime * Time.deltaTime, spriteRenderer.color.g / destroyTime * Time.deltaTime, spriteRenderer.color.b / destroyTime * Time.deltaTime, 0);
+        changeColorRst = new Color(spriteRenderer.color.r / restorTime * Time.deltaTime, spriteRenderer.color.g / restorTime * Time.deltaTime, spriteRenderer.color.b / restorTime * Time.deltaTime, 0);
+        changeScaleDst = new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+        changeScaleRst = new Vector3(startScale.x / restorTime * Time.deltaTime, startScale.y / restorTime * Time.deltaTime);
     }
 
     private void FixedUpdate()
     {
         if (status == Status.Normal) {
             if (isEnterAcid) {
-                parent1.transform.localScale -= new Vector3(startScale.x / destroyTime * Time.deltaTime, startScale.y / destroyTime * Time.deltaTime);
+                parent1.transform.localScale -= changeScaleDst;
+                spriteRenderer.color -= changeColorDst;
                 if (parent1.transform.localScale.x <= 0) {
                     SetRestoring();
                 }
             }
         } else if(status == Status.Restoring) {
             if (!isPlayerStay) {
-                parent1.transform.localScale += new Vector3(startScale.x / restorTime * Time.deltaTime, startScale.y / restorTime * Time.deltaTime);
+                parent1.transform.localScale += changeScaleRst;
+                spriteRenderer.color += changeColorRst;
                 if (startScale.x <= parent1.transform.localScale.x) {
                     parent1.transform.position = Startposition;
                     parent1.transform.localScale = startScale;
@@ -57,6 +65,7 @@ public class BreakBlockPivot : MonoBehaviour
     private void SetRestoring()
     {
         isEnterAcid = false;
+        spriteRenderer.color -= new Color(0, 0, 0, 0.6f);
         status = Status.Restoring;
     }
 
@@ -69,7 +78,6 @@ public class BreakBlockPivot : MonoBehaviour
 
     private void DisableCollider()
     {
-        spriteRenderer.color -= new Color(0, 0, 0, 0.6f);
         GetComponent<BoxCollider2D>().isTrigger = true;
     }
 
@@ -137,6 +145,10 @@ public class BreakBlockPivot : MonoBehaviour
             isEnterAcid = true;
             DisableCollider();
             SoundManagerV2.Instance.PlaySE(1);
+            GameObject efcObj;  // 消滅エフェクトオブジェクトを自身に追跡させるのに使う変数
+            efcObj = Instantiate(_dstEffect, transform.position, _dstEffect.transform.rotation);
+            efcObj.transform.parent = transform;
+            efcObj.transform.localScale = Vector3.one;
         }
     }
 
