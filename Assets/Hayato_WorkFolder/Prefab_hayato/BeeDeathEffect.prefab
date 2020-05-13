@@ -53,6 +53,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4779308532727574}
+  - component: {fileID: 114449923866484918}
   m_Layer: 0
   m_Name: BeeDeathEffect
   m_TagString: Untagged
@@ -194,6 +195,18 @@ Transform:
   m_Father: {fileID: 4779308532727574}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -87.41, y: 0, z: 60}
+--- !u!114 &114449923866484918
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1343936679183572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1220b39d610bfef41a35e84e4dc5a755, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 5
 --- !u!198 &198184671737306342
 ParticleSystem:
   m_ObjectHideFlags: 1

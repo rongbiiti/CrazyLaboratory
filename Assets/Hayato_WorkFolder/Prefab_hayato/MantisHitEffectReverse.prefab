@@ -36,6 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4437150466204768}
+  - component: {fileID: 114132414102763326}
   m_Layer: 0
   m_Name: MantisHitEffectReverse
   m_TagString: Untagged
@@ -101,6 +102,18 @@ Transform:
   m_Father: {fileID: 4437150466204768}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 269.9, y: -41.669003, z: 4.01}
+--- !u!114 &114132414102763326
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1495038137805756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1220b39d610bfef41a35e84e4dc5a755, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 5
 --- !u!198 &198594569112706954
 ParticleSystem:
   m_ObjectHideFlags: 1

@@ -36,6 +36,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4425996625024228}
+  - component: {fileID: 114318271228625496}
   m_Layer: 0
   m_Name: MantisDeathEffect
   m_TagString: Untagged
@@ -411,6 +412,18 @@ Transform:
   m_Father: {fileID: 4425996625024228}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &114318271228625496
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1098506249035906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1220b39d610bfef41a35e84e4dc5a755, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 5
 --- !u!198 &198021752151107830
 ParticleSystem:
   m_ObjectHideFlags: 1

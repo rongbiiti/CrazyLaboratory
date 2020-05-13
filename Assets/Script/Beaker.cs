@@ -2,14 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Beaker : MonoBehaviour
 {
 
 	private GameObject inAcid;
-	private Vector3 inAcidStartScale;
-	private Vector3 increaseScale;
+	private Vector3 inAcidStartScale;   // 初期の容器内の酸の大きさ
+	private Vector3 increaseScale;      // 弾1発でどの程度容器内の酸のかさが増えるか
+    private Vector3 targetScale;        // かさが増えるアニメーション終了するまでの目盛り
+    private Vector3 timeIncreaseScale;  // 毎フレーム少しずつ増やす用
 	private Explodable explodable;
 	private List<float> SpreadAngle = new List<float>();
 	private ObjectPool pool;
@@ -32,7 +33,7 @@ public class Beaker : MonoBehaviour
 		explodable = GetComponent<Explodable>();
 		inAcid = transform.GetChild(0).gameObject;
 		inAcidStartScale = inAcid.transform.localScale;
-		increaseScale = new Vector3(0,inAcidStartScale.y / _acidCollectMax,0);
+		increaseScale = new Vector3(0, inAcidStartScale.y / _acidCollectMax, 0);
 		inAcid.transform.localScale = new Vector3(1,0,1);
 		PreCalcSpreadAngle();
 	}
@@ -44,7 +45,14 @@ public class Beaker : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		
+		if(inAcid.transform.localScale.y <= targetScale.y) {
+            inAcid.transform.localScale += increaseScale * Time.deltaTime;
+            if(inAcidStartScale.y <= inAcid.transform.localScale.y && _acidCollectMax <= intoAcidCount) {
+                var rb = GetComponent<Rigidbody2D>();
+                rb.bodyType = RigidbodyType2D.Dynamic;
+                SoundManagerV2.Instance.PlaySE(42);
+            }
+        }
 	}
 
 	private void OnCollisionEnter2D(Collision2D other)
@@ -56,7 +64,9 @@ public class Beaker : MonoBehaviour
 			explodable.explode();
 			var ef = FindObjectOfType<ExplosionForce>();
 			ef.doExplosion(transform.position);
-		}
+            SoundManagerV2.Instance.PlaySE(43);
+            SoundManagerV2.Instance.PlaySE(44);
+        }
 	}
 
 	private void OnTriggerEnter2D(Collider2D other)
@@ -64,12 +74,8 @@ public class Beaker : MonoBehaviour
 		if (other.CompareTag("AcidFlask") && intoAcidCount < _acidCollectMax)
 		{
 			++intoAcidCount;
-			inAcid.transform.localScale += increaseScale;
-			if (_acidCollectMax <= intoAcidCount)
-			{
-				var rb = GetComponent<Rigidbody2D>();
-				rb.bodyType = RigidbodyType2D.Dynamic;
-			}
+            targetScale += increaseScale;
+            SoundManagerV2.Instance.PlaySE(41);
 		}
 	}
 	
