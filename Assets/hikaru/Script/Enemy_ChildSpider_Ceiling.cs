@@ -343,7 +343,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
     {
         if (isZeroHP) return;
 
-        if (patrolType != (byte)PATROL_TYPE.crawl && collision.CompareTag("AcidFlask"))
+        if (collision.CompareTag("AcidFlask"))
         {
             nowHP -= _HitDamage;
             Debug.Log(gameObject.name + "の弱点にヒット");
