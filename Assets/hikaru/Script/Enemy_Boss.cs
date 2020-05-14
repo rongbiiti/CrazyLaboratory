@@ -5,15 +5,16 @@ using UnityEngine;
 public class Enemy_Boss : MonoBehaviour
 {
 
-    private enum e_AttackType   //attackタイプの列挙体
+    private enum e_AttackType   //攻撃(attack)タイプの列挙体
     {
-        move,           //降下
+        fallmove,       //降下移動
+        horizontalmove, //横移動
         BeforAttack,    //前攻撃
         Attack,         //攻撃
         AfterAttack,    //前攻撃
     }
 
-    private enum e_ActivityType
+    private enum e_ActivityType //ボスの行動タイプの列挙体
     {
         Stan,           //スタン
         Jump,           //ジャンプ
@@ -21,7 +22,7 @@ public class Enemy_Boss : MonoBehaviour
         BodyPress,      //ボディプレス
     }
 
-    private enum e_StanType
+    private enum e_StanType //スタン中の行動タイプ
     {
         Wait,           //待つ
         move,           //降下
@@ -53,8 +54,16 @@ public class Enemy_Boss : MonoBehaviour
     [SerializeField] private float _playerX;    //playerのｘにプラスかマイナスする　効果時点の微調整用
     [SerializeField] private float _fallSpeed = 30f;  //降下スピード
     [SerializeField] private float _ascentSpeed = 30f;    //上昇スピード
+    [SerializeField] private float _horizontalSpeed = 20f;  //横の移動スピード
+    private float IntAcceleration = 0f;       //加速度初期値
+    private float Acceleration; //加速度の格納用
+    [SerializeField] private float YenAround = 2f;   //一周するのにかかる時間
+    private float DirectionX;   //方向    左なら1　右なら-1を格納する　移動の計算式に使う
+    private float FallLocationY;    //降下時点のY座標
+
     [SerializeField] private float _bossRightMaxPx; //ボスの右側の移動範囲の上限
     [SerializeField] private float _bossLeftMaxPx; //ボスの左側の移動範囲の上限
+    [SerializeField] private float _bossUnderMaxPy; //ボスの下側の移動範囲の上限
     /*******************BodyPress*********************/
     [SerializeField] private float _bodyPressRate = 3f;
     private float BodyPressTime;
@@ -83,6 +92,7 @@ public class Enemy_Boss : MonoBehaviour
     [SerializeField] private GameObject[] _PatrolPoint;
     /**********************************************/
     [SerializeField] private float _destroyTime = 2f;
+
     private bool SwitchFlag;    //スイッチオブジェクトに当たった時の処理をするかしないか
     private float nowHP;
     private EnemyHpbar enemyHpbar;
@@ -226,7 +236,7 @@ public class Enemy_Boss : MonoBehaviour
                 {
                     switch (AttackType)
                     {
-                        case (byte)e_AttackType.move:
+                        case (byte)e_AttackType.fallmove:
                             animator.SetBool("Stand2", true);
                             animator.SetBool("Atack", false);     
                             var BossP = transform.position;
@@ -250,8 +260,11 @@ public class Enemy_Boss : MonoBehaviour
                                 var ls = gameObject.transform.localScale;   //localscaleの格納
                                 gameObject.transform.localScale = new Vector3(ls.x, -ls.y, ls.z);
                             }
-
+                            
                             transform.position = BossP;
+                            break;
+                        case (byte)e_AttackType.horizontalmove:
+                            
                             break;
                         case (byte)e_AttackType.BeforAttack:
                             animator.SetBool("Stand2", false);
@@ -355,32 +368,107 @@ public class Enemy_Boss : MonoBehaviour
                     break;
 
                 case (byte)e_ActivityType.Attack:
-                    if(AttackType == (byte)e_AttackType.move && AttackTime <= 0)
+                    switch (AttackType)
                     {
-                        animator.SetBool("Stand1", false);
-                        animator.SetBool("Stand2", true);
-                        animator.SetBool("BodyPress", false);
-                        animator.SetBool("Atack", false);
-                        animator.SetBool("Jump", false);
-                        animator.SetBool("Stun", false);
+                        case (byte)e_AttackType.fallmove:
+                            if (AttackTime <= 0)
+                            {
+                                animator.SetBool("Stand1", false);
+                                animator.SetBool("Stand2", true);
+                                animator.SetBool("BodyPress", false);
+                                animator.SetBool("Atack", false);
+                                animator.SetBool("Jump", false);
+                                animator.SetBool("Stun", false);
 
-                        Vector2 speed = new Vector2(0.0f, moveSpeed);
-                        rb.velocity = speed;
-                        if (startPlayerPosition.y + _playerY >= transform.position.y)
-                        {
-                            AttackType = (byte)e_AttackType.BeforAttack;
-                            AttackTime += _beforeAttackRate;
-                            rb.velocity = new Vector2(0.0f, 0.0f);
-                        }
+                                Vector2 speed = new Vector2(0.0f, moveSpeed);
+                                rb.velocity = speed;
+                                if (startPlayerPosition.y + _playerY >= transform.position.y)
+                                {
+                                    AttackType = (byte)e_AttackType.horizontalmove; //上から降りてプレイヤーの中心点
+                                    Acceleration = IntAcceleration;
+                                    moveSpeed = _horizontalSpeed;
+                                    
+                                    if(playerObject.transform.position.x >= transform.position.x)
+                                    {
+                                        DirectionX = 1f;
+                                        var ls = startScale;
+                                        transform.localScale = new Vector2(ls.x,-ls.y);
+                                    }
+                                    else
+                                    {
+                                        DirectionX = -1f;
+                                        var ls = startScale;
+                                        transform.localScale = new Vector2(ls.x, ls.y);
+                                    }
+
+                                    //AttackType = (byte)e_AttackType.BeforAttack;
+                                    //AttackTime += _beforeAttackRate;
+                                    FallLocationY = transform.position.y;
+                                    Debug.Log(FallLocationY);
+                                    rb.velocity = new Vector2(0.0f, 0.0f);
+                                }
+                            }
+                            break;
+
+                        case (byte)e_AttackType.horizontalmove:
+
+                            if(AttackTime <= 0)
+                            {
+                                float T = 2;     //Ｔ＝１周に必要な秒数
+                                float f = 1.0f / T; //１を何等分するか？
+                                float sin = Mathf.Sin(2 * Mathf.PI * f * Acceleration);    //2 * Mathf.PI =  棒の直径 × π
+
+                                Acceleration += Time.deltaTime;    //加速度の数値を上げる
+                                Vector2 speed = new Vector2(moveSpeed * DirectionX, 0);
+                                rb.velocity = speed;
+                                Vector3 po = transform.position;
+                                this.transform.position = new Vector3(po.x, FallLocationY + sin * 5, po.z);
+                                //Debug.Log(sin* 5);
+                                if (_bossLeftMaxPx >= transform.position.x && DirectionX == -1 || _bossRightMaxPx <= transform.position.x && DirectionX == 1)
+                                { 
+                                    DirectionX *= -1;
+                                }
+                            }
+
+                            break;
+
+                        case (byte)e_AttackType.AfterAttack:
+                            if (AttackTime <= 0)
+                            {
+                                Vector2 speed = new Vector2(0.0f, moveSpeed);
+                                rb.velocity = speed;
+                                animator.SetBool("Stand2", true);
+                                animator.SetBool("Atack", false);
+                            }
+                            break;
                     }
+
+                    //if(AttackType == (byte)e_AttackType.fallmove && AttackTime <= 0)
+                    //{
+                    //    animator.SetBool("Stand1", false);
+                    //    animator.SetBool("Stand2", true);
+                    //    animator.SetBool("BodyPress", false);
+                    //    animator.SetBool("Atack", false);
+                    //    animator.SetBool("Jump", false);
+                    //    animator.SetBool("Stun", false);
+
+                    //    Vector2 speed = new Vector2(0.0f, moveSpeed);
+                    //    rb.velocity = speed;
+                    //    if (startPlayerPosition.y + _playerY >= transform.position.y)
+                    //    {
+                    //        AttackType = (byte)e_AttackType.BeforAttack;
+                    //        AttackTime += _beforeAttackRate;
+                    //        rb.velocity = new Vector2(0.0f, 0.0f);
+                    //    }
+                    //}
                     
-                    if(AttackType == (byte)e_AttackType.AfterAttack && AttackTime <= 0)
-                    {            
-                        Vector2 speed = new Vector2(0.0f, moveSpeed);
-                        rb.velocity = speed;
-                        animator.SetBool("Stand2", true);
-                        animator.SetBool("Atack", false);
-                    }
+                    //if(AttackType == (byte)e_AttackType.AfterAttack && AttackTime <= 0)
+                    //{            
+                    //    Vector2 speed = new Vector2(0.0f, moveSpeed);
+                    //    rb.velocity = speed;
+                    //    animator.SetBool("Stand2", true);
+                    //    animator.SetBool("Atack", false);
+                    //}
                     break;
 
                 case (byte)e_ActivityType.BodyPress:
@@ -420,7 +508,7 @@ public class Enemy_Boss : MonoBehaviour
             case (byte)e_ActivityType.Attack:
                 _ThreadObject.SetActive(true);
                 ActivityType = (byte)e_ActivityType.Attack;
-                AttackType = (byte)e_AttackType.move;
+                AttackType = (byte)e_AttackType.fallmove;
                 int range = Random.Range(_rangeMin, _rangeMax);
                 AttackTime += range;
                 transform.eulerAngles = new Vector3(0.0f, 0.0f, 90f);
