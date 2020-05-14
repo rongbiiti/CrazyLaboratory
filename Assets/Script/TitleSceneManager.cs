@@ -33,7 +33,12 @@ public class TitleSceneManager : MonoBehaviour {
     
     [SerializeField, CustomLabel("Stage3")]
     private GameObject _stage3;
-    
+
+    private void Start()
+    {
+        SoundManagerV2.Instance.StopBGM();
+    }
+
     void Update () {
 		if(Input.anyKey && !isAnyKeyPress) {
             _animator.SetTrigger("Decide");
