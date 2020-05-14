@@ -1282,7 +1282,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1854059735131328}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -35, y: 15.69, z: 0}
+  m_LocalPosition: {x: -11.22, y: -11.32, z: 0}
   m_LocalScale: {x: 11, y: 11, z: 1}
   m_Children:
   - {fileID: 4406020154914122}
@@ -3517,6 +3517,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceade849271bfcd4db5d5617e94bb7b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _deathEffect: {fileID: 1098506249035906, guid: 843b9aff654b8a746835bf895ddddade,
+    type: 2}
+  _deathEffectReverse: {fileID: 1166719709823470, guid: e0953f481b70d4c41a65212c63e1784e,
+    type: 2}
+  _hitEffect: {fileID: 1874588574937812, guid: d732a24d7bf92a147a52535110174032, type: 2}
+  _hitEffectReverse: {fileID: 1495038137805756, guid: 5c4189d94b3df7544938905d8eaa7f44,
+    type: 2}
   _HP: 10
   _HitDamage: 2
   _PlayerDamage: 3000
@@ -3528,7 +3535,7 @@ MonoBehaviour:
   _AttackRate: 1
   _afterAttackRate: 1
   _stanTime: 3
-  _directionChange: 1
+  _directionChange: 0
   _destroyTime: 2
   _jumpRate: 2
   _jumpPower: 2000

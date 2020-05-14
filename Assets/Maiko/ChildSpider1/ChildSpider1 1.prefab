@@ -3050,6 +3050,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df2ca41ef4b4eb445a9a575a9d6b9148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _smokeEffect: {fileID: 1612662894439984, guid: b962bfc9a4b42f0438ed2d13ca39aa7e,
+    type: 2}
+  _bloodSplashEffect1: {fileID: 1066493762658434, guid: b738821e3a825f94790cb6231f3c2f7e,
+    type: 2}
+  _bloodSplashEffect2: {fileID: 1103681443894704, guid: 87266983e8ce88844b9f18c957d9833b,
+    type: 2}
+  _bloodSplashEffect3: {fileID: 1438168255427134, guid: 82f0227137ed0dc4d8cb8bc4052b6b22,
+    type: 2}
   _HP: 1
   _HitDamage: 1
   _PlayerDamage: 1000
@@ -3070,6 +3078,8 @@ MonoBehaviour:
   _destroyTime: 2
   _trackingRate: 10
   _tracking: 30
+  _acidDamage: 1
+  _acidDamageRate: 0.5
 --- !u!114 &114589786626982400
 MonoBehaviour:
   m_ObjectHideFlags: 1

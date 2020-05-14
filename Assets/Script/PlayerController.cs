@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D boxcol;
     private CubismRenderController cubismRender;
     public bool _Debug;
+    [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Text _debug;
     [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
 
@@ -63,9 +64,11 @@ public class PlayerController : MonoBehaviour
     }
     private GameObject drawables;    // キャラクターの見た目
 
-    [SerializeField, CustomLabel("見た目の位置オフセット銃未取得")] private Vector3 _drwablOffsetNormal;
-    [SerializeField, CustomLabel("見た目の位置オフセット銃未取得走り時")] private Vector3 _drwablOffsetNormalRunning;
-    [SerializeField, CustomLabel("見た目の位置オフセット銃取得済")] private Vector3 _drwablOffsetGetGun;
+    [SerializeField, CustomLabel("ジャンプオフセット銃未取得")] private Vector3 _drwablOffsetNormal;
+    [SerializeField, CustomLabel("ジャンプオフセット銃未取得走り時")] private Vector3 _drwablOffsetNormalRunning;
+    [SerializeField, CustomLabel("ジャンプオフセット銃取得済")] private Vector3 _drwablOffsetGetGun;
+    [SerializeField, CustomLabel("ジャンプオフセット銃取得済走り")] private Vector3 _drwablOffsetGetGunRunning;
+    [SerializeField, CustomLabel("着地オフセット")] private Vector3 _drwablOffsetGraunding;
     private Vector3 drwablsStartOffset;
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
@@ -216,6 +219,7 @@ public class PlayerController : MonoBehaviour
     private bool isGetGun = false;
     private bool isGetHoleMaker = false;
     private Vector3 mainThrowPoint;
+    private GameObject fireCheckPoint;
     private float HP;
     private float startMoveSpeed;
     private float moveDeadZone;
@@ -285,6 +289,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         capcol = GetComponent<CapsuleCollider2D>();
         boxcol = transform.GetChild(7).GetComponent<BoxCollider2D>();
+        fireCheckPoint = transform.GetChild(8).gameObject;
         cubismRender = GetComponent<CubismRenderController>();
         
         jumpTimeCounter = pm.JumpTime;
@@ -454,7 +459,11 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("JumpDown", false);
             animator.SetBool("JumpEnd", false);
             if (isGetGun) {
-                drawables.transform.localPosition = _drwablOffsetGetGun;
+                if (animator.GetBool("Run")) {
+                    drawables.transform.localPosition = _drwablOffsetGetGunRunning;
+                } else {
+                    drawables.transform.localPosition = _drwablOffsetGetGun;
+                }
             } else {
                 if (animator.GetBool("Run")) {
                     drawables.transform.localPosition = _drwablOffsetNormalRunning;
@@ -566,13 +575,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (!(0 < HP)) return;
-        
         sm.PlayTime += Time.deltaTime;
         sm.GameClearTime += Time.deltaTime;
         
         if(0 < fireTime) {
             fireTime -= Time.deltaTime;
-            
         }
 
         if(0 < acidDamageTime) {
@@ -658,7 +665,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", true);
-                animator.SetBool("Run", true);
+                drawables.transform.localPosition = _drwablOffsetGraunding;
                 // ここに着地した瞬間の処理書くといいかも
             }
             else if ((im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey) && jumpWaitTime < 0 && im.MoveStopKey == 0)    // 移動中
@@ -673,6 +680,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
+                drawables.transform.localPosition = drwablsStartOffset;
             }
             else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey  && jumpWaitTime < 0)    // 待機モーション中
             {
@@ -691,6 +699,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
+                drawables.transform.localPosition = drwablsStartOffset;
             }
             // 空中にいるとき
         } else {
@@ -857,10 +866,17 @@ public class PlayerController : MonoBehaviour
     // ハンドガン発射
     private void HandgunShot()
     {
-        
         GameObject bullet = pool.GetObject();
         if (bullet != null) {
-            bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
+            if (Physics2D.Linecast(fireCheckPoint.transform.position, mainThrowPoint, _layerMask))
+            {
+                bullet.GetComponent<AcidFlask>().Init(fireCheckPoint.transform.position, true);
+                Debug.Log("撃った瞬間に壁に当たっていた");
+            } else {
+                bullet.GetComponent<AcidFlask>().Init(mainThrowPoint, false);
+                Debug.Log("正常に発射された");
+            }
+            
         }
         Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 
@@ -928,7 +944,7 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < _hmShotBullets; i++) {
             GameObject bullet = pool.GetObject();
             if (bullet != null) {
-                bullet.GetComponent<AcidFlask>().Init(mainThrowPoint);
+                bullet.GetComponent<AcidFlask>().Init(mainThrowPoint,false);
             }
             Rigidbody2D bRb = bullet.GetComponent<Rigidbody2D>();
 

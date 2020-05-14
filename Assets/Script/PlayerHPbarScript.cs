@@ -47,9 +47,6 @@ public class PlayerHPbarScript : MonoBehaviour
 			targetValue = mySlider.value;
 			if (_healbar.value <= mySlider.value)
 			{
-				Debug.Log("あんち");
-				Debug.Log(mySlider.value + "あんあんち");
-				Debug.Log(_healbar.value);
 				mySlider.value = _healbar.value;
 				_damagebar.value = _healbar.value;
 				targetValue = _healbar.value;
@@ -68,9 +65,6 @@ public class PlayerHPbarScript : MonoBehaviour
 		} 
 		else if (_healbar.value < mySlider.value) //	回復
 		{
-			Debug.Log("buriburi");
-			Debug.Log(mySlider.value);
-			Debug.Log(_healbar.value);
 			_healbar.value = mySlider.value;
 			mySlider.value = targetValue;
 			_damagebar.value = targetValue;

@@ -3774,13 +3774,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 18
   moveForceMultiplier: 10
-  jumpMoveSpeed: 12
-  jumpPower: 120
-  jumpTime: 0.45
-  jumpPowerAttenuation: 6.7
-  jumpMinTime: 0.17
-  gravityRate: 11
-  maxFallSpeed: 16
+  jumpMoveSpeed: 14
+  jumpPower: 500
+  jumpTime: 0.5
+  jumpPowerAttenuation: 40
+  jumpMinTime: 0.06
+  gravityRate: 24
+  maxFallSpeed: 18
 --- !u!114 &114922230926701122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3849,6 +3849,7 @@ MonoBehaviour:
   isStartGetGun: 0
   _HPbar: {fileID: 0}
   _drwablOffsetNormal: {x: 0, y: 0.331, z: 0}
+  _drwablOffsetNormalRunning: {x: 0, y: 0.493, z: 0}
   _drwablOffsetGetGun: {x: 0, y: 0.493, z: 0}
   filter2d:
     useTriggers: 0

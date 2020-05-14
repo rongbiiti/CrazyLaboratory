@@ -16,6 +16,10 @@ public class Enemy_ChildSpider : MonoBehaviour {
         count,
     }
 
+    [SerializeField, CustomLabel("死亡時煙エフェクト")] private GameObject _smokeEffect;
+    [SerializeField, CustomLabel("死亡時血しぶきエフェクト1")] private GameObject _bloodSplashEffect1;
+    [SerializeField, CustomLabel("死亡時血しぶきエフェクト2")] private GameObject _bloodSplashEffect2;
+    [SerializeField, CustomLabel("死亡時血しぶきエフェクト3")] private GameObject _bloodSplashEffect3;
     [SerializeField] private float _HP = 1f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _PlayerDamage = 1000f;
@@ -116,6 +120,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
             animator.SetBool("Walk", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Stun", false);
+            animator.SetBool("Death", false);
 
             for (int i = 0; i < _PatrolPoint.Length; i++)
             {
@@ -142,19 +147,28 @@ public class Enemy_ChildSpider : MonoBehaviour {
     {
         if (isZeroHP)
         {
-            if (0 < transform.localScale.x)
+            if (0 < _destroyTime)
             {
-                transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
+                _destroyTime -= Time.deltaTime;
             }
-            else if (transform.localScale.x < 0)
-            {
-                transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            }
-            if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
+            else
             {
                 gameObject.SetActive(false);
                 enemyHpbar.hpbar.gameObject.SetActive(false);
             }
+            //if (0 < transform.localScale.x)
+            //{
+            //    transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
+            //}
+            //else if (transform.localScale.x < 0)
+            //{
+            //    transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
+            //}
+            //if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
+            //{
+            //    gameObject.SetActive(false);
+            //    enemyHpbar.hpbar.gameObject.SetActive(false);
+            //}
 
         }
         else
@@ -184,6 +198,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 animator.SetBool("Walk", true);
                 animator.SetBool("Stand", false);
                 animator.SetBool("Stun", false);
+                animator.SetBool("Death", false);
             }
 
             if (patrolType == 1 && 0 < trackingTime)
@@ -215,6 +230,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 animator.SetBool("Stand", true);
                 animator.SetBool("Walk", false);
                 animator.SetBool("Stun", false);
+                animator.SetBool("Death", false);
 
                 if (++PointCount > _PatrolPoint.Length - 1) PointCount = 0;  //配列の最大数に到達したら0に戻す
                 Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
@@ -352,10 +368,18 @@ public class Enemy_ChildSpider : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                animator.SetBool("Walk", false);
+                animator.SetBool("Stand", false);
+                animator.SetBool("Stun", false);
+                animator.SetBool("Death", true);
                 ScoreManager.Instance.KillCnt++;
                 ScoreManager.Instance.TotalKillCnt++;
                 transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
                 transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
+                Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
+                Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+                Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
             }   
         }
 
@@ -412,8 +436,18 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     if (nowHP <= 0)
                     {
                         isZeroHP = true;
+                        animator.SetBool("Walk", false);
+                        animator.SetBool("Stand", false);
+                        animator.SetBool("Stun", false);
+                        animator.SetBool("Death", true);
+                        ScoreManager.Instance.KillCnt++;
+                        ScoreManager.Instance.TotalKillCnt++;
                         transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
                         transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                        Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
+                        Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
+                        Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+                        Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
                     }
                     SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
@@ -440,8 +474,18 @@ public class Enemy_ChildSpider : MonoBehaviour {
                     if (nowHP <= 0)
                     {
                         isZeroHP = true;
+                        animator.SetBool("Walk", false);
+                        animator.SetBool("Stand", false);
+                        animator.SetBool("Stun", false);
+                        animator.SetBool("Death", true);
+                        ScoreManager.Instance.KillCnt++;
+                        ScoreManager.Instance.TotalKillCnt++;
                         transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
                         transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                        Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
+                        Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
+                        Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+                        Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
                     }
                     SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
@@ -484,6 +528,7 @@ public class Enemy_ChildSpider : MonoBehaviour {
             animator.SetBool("Stun", true);
             animator.SetBool("Stand", false);
             animator.SetBool("Walk", false);
+            animator.SetBool("Death", false);
             stanTimeRemain += _stanTime;
             ScoreManager.Instance.StunCnt++;
             ScoreManager.Instance.TotalStunCnt++;

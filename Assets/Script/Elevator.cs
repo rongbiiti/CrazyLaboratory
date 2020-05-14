@@ -35,10 +35,12 @@ public class Elevator : MonoBehaviour
 
 	private IEnumerator PlayerEnter()
 	{
+        SoundManagerV2.Instance.PlaySE(40);
 		pc.AnimStop();
 		pc.enabled = false;
 		yield return new WaitForSeconds(1f);
-		cc.enabled = false;
+        SoundManagerV2.Instance.PlaySE(39);
+        cc.enabled = false;
 		isPlayerEnter = true;
 		yield return  new WaitForSeconds(1.5f);
 		if (SceneManager.GetActiveScene().name == "Stage2")

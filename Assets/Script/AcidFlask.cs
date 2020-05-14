@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.PlayerLoop;
 
 public class AcidFlask : MonoBehaviour {
 
@@ -7,11 +9,17 @@ public class AcidFlask : MonoBehaviour {
     [SerializeField, CustomLabel("酸の飛沫")] private GameObject _acidEffect;
     [SerializeField, CustomLabel("敵にヒット時エフェクト")] private GameObject _enemyHitEffect;
     [SerializeField, CustomLabel("発射されてから消えるまでの時間")] private float _destroyTime = 7f;
+    [SerializeField, CustomLabel("発射後透明解除する時間")]
+    private float _fireAfterTransparentCancelTime = 0.1f;
+
+    private float transparentCancelTime;
     private float resetTime;
     private bool isConflictDestroy = true;
     private Rigidbody2D rb;
     private BoxCollider2D col;
     private SpriteRenderer sr;
+    private Color startColor;
+    private TrailRenderer tr;
     public bool SetConflictDestroyFalse
     {
         set{ isConflictDestroy = false; }
@@ -26,10 +34,13 @@ public class AcidFlask : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
         sr = GetComponent<SpriteRenderer>();
+        tr = GetComponent<TrailRenderer>();
         resetTime = _destroyTime;
         acidEffect = Instantiate(_acidEffect);
         acidParticleSystem = acidEffect.GetComponent<ParticleSystem>();
         enemyHitEffect = Instantiate(_enemyHitEffect);
+        startColor = sr.color;
+        sr.color = Color.clear;
     }
 
     private void FixedUpdate()
@@ -38,12 +49,20 @@ public class AcidFlask : MonoBehaviour {
         if (resetTime <= 0) {
             ResetPosition();
         }
+
+        transparentCancelTime -= Time.deltaTime;
+        if (transparentCancelTime <= 0) {
+            sr.color = startColor;
+            tr.enabled = true;
+        }
+        
     }
 
-    public void Init(Vector3 pos)
+    public void Init(Vector3 pos, bool isTransparentStart)
     {
         transform.position = pos;
         transform.rotation = Quaternion.identity;
+        if(isTransparentStart) transparentCancelTime = _fireAfterTransparentCancelTime;
     }
 
     private IEnumerator ResetPosition()
@@ -57,6 +76,8 @@ public class AcidFlask : MonoBehaviour {
         gameObject.SetActive(false);
         col.enabled = true;
         sr.enabled = true;
+        sr.color = Color.clear;
+        tr.enabled = false;
     }
 
     /// <summary>

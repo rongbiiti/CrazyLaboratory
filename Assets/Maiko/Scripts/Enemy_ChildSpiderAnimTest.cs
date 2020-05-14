@@ -49,7 +49,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
     private float Count;
     private EnemyHpbar enemyHpbar;
     private bool isZeroHP;
-    [SerializeField] private float _destroyTime = 1f;
+    [SerializeField] private float _destroyTime = 2f;
     private Vector2 startPosition;
     private Vector2 startScale;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
@@ -57,9 +57,12 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
     private float trackingTime;   //追跡時間の格納用
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
+    [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 1f;
+    [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
+    private float acidDamageTime;
 
     Animator animator;
-
+    
     // Use this for initialization
     void Start()
     {
@@ -73,11 +76,11 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         }
         Point_Position = PatrolPointPosition[PointCount];     //最初のパトロールポイントの座標を格納
         movetype = 2;
-
+       
         AttackPhase = 0;
         Count = 0;
         nowHP = _HP;
-
+        
         if (Point_Position.x <= gameObject.transform.position.x)
         {
             _direction = -1;     //左
@@ -104,7 +107,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             transform.position = startPosition;
             transform.localScale = startScale;
             nowHP = _HP;
-            enemyHpbar.SetBarValue(_HP, nowHP);
+            enemyHpbar.SetBarValue(_HP,nowHP);
             enemyHpbar.hpbar.gameObject.SetActive(true);
             isZeroHP = false;
             Point_Position = PatrolPointPosition[PointCount];     //最初のパトロールポイントの座標を格納
@@ -136,7 +139,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
             }
         }
-
+        
     }
 
     void FixedUpdate()
@@ -179,11 +182,16 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 stanTimeRemain -= Time.deltaTime;
             }
 
+            if (0 < acidDamageTime)
+            {
+                acidDamageTime -= Time.deltaTime;
+            }
+
             if (0 < pointWaitTime)
             {
                 pointWaitTime -= Time.deltaTime;
             }
-            else if (movetype == 1 && 0 >= pointWaitTime)
+           else if(movetype == 1 && 0 >= pointWaitTime)
             {
                 movetype = 2;
                 animator.SetBool("Walk", true);
@@ -194,7 +202,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
 
             if (patrolType == 1 && 0 < trackingTime)
             {
-
+                
                 trackingTime -= Time.deltaTime;
                 if (trackingTime <= 0)
                 {
@@ -206,7 +214,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             if (directionChangeFlag && 0 < directionTime)
             {
                 directionTime -= Time.deltaTime;
-
+                
                 if (directionTime <= 0)
                 {
                     Debug.Log("方向転換準備");
@@ -227,7 +235,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 Point_Position = PatrolPointPosition[PointCount];     //パトロールポイントの座標を格納
                 if (gameObject.transform.position.x >= Point_Position.x)     //現在のポジションからポイントの座標を見て　設定する
                 {
-                    if (_direction == 1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                    if(_direction == 1) gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     _direction = -1; //左
                     directionChange = false;
                 }
@@ -241,7 +249,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 movetype = 1;     //硬直へ
                 pointWaitTime += _pointWaitRate;
             }
-
+            
 
 
 
@@ -261,7 +269,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
 
                         //パトロールポイントを超えたら待機タイプに変える
                         if (_direction == -1 && gameObject.transform.position.x <= Point_Position.x)
-                        {
+                        {            
                             movetype = 0;
                         }
                         else if (_direction == 1 && gameObject.transform.position.x >= Point_Position.x)
@@ -321,6 +329,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                         {
                             AttackPhase = 2;
                             Count = 0;
+                            SoundManagerV2.Instance.PlaySE(25);
                         }
                     }
                     else if (AttackPhase == 2 && stanTimeRemain <= 0)   //敵に攻撃
@@ -340,8 +349,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     break;
             }
 
-
-
+            
+            
         }
 
 
@@ -363,13 +372,17 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 animator.SetBool("Stand", false);
                 animator.SetBool("Stun", false);
                 animator.SetBool("Death", true);
+                ScoreManager.Instance.KillCnt++;
+                ScoreManager.Instance.TotalKillCnt++;
                 transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
                 transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
                 Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
                 Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
                 Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
                 Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
-            }
+                SoundManagerV2.Instance.PlaySE(26);
+                SoundManagerV2.Instance.PlaySE(37);
+            }   
         }
 
         if (collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
@@ -404,6 +417,87 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 prb.velocity = direction * _nockBuckPower;
             }
         }
+
+        if (collision.CompareTag("ResidualAcid"))
+        {
+            if (acidDamageTime <= 0)
+            {
+                GameObject acidParentBlock = collision.transform.parent.gameObject;
+                var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
+                var _sprite = sprite.sprite;
+                var halfX = _sprite.bounds.extents.x;
+                var _vec = new Vector3(-halfX, 0f, 0f); // これは左上
+                var _unvec = new Vector3(halfX, 0f, 0f); // これは右上
+                var _pos = sprite.transform.TransformPoint(_vec);
+                var _unpos = sprite.transform.TransformPoint(_unvec);
+                if (transform.position.x >= _pos.x && transform.position.x <= _unpos.x)
+                {
+                    acidDamageTime += _acidDamageRate;
+                    nowHP -= _acidDamage;
+                    enemyHpbar.SetBarValue(_HP, nowHP);
+                    if (nowHP <= 0)
+                    {
+                        SoundManagerV2.Instance.PlaySE(26);
+                        SoundManagerV2.Instance.PlaySE(37);
+                        isZeroHP = true;
+                        animator.SetBool("Walk", false);
+                        animator.SetBool("Stand", false);
+                        animator.SetBool("Stun", false);
+                        animator.SetBool("Death", true);
+                        ScoreManager.Instance.KillCnt++;
+                        ScoreManager.Instance.TotalKillCnt++;
+                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
+                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                        Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
+                        Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
+                        Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+                        Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+                    }
+                    SoundManagerV2.Instance.PlaySE(4);
+                    Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
+                }
+            }
+        }
+        else if (collision.CompareTag("WallReAcid"))
+        {
+            if (acidDamageTime <= 0)
+            {
+                GameObject acidParentBlock = collision.transform.parent.gameObject;
+                var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
+                var _sprite = sprite.sprite;
+                var _halfY = _sprite.bounds.extents.y;
+                var _vec = new Vector3(0f, -_halfY, 0f); // これは上
+                var _unvec = new Vector3(0f, _halfY, 0f); // これは下
+                var _pos = sprite.transform.TransformPoint(_vec);
+                var _unpos = sprite.transform.TransformPoint(_unvec);
+                if (transform.position.y >= _pos.y && transform.position.y <= _unpos.y)
+                {
+                    acidDamageTime += _acidDamageRate;
+                    nowHP -= _acidDamage;
+                    enemyHpbar.SetBarValue(_HP, nowHP);
+                    if (nowHP <= 0)
+                    {
+                        SoundManagerV2.Instance.PlaySE(26);
+                        SoundManagerV2.Instance.PlaySE(37);
+                        isZeroHP = true;
+                        animator.SetBool("Walk", false);
+                        animator.SetBool("Stand", false);
+                        animator.SetBool("Stun", false);
+                        animator.SetBool("Death", true);
+                        ScoreManager.Instance.KillCnt++;
+                        ScoreManager.Instance.TotalKillCnt++;
+                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
+                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                        Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
+                        Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
+                        Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+                        Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+                    }
+                    SoundManagerV2.Instance.PlaySE(4);
+                    Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
+                }
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -430,8 +524,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
+                SoundManagerV2.Instance.PlaySE(2);
             }
-            SoundManagerV2.Instance.PlaySE(2);
         }
 
 
@@ -442,6 +536,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             animator.SetBool("Walk", false);
             animator.SetBool("Death", false);
             stanTimeRemain += _stanTime;
+            ScoreManager.Instance.StunCnt++;
+            ScoreManager.Instance.TotalStunCnt++;
             AttackPhase = 0;
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
