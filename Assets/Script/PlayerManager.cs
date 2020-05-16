@@ -97,6 +97,14 @@ public class PlayerManager : MonoBehaviour
         set { jumpPower = value; }
     }
 
+    /* -- ジャンプため時間 ------------------------------------------------------------------------------- */
+    [SerializeField, Range(0f, 10f), CustomLabel("ジャンプため時間")] private float jumpWaitTime = 1f;
+    public float JumpWaitTime
+    {
+        get { return jumpWaitTime; }
+        set { jumpWaitTime = value; }
+    }
+
     /* -- ジャンプ時間 ------------------------------------------------------------------------------- */
     [SerializeField, Range(0f, 2f), CustomLabel("ジャンプ押し続け最大時間")] private float jumpTime = 0.35f;
     public float JumpTime
@@ -135,5 +143,13 @@ public class PlayerManager : MonoBehaviour
     {
         get { return maxFallSpeed; }
         set { maxFallSpeed = value; }
+    }
+
+    /* -- 最大着地モーション時間 ------------------------------------------------------------------------------- */
+    [SerializeField, Range(0, 12), CustomLabel("最大着地モーション時間")] private int maxLandingTime = 10;
+    public int MaxLandingTime
+    {
+        get { return maxLandingTime; }
+        set { maxLandingTime = value; }
     }
 }

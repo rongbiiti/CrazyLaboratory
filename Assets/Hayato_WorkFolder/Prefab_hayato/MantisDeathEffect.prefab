@@ -341,7 +341,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1783504304687720}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.45, y: -5.44, z: 0.47000027}
+  m_LocalPosition: {x: -3.45, y: -4.9100003, z: 0.47000027}
   m_LocalScale: {x: 0.79999995, y: 0.79999995, z: 1}
   m_Children: []
   m_Father: {fileID: 4425996625024228}
@@ -367,7 +367,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1114849485436614}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.01, y: -5.4400005, z: 0.47000027}
+  m_LocalPosition: {x: 1.01, y: -4.91, z: 0.47000027}
   m_LocalScale: {x: 0.79999995, y: 0.79999995, z: 1}
   m_Children: []
   m_Father: {fileID: 4425996625024228}
@@ -406,7 +406,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1646498888968008}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.77, y: -5.44, z: 0.47000027}
+  m_LocalPosition: {x: 5.77, y: -4.910001, z: 0.47000027}
   m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_Children: []
   m_Father: {fileID: 4425996625024228}
@@ -5537,7 +5537,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 10
+    maxNumParticles: 100
     size3D: 1
     rotation3D: 0
     gravityModifier:
@@ -23763,7 +23763,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 10
+    maxNumParticles: 100
     size3D: 1
     rotation3D: 0
     gravityModifier:
@@ -51078,7 +51078,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 10
+    maxNumParticles: 100
     size3D: 1
     rotation3D: 0
     gravityModifier:
@@ -55174,7 +55174,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 18044b511ca14cb45b82b351d68d6e72, type: 2}
+  - {fileID: 2100000, guid: 13fe2421874c2da49909be52110bad7f, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -55230,7 +55230,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 18044b511ca14cb45b82b351d68d6e72, type: 2}
+  - {fileID: 2100000, guid: 13fe2421874c2da49909be52110bad7f, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -55342,7 +55342,7 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 18044b511ca14cb45b82b351d68d6e72, type: 2}
+  - {fileID: 2100000, guid: 13fe2421874c2da49909be52110bad7f, type: 2}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

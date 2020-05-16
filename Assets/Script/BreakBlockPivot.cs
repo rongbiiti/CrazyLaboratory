@@ -42,6 +42,7 @@ public class BreakBlockPivot : MonoBehaviour
                 spriteRenderer.color -= changeColorDst;
                 if (parent1.transform.localScale.x <= 0) {
                     SetRestoring();
+                    WorldPositionReset();
                 }
             }
         } else if(status == Status.Restoring) {
@@ -49,9 +50,6 @@ public class BreakBlockPivot : MonoBehaviour
                 parent1.transform.localScale += new Vector3(startScale.x / restorTime * Time.deltaTime, startScale.y / restorTime * Time.deltaTime); ;
                 spriteRenderer.color += changeColorRst;
                 if (startScale.x <= parent1.transform.localScale.x) {
-                    parent1.transform.position = Startposition;
-                    parent1.transform.localScale = startScale;
-                    gameObject.transform.position = Startzikkenposition;
                     UnSetRestoring();
                 }
             }
@@ -75,6 +73,12 @@ public class BreakBlockPivot : MonoBehaviour
     private void DisableCollider()
     {
         GetComponent<BoxCollider2D>().isTrigger = true;
+    }
+
+    private void WorldPositionReset()
+    {
+        parent1.transform.position = Startposition;
+        gameObject.transform.position = Startzikkenposition;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -140,6 +144,7 @@ public class BreakBlockPivot : MonoBehaviour
 
             isEnterAcid = true;
             DisableCollider();
+
             SoundManagerV2.Instance.PlaySE(1);
             GameObject efcObj;  // 消滅エフェクトオブジェクトを自身に追跡させるのに使う変数
             efcObj = Instantiate(_dstEffect, transform.position, _dstEffect.transform.rotation);
