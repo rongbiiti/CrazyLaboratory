@@ -3137,11 +3137,13 @@ MonoBehaviour:
   moveForceMultiplier: 10
   jumpMoveSpeed: 14
   jumpPower: 400
+  jumpWaitTime: 6
   jumpTime: 0.5
   jumpPowerAttenuation: 36
   jumpMinTime: 0.05
   gravityRate: 22
   maxFallSpeed: 18
+  maxLandingTime: 8
 --- !u!114 &114268659404407874
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3783,6 +3785,7 @@ MonoBehaviour:
   _YStickDownDeadZone: -0.4
   floorDeadZone: -0.5
   _moveDeadZone: 0.55
+  _colorInAcidDamage: {r: 0.5283019, g: 0.072267726, b: 0.072267726, a: 1}
   ceilShot:
     _muzzleVelocity: 11.5
     _gravityScale: 6
@@ -3803,6 +3806,27 @@ MonoBehaviour:
     _muzzleVelocity: 11.5
     _gravityScale: 6
     _fireAngle: -90
+  Drawables:
+  - {fileID: 114137190496375148}
+  - {fileID: 114538156791066054}
+  - {fileID: 114289501706363074}
+  - {fileID: 114601003251564596}
+  - {fileID: 114030444155507176}
+  - {fileID: 114084314281252604}
+  - {fileID: 114224709486218612}
+  - {fileID: 114145415977825720}
+  - {fileID: 114638415128742766}
+  - {fileID: 114927140696980700}
+  - {fileID: 114571848657130820}
+  - {fileID: 114227407814871286}
+  - {fileID: 114677260415918640}
+  - {fileID: 114748736147425038}
+  - {fileID: 114341088781401336}
+  - {fileID: 114007021039526586}
+  - {fileID: 114390245020574894}
+  - {fileID: 114829850522527868}
+  - {fileID: 114517848746928394}
+  - {fileID: 114334580338434170}
 --- !u!114 &114896808652964014
 MonoBehaviour:
   m_ObjectHideFlags: 1

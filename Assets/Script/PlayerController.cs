@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private CubismRenderController cubismRender;
     public bool _Debug;
     [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private Text _debug;
+    [SerializeField, CustomLabel("デバッグテキスト")] private Text _debug;
     [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
 
     [SerializeField, CustomLabel("最初から銃を所持")] private bool isStartGetGun = false;
@@ -94,6 +94,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(-0.001f, -1f), CustomLabel("スティック下向きの閾値")] private float _YStickDownDeadZone = -0.4f;
     [SerializeField, Range(0.001f, 1f), CustomLabel("真下の閾値")] private float floorDeadZone = -0.5f;
     [SerializeField, CustomLabel("上下狙い中横移動デッドゾーン")] private float _moveDeadZone = 0.55f;
+    [SerializeField, CustomLabel("酸ダメージ中プレイヤー色")] private Color _colorInAcidDamage;
 
     [Serializable]
     private class CeilShot
@@ -205,6 +206,8 @@ public class PlayerController : MonoBehaviour
     }
     [SerializeField, CustomLabel("真下へ発射")] FloorShot floorShot;
 
+    [SerializeField, CustomLabel("全Drawables")] private CubismRenderer[] Drawables;
+
     private enum Equipment
     {
         None,
@@ -302,7 +305,7 @@ public class PlayerController : MonoBehaviour
         _HPbar.maxValue = _maxHP;
         _HPbar.value = HP;
         if (!isBGMMute) {
-            SoundManagerV2.Instance.PlayBGM(0);
+
         }
         if (_hmShotBullets % 2 != 0) {
             _hmShotBullets--;
@@ -349,7 +352,6 @@ public class PlayerController : MonoBehaviour
             if (state != State.Shot2){
                 SetState(State.Shot2);
             }
-            SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.Handgun;
         }
 
@@ -452,29 +454,20 @@ public class PlayerController : MonoBehaviour
         // ジャンプボタンを押した瞬間は、アニメーションだけ先に動作させます！
         if (isJumpingCheck && im.JumpKey == 1 && isGrounded && jumpWaitTime < 0) {
             anicount = 0.0f;
-            animator.SetBool("JumpStart-run", true);
-            animator.SetBool("JumpStart", true);
+            if (animator.GetBool("Run")) {
+                animator.SetBool("JumpStart-run", true);
+            } else {
+                animator.SetBool("JumpStart", true);
+            }
+
             animator.SetBool("JumpUp", false);
             animator.SetBool("JumpUp-run", false);
             animator.SetBool("JumpDown", false);
             animator.SetBool("JumpEnd", false);
-            if (isGetGun) {
-                if (animator.GetBool("Run")) {
-                    drawables.transform.localPosition = _drwablOffsetGetGunRunning;
-                } else {
-                    drawables.transform.localPosition = _drwablOffsetGetGun;
-                }
-            } else {
-                if (animator.GetBool("Run")) {
-                    drawables.transform.localPosition = _drwablOffsetNormalRunning;
-                } else {
-                    drawables.transform.localPosition = _drwablOffsetNormal;
-                }
-            }
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
-            jumpWaitTime = jumpWaitTime * 0 + 0.17f;
+            jumpWaitTime = jumpWaitTime * 0 + (0.0167f * pm.JumpWaitTime);
             groundingTime = 0;
             
         }
@@ -501,16 +494,13 @@ public class PlayerController : MonoBehaviour
                 _jumpPower = pm.JumpPower;
                 jumpMinTime = pm.JumpMinTime;
                 SoundManagerV2.Instance.PlaySE(9);
-                drawables.transform.localPosition = drwablsStartOffset;
                 groundingTime = 0;
             }
         }
 
-        if (im.MoveStopKey == 2)
-        {
+        if (im.MoveStopKey == 2) {
             pm.MoveSpeed = 0;
-        } else if (im.MoveStopKey == 0)
-        {
+        } else if (im.MoveStopKey == 0) {
             pm.MoveSpeed = startMoveSpeed;
         }
 
@@ -584,6 +574,16 @@ public class PlayerController : MonoBehaviour
 
         if(0 < acidDamageTime) {
             acidDamageTime -= Time.deltaTime;
+            if(acidDamageTime <= 0) {
+                foreach (var dr in Drawables) {
+                    dr.Color = new Color(1,1,1,1);
+                }
+            } else {
+                foreach (var dr in Drawables) {
+                    dr.Color += new Color(1 / _acidDamageRate * Time.deltaTime, 1 / _acidDamageRate * Time.deltaTime, 1 / _acidDamageRate * Time.deltaTime, 0);
+                }
+            }
+
         }
 
         if (0 < invincibleTime) {
@@ -619,6 +619,11 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    private void LateUpdate()
+    {
+        StartCoroutine("DrawablesControl");
+    }
+
     private void PlayerMove()
     {
         // 無限ジャンプのチート用処理
@@ -643,7 +648,9 @@ public class PlayerController : MonoBehaviour
         // 地面にいるとき
         if (isGrounded && !isJumping && jumpWaitTime < 0)
         {
-            if(groundingTime < 12) groundingTime++;
+            if (groundingTime < pm.MaxLandingTime) {
+                groundingTime++;
+            }
 
             if ((im.MoveKey <= -moveDeadZone || moveDeadZone <= im.MoveKey) && jumpWaitTime < 0)
             {
@@ -656,7 +663,7 @@ public class PlayerController : MonoBehaviour
             
             anicount += Time.deltaTime;
 
-            if (0 < groundingTime && groundingTime < 12 && jumpWaitTime < 0)
+            if (0 < groundingTime && groundingTime < pm.MaxLandingTime && jumpWaitTime < 0)
             {
                 anicount = 0.0f;
                 animator.SetBool("JumpStart", false);
@@ -665,7 +672,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", true);
-                drawables.transform.localPosition = _drwablOffsetGraunding;
                 // ここに着地した瞬間の処理書くといいかも
             }
             else if ((im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey) && jumpWaitTime < 0 && im.MoveStopKey == 0)    // 移動中
@@ -680,7 +686,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
-                drawables.transform.localPosition = drwablsStartOffset;
             }
             else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey  && jumpWaitTime < 0)    // 待機モーション中
             {
@@ -699,7 +704,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
-                drawables.transform.localPosition = drwablsStartOffset;
             }
             // 空中にいるとき
         } else {
@@ -781,7 +785,23 @@ public class PlayerController : MonoBehaviour
             isJumpingCheck = true;
         }
 
-        if(_Debug) _debug.text = isJumping.ToString();
+        if (_Debug) _debug.text = animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpStart")).ToString();
+    }
+
+    private IEnumerator DrawablesControl()
+    {
+        if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpStart-run"))) {
+            yield return new WaitForSeconds(0.02f);
+            drawables.transform.localPosition = _drwablOffsetNormalRunning;
+        } else if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpStart"))) {
+            yield return new WaitForSeconds(0.02f);
+            drawables.transform.localPosition = _drwablOffsetNormal;
+        } else if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpEnd"))) {
+            yield return new WaitForSeconds(0.02f);
+            drawables.transform.localPosition = _drwablOffsetGraunding;
+        } else {
+            drawables.transform.localPosition = drwablsStartOffset;
+        }
     }
 
     private void GhostMove()
@@ -825,6 +845,10 @@ public class PlayerController : MonoBehaviour
                 damageEffect.transform.position = transform.position;
                 damageEffect.SetActive(true);
                 cubismRender.Opacity = 0.3f;
+            } else {
+                foreach (var dr in Drawables) {
+                    dr.Color = _colorInAcidDamage;
+                }
             }
 
             if (HP <= 0)
