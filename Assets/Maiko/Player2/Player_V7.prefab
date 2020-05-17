@@ -1500,7 +1500,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1495542600224328}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -108.71, y: 14.29, z: 0}
+  m_LocalPosition: {x: -29.2, y: -14.1, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4390532886995496}
@@ -3412,7 +3412,7 @@ MonoBehaviour:
     m_Bits: 33792
   _debug: {fileID: 0}
   isBGMMute: 0
-  isStartGetGun: 0
+  isStartGetGun: 1
   _HPbar: {fileID: 0}
   _drwablOffsetNormal: {x: 0, y: 0, z: 0}
   _drwablOffsetNormalRunning: {x: 0, y: 0, z: 0}
@@ -3450,6 +3450,7 @@ MonoBehaviour:
   _YStickDownDeadZone: -0.4
   floorDeadZone: -0.5
   _moveDeadZone: 0.55
+  _colorInAcidDamage: {r: 0.5294118, g: 0.07058824, b: 0.07058824, a: 1}
   ceilShot:
     _muzzleVelocity: 11.5
     _gravityScale: 6
@@ -3470,6 +3471,27 @@ MonoBehaviour:
     _muzzleVelocity: 11.5
     _gravityScale: 6
     _fireAngle: -90
+  Drawables:
+  - {fileID: 114356403396303886}
+  - {fileID: 114179243747565342}
+  - {fileID: 114472399195316356}
+  - {fileID: 114279952085700672}
+  - {fileID: 114434683919984860}
+  - {fileID: 114200976458486824}
+  - {fileID: 114702863135693068}
+  - {fileID: 114978328604587196}
+  - {fileID: 114596565542527854}
+  - {fileID: 114973271411243558}
+  - {fileID: 114612632163296452}
+  - {fileID: 114117800698731868}
+  - {fileID: 114396373036046366}
+  - {fileID: 114424802322854046}
+  - {fileID: 114358566817040208}
+  - {fileID: 114884723992553628}
+  - {fileID: 114551887344487006}
+  - {fileID: 114467757712807572}
+  - {fileID: 114893226116981198}
+  - {fileID: 114357366967180884}
 --- !u!114 &114532004732168600
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3722,11 +3744,13 @@ MonoBehaviour:
   moveForceMultiplier: 10
   jumpMoveSpeed: 14
   jumpPower: 400
+  jumpWaitTime: 6
   jumpTime: 0.5
   jumpPowerAttenuation: 36
   jumpMinTime: 0.05
   gravityRate: 22
   maxFallSpeed: 18
+  maxLandingTime: 8
 --- !u!114 &114725991964639710
 MonoBehaviour:
   m_ObjectHideFlags: 1

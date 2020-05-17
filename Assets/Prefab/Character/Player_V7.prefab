@@ -3026,6 +3026,7 @@ MonoBehaviour:
   _YStickDownDeadZone: -0.4
   floorDeadZone: -0.5
   _moveDeadZone: 0.55
+  _colorInAcidDamage: {r: 0, g: 0, b: 0, a: 0}
   ceilShot:
     _muzzleVelocity: 11.5
     _gravityScale: 6
@@ -3046,6 +3047,7 @@ MonoBehaviour:
     _muzzleVelocity: 11.5
     _gravityScale: 6
     _fireAngle: -90
+  Drawables: []
 --- !u!114 &114141230066398504
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3481,11 +3483,13 @@ MonoBehaviour:
   moveForceMultiplier: 10
   jumpMoveSpeed: 14
   jumpPower: 400
+  jumpWaitTime: 6
   jumpTime: 0.5
   jumpPowerAttenuation: 36
   jumpMinTime: 0.05
   gravityRate: 22
   maxFallSpeed: 18
+  maxLandingTime: 8
 --- !u!114 &114569186369126166
 MonoBehaviour:
   m_ObjectHideFlags: 1
