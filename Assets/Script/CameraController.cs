@@ -42,7 +42,7 @@ public class CameraController : MonoBehaviour
     {
         Vector3 newPosition = transform.position;
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
-        if (viewPos.y > 0.75f && !isFocasUnder) {
+        if (viewPos.y > 0.72f && !isFocasUnder) {
             newPosition.y = player.transform.position.y - offset.y;
         } else if ((viewPos.y < 0.3f && !isFocasUnder) || pc.IsGhost) {
             newPosition.y = player.transform.position.y + offset.y;

@@ -48,6 +48,10 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
     private byte AttackPhase;
     private float Count;
     private EnemyHpbar enemyHpbar;
+    public EnemyHpbar EnemyHpbar
+    {
+        get { return enemyHpbar; }
+    }
     private bool isZeroHP;
     [SerializeField] private float _destroyTime = 2f;
     private Vector2 startPosition;

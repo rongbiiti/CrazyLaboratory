@@ -366,8 +366,9 @@ GameObject:
   - component: {fileID: 95219565936640738}
   - component: {fileID: 61723262883308198}
   - component: {fileID: 50497759928383176}
-  - component: {fileID: 114950688487339460}
   - component: {fileID: 114420225466105012}
+  - component: {fileID: 114950688487339460}
+  - component: {fileID: 114959453016103134}
   m_Layer: 11
   m_Name: ChildSpider
   m_TagString: Enemy
@@ -1339,7 +1340,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1436046501626188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.6, y: -15.2, z: 0}
+  m_LocalPosition: {x: -17.5, y: -6.2, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children:
   - {fileID: 4797854364019808}
@@ -3693,6 +3694,20 @@ MonoBehaviour:
   HPbar: {fileID: 114767796095032526, guid: 1294d218e5c73d147ba72948342bd6fe, type: 2}
   hpbar: {fileID: 0}
   _YposOffset: 3
+--- !u!114 &114959453016103134
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1436046501626188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d353a7d0404651f45a10112d2a25dd75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isTruePopEffect: 0
+  _popEffect: {fileID: 1456995357119660, guid: 494ead886fea43746b2d213e5e95cd4f, type: 2}
+  _distance: 15
 --- !u!114 &114992644206591842
 MonoBehaviour:
   m_ObjectHideFlags: 1
