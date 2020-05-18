@@ -7,6 +7,8 @@ public class EnemyPopEffect : MonoBehaviour {
 
     [SerializeField, CustomLabel("出現エフェクトさせる")] private bool _isTruePopEffect;
     [SerializeField, CustomLabel("出現エフェクト")] private GameObject _popEffect;
+    [SerializeField, CustomLabel("通気口")] private GameObject _tuukikou;
+    [SerializeField, CustomLabel("破片プレハブ")] private GameObject _fragmentTuukikou;
     [SerializeField, CustomLabel("検知距離")] private float _distance = 1f;
     private GameObject instantiatedPopEffect;   // 生成した出現エフェクトを参照するための変数
     private bool isPopEffectInstantiated;
@@ -15,6 +17,8 @@ public class EnemyPopEffect : MonoBehaviour {
     private EnemyHpbar enemyHpbar;
     private CubismRenderController cubismRender;
     private Rigidbody2D rb;
+    private Explodable explodable;
+    private Vector3 fragmentPosition;
 
     private void OnEnable()
     {
@@ -42,18 +46,23 @@ public class EnemyPopEffect : MonoBehaviour {
     void Start () {
         
         player = GameObject.FindGameObjectWithTag("Player").gameObject;
-	}
+        explodable = _tuukikou.transform.GetChild(0).GetComponent<Explodable>();
+        fragmentPosition = _tuukikou.transform.GetChild(0).transform.position;
+    }
 
     private void FixedUpdate()
     {
         if(!isPopEffectInstantiated && Vector3.Distance(player.transform.position, transform.position) <= _distance) {
-            instantiatedPopEffect = Instantiate(_popEffect, transform.position, Quaternion.identity);
+            //instantiatedPopEffect = Instantiate(_popEffect, transform.position, Quaternion.identity);
             enemy_ChildSpiderAnimTest.enabled = true;
             enemyHpbar.hpbar.gameObject.SetActive(true);
             cubismRender.Opacity = 1f;
             rb.WakeUp();
             SoundManagerV2.Instance.PlaySE(8);
             isPopEffectInstantiated = true;
+            explodable.explode();
+            ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
+            ef.doExplosion(transform.position);
         } else if (!isPopEffectInstantiated) {
             enemyHpbar.hpbar.gameObject.SetActive(false);
         }
