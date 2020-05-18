@@ -6529,7 +6529,7 @@ MonoBehaviour:
   YenAround: 0
   _bossRightMaxPx: -47.1
   _bossLeftMaxPx: -106.09
-  _bossUnderMaxPy: 0
+  _stageCenterPx: 0
   _bodyPressRate: 3
   _bodyPressFallSpeed: 50
   _stanRate: 4
@@ -16543,6 +16543,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Debug: 0
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 0
   _debug: {fileID: 0}
   isBGMMute: 0
   isStartGetGun: 1
@@ -16550,6 +16553,8 @@ MonoBehaviour:
   _drwablOffsetNormal: {x: 0, y: 0, z: 0}
   _drwablOffsetNormalRunning: {x: 0, y: 0, z: 0}
   _drwablOffsetGetGun: {x: 0, y: 0, z: 0}
+  _drwablOffsetGetGunRunning: {x: 0, y: 0, z: 0}
+  _drwablOffsetGraunding: {x: 0, y: 0, z: 0}
   filter2d:
     useTriggers: 0
     useLayerMask: 1
@@ -21958,6 +21963,11 @@ Prefab:
         type: 2}
       propertyPath: _bossLeftMaxPx
       value: -103.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 114730091891049994, guid: 3437625f0163d3b4787749d6159cf796,
+        type: 2}
+      propertyPath: _stageCenterPx
+      value: -79.85
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3437625f0163d3b4787749d6159cf796, type: 2}
