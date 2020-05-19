@@ -23,9 +23,9 @@ public class EnemyPopEffect : MonoBehaviour {
     private void OnEnable()
     {
         enemy_ChildSpiderAnimTest.enabled = false;
-        
         cubismRender.Opacity = 0f;
         rb.Sleep();
+        enemy_ChildSpiderAnimTest.AllColliderDisable();
         if (isPopEffectInstantiated) {
             Destroy(instantiatedPopEffect);
         }
@@ -58,6 +58,7 @@ public class EnemyPopEffect : MonoBehaviour {
             enemyHpbar.hpbar.gameObject.SetActive(true);
             cubismRender.Opacity = 1f;
             rb.WakeUp();
+            enemy_ChildSpiderAnimTest.AllColliderEnable();
             SoundManagerV2.Instance.PlaySE(8);
             isPopEffectInstantiated = true;
             explodable.explode();
