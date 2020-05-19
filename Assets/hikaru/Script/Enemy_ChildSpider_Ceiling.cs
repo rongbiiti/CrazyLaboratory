@@ -60,11 +60,9 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 1f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     private float acidDamageTime;
-    [SerializeField] private float _trackingRate = 10f;       //追跡時間
-    private float trackingTime;   //追跡時間の格納用
-    [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
     [SerializeField] private bool _trackingStart;   //追いかけることから始めるかどうか
+    [SerializeField] private Vector2 _difference = new Vector2(30f,10f);    //プレイヤーとエネミーのｘとｙの差分を使ってどこまで追いかけるか、に使う
 
     Rigidbody2D rb;
     Animator animator;
@@ -243,16 +241,6 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                 animator.SetBool("Stun", false);
             }
 
-            if (patrolType == (byte)PATROL_TYPE.tracking && 0 < trackingTime)
-            {
-
-                trackingTime -= Time.deltaTime;
-                if (trackingTime <= 0)
-                {
-                    Debug.Log("追跡解除");
-                    patrolType = (byte)PATROL_TYPE.crawl;
-                }
-            }
 
             if (directionChangeFlag && 0 < directionTime)
             {
@@ -322,6 +310,16 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                     break;
 
                 case (byte)PATROL_TYPE.tracking:
+
+                    var diPx = playerObject.transform.position.x - transform.position.x;
+                    var diPy = playerObject.transform.position.y - transform.position.y;
+                    if (diPx < 0) diPx *= -1;
+                    if (diPy < 0) diPy *= -1;
+                    if (_difference.x <= diPx || _difference.y <= diPy)
+                    {
+                        return;
+                    }
+
                     //追いかける最中にプレイヤーが自分より逆にいた場合の処理
                     if (playerObject.transform.position.x >= transform.position.x && !directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
                     {
@@ -379,12 +377,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                     }
                     break;
             }
-
-
-
         }
-
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
