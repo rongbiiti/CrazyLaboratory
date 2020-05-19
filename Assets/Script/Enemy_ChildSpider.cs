@@ -251,10 +251,6 @@ public class Enemy_ChildSpider : MonoBehaviour {
                 pointWaitTime += _pointWaitRate;
             }
             
-
-
-
-
             // transformを取得
             Transform myTransform = this.transform;
 

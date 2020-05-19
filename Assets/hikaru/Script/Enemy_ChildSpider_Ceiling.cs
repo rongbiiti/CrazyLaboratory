@@ -60,7 +60,11 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 1f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     private float acidDamageTime;
+    [SerializeField] private float _trackingRate = 10f;       //追跡時間
+    private float trackingTime;   //追跡時間の格納用
+    [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
+    [SerializeField] private bool _trackingStart;   //追いかけることから始めるかどうか
 
     Rigidbody2D rb;
     Animator animator;
@@ -101,6 +105,28 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         playerObject = GameObject.FindGameObjectWithTag("Player");
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        if (_trackingStart)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+            patrolType = (byte)PATROL_TYPE.tracking;     //敵を見つけて追いかけるモード
+            //trackingTime = _trackingRate;
+            transform.GetChild((int)Child.PlayerHitBox).gameObject.SetActive(false);
+            if (playerObject.transform.position.x <= gameObject.transform.position.x)
+            {
+                directionChange = false;
+                gameObject.transform.localScale = new Vector2(startScale.x, startScale.y);
+                _direction = -1;     //左
+            }
+            else
+            {
+                directionChange = true;
+                if (_direction == -1)
+                    gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
+                _direction = 1;    //右
+            }
+        }
     }
 
     private void OnEnable()
@@ -142,6 +168,28 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                 _direction = 1;    //右
                 directionChange = true;
                 gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+            }
+
+            if (_trackingStart)
+            {
+                rb.bodyType = RigidbodyType2D.Dynamic;
+                gameObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+                patrolType = (byte)PATROL_TYPE.tracking;     //敵を見つけて追いかけるモード
+                                                             //trackingTime = _trackingRate;
+                transform.GetChild((int)Child.PlayerHitBox).gameObject.SetActive(false);
+                if (playerObject.transform.position.x <= gameObject.transform.position.x)
+                {
+                    directionChange = false;
+                    gameObject.transform.localScale = new Vector2(startScale.x, startScale.y);
+                    _direction = -1;     //左
+                }
+                else
+                {
+                    directionChange = true;
+                    if (_direction == -1)
+                        gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
+                    _direction = 1;    //右
+                }
             }
         }
 
@@ -195,16 +243,16 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                 animator.SetBool("Stun", false);
             }
 
-            //if (patrolType == (byte)PATROL_TYPE.tracking && 0 < trackingTime)
-            //{
+            if (patrolType == (byte)PATROL_TYPE.tracking && 0 < trackingTime)
+            {
 
-            //    trackingTime -= Time.deltaTime;
-            //    if (trackingTime <= 0)
-            //    {
-            //        Debug.Log("追跡解除");
-            //        patrolType = (byte)PATROL_TYPE.crawl;
-            //    }
-            //}
+                trackingTime -= Time.deltaTime;
+                if (trackingTime <= 0)
+                {
+                    Debug.Log("追跡解除");
+                    patrolType = (byte)PATROL_TYPE.crawl;
+                }
+            }
 
             if (directionChangeFlag && 0 < directionTime)
             {
