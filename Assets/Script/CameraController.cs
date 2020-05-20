@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 /// <summary>
 /// カメラが少し遅れてプレイヤーに追従するようにしている。
@@ -8,6 +9,7 @@
 /// </summary>
 public class CameraController : MonoBehaviour
 {
+    [SerializeField, CustomLabel("カメラ移動速度")] private float _cameraSpeed = 5.0f;
     [SerializeField, CustomLabel("ポーズメニュー")] private GameObject _pauseMenu;
     [SerializeField, CustomLabel("ステージ左端のX座標")] private float _stage_edge_x;
     [SerializeField, CustomLabel("ステージ右端のX座標")] private float _stage_edge_x_right;
@@ -21,6 +23,12 @@ public class CameraController : MonoBehaviour
     private float YAxisFixTime;
     private float setYAxisFixTime = 1f;
     private float focasOffset;
+    private Vector2 zoomPreviousPosition;    // ズーム前位置
+    private float zoomPreviousSize;     // ズーム前サイズ
+    private Vector2 zoomPoint;      // ズーム用位置
+    private float zoomSizeTarget;   // ズーム時目標サイズ
+    private float zoomtime;     // ズームに使う秒数
+    private bool isZoom;        // ズーム中か
 
     private void Awake()
     {
@@ -40,6 +48,8 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
+        
+
         Vector3 newPosition = transform.position;
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
         if (viewPos.y > 0.72f && !isFocasUnder) {
@@ -56,7 +66,16 @@ public class CameraController : MonoBehaviour
         }
         
         newPosition.z = player.transform.position.z + offset.z;
-        transform.position = Vector3.Lerp(transform.position, newPosition, 5.0f * Time.deltaTime);
+        if (isZoom) {
+            newPosition.x = zoomPoint.x;
+            newPosition.y = zoomPoint.y;
+            transform.position = Vector3.Lerp(transform.position, newPosition, zoomtime * 2 * Time.deltaTime);
+            cam.orthographicSize -= (cam.orthographicSize - zoomSizeTarget) / zoomtime * Time.deltaTime;
+        } else {
+            transform.position = Vector3.Lerp(transform.position, newPosition, _cameraSpeed * Time.deltaTime);
+        }
+
+        
         if (isFloarChange) {
             FloorChange(newPosition);
         }
@@ -98,5 +117,29 @@ public class CameraController : MonoBehaviour
     {
         isFocasUnder = flag;
         focasOffset = offset;
+    }
+
+    public void EventCamera(Vector2 position, float zoomSize, float zoomTime)
+    {
+        zoomPreviousPosition = transform.position;
+        zoomPreviousSize = cam.orthographicSize;
+        zoomPoint = position;
+        zoomSizeTarget = zoomSize;
+        zoomtime = zoomTime;
+        isZoom = true;
+    }
+
+    public void EventCameraEnd(float zoomTime)
+    {
+        zoomPoint = zoomPreviousPosition;
+        zoomSizeTarget = zoomPreviousSize;
+        zoomtime = zoomTime;
+        StartCoroutine(ZoomFlagFalse(zoomTime));
+    }
+
+    private IEnumerator ZoomFlagFalse(float falseTime)
+    {
+        yield return new WaitForSeconds(falseTime);
+        isZoom = false;
     }
 }
