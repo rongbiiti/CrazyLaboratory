@@ -11,6 +11,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         PointC,
         PointD,
         PlayerHitBox,
+        AttackObject,
         Hit_WeakPoint,
         count,
     }
@@ -57,16 +58,18 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
     private Vector2 startPosition;
     private Vector2 startScale;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
-    [SerializeField] private float _trackingRate = 10f;       //追跡時間
-    private float trackingTime;   //追跡時間の格納用
-    [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
+    //[SerializeField] private float _trackingRate = 10f;       //追跡時間
+    //private float trackingTime;   //追跡時間の格納用
+    //[SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 1f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     private float acidDamageTime;
+    [SerializeField] private Vector2 _difference = new Vector2(30f, 10f);    //プレイヤーとエネミーのｘとｙの差分を使ってどこまで追いかけるか、に使う
 
     private BoxCollider2D bodyCollider;
     private BoxCollider2D playerHitBox;
+    private BoxCollider2D AttackObject;
     private BoxCollider2D WeakPointHitBox;
 
     Animator animator;
@@ -75,6 +78,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
     {
         bodyCollider = GetComponent<BoxCollider2D>();
         playerHitBox = transform.GetChild((int)Child.PlayerHitBox).GetComponent<BoxCollider2D>();
+        AttackObject = transform.GetChild((int)Child.AttackObject).GetComponent<BoxCollider2D>();
         WeakPointHitBox = transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<BoxCollider2D>();
     }
 
@@ -111,7 +115,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
         playerObject = GameObject.FindGameObjectWithTag("Player");
-
+        AttackObject.enabled = false;
         
 
         animator = GetComponent<Animator>();
@@ -216,16 +220,16 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 animator.SetBool("Death", false);
             }
 
-            if (patrolType == 1 && 0 < trackingTime)
-            {
+            //if (patrolType == 1 && 0 < trackingTime)
+            //{
                 
-                trackingTime -= Time.deltaTime;
-                if (trackingTime <= 0)
-                {
-                    Debug.Log("追跡解除");
-                    patrolType = 0;
-                }
-            }
+            //    trackingTime -= Time.deltaTime;
+            //    if (trackingTime <= 0)
+            //    {
+            //        Debug.Log("追跡解除");
+            //        patrolType = 0;
+            //    }
+            //}
 
             if (directionChangeFlag && 0 < directionTime)
             {
@@ -265,14 +269,10 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 movetype = 1;     //硬直へ
                 pointWaitTime += _pointWaitRate;
             }
-            
-
-
-
 
             // transformを取得
             Transform myTransform = this.transform;
-
+            Debug.Log(patrolType);
             switch (patrolType)
             {
                 case 0:
@@ -297,25 +297,68 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     break;
 
                 case 1:
-                    if (playerObject.transform.position.x >= transform.position.x && directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
+                    //if (playerObject.transform.position.x >= transform.position.x && !directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
+                    //{
+                    //    directionChangeFlag = true;
+                    //    directionTime = _directionRate;
+                    //    directionChange = true;
+                    //    //_direction *= -1;
+                    //    //_directionChange = true;
+                    //    //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                    //}
+                    //else if (playerObject.transform.position.x <= transform.position.x && directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
+                    //{
+                    //    directionChangeFlag = true;
+                    //    directionTime = _directionRate;
+                    //    directionChange = false;
+                    //    //_direction *= -1;
+                    //    //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
+                    //}
+
+                    //if (AttackPhase == 0 && stanTimeRemain <= 0)
+                    //{
+                    //    // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
+                    //    myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
+                    //}
+
+                    //var difference = playerObject.transform.position.x - gameObject.transform.position.x;
+                    //if (difference < 0)
+                    //{
+                    //    difference *= -1;
+                    //}
+
+                    //if (difference >= _tracking)
+                    //{
+                    //    patrolType = 0;
+                    //}
+                    //break;
+                    var diPx = playerObject.transform.position.x - transform.position.x;
+                    var diPy = playerObject.transform.position.y - transform.position.y;
+                    if (diPx < 0) diPx *= -1;
+                    if (diPy < 0) diPy *= -1;
+                    if (_difference.x <= diPx || _difference.y <= diPy)
+                    {
+                        return;
+                    }
+
+                    //追いかける最中にプレイヤーが自分より逆にいた場合の処理
+                    if (playerObject.transform.position.x >= transform.position.x && !directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
                     {
                         directionChangeFlag = true;
                         directionTime = _directionRate;
-                        directionChange = false;
+                        directionChange = true;    //右
                         //_direction *= -1;
                         //_directionChange = true;
                         //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
-                    else if (playerObject.transform.position.x <= transform.position.x && !directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
+                    else if (playerObject.transform.position.x <= transform.position.x && directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
                     {
                         directionChangeFlag = true;
                         directionTime = _directionRate;
-                        directionChange = true;
+                        directionChange = false;     //左
                         //_direction *= -1;
                         //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
-
-
 
                     if (AttackPhase == 0 && stanTimeRemain <= 0)
                     {
@@ -323,16 +366,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                         myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
                     }
 
-                    var difference = playerObject.transform.position.x - gameObject.transform.position.x;
-                    if (difference < 0)
-                    {
-                        difference *= -1;
-                    }
-
-                    if (difference >= _tracking)
-                    {
-                        patrolType = 0;
-                    }
                     break;
 
                 case 2:
@@ -359,17 +392,13 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                             Count = 0;
                             stanTimeRemain += 2;
                             patrolType = 1;
-                            trackingTime = _trackingRate + stanTimeRemain;
+                            AttackObject.enabled = true;
+                            //trackingTime = _trackingRate + stanTimeRemain;
                         }
                     }
                     break;
             }
-
-            
-            
         }
-
-
     }
 
     public void AllColliderEnable()
@@ -386,12 +415,14 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         WeakPointHitBox = transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<BoxCollider2D>();
         bodyCollider.enabled = false;
         playerHitBox.enabled = false;
+        AttackObject.enabled = false;
         WeakPointHitBox.enabled = false;
     }
 
     public void HitBoxDisable()
     {
         playerHitBox.enabled = false;
+        AttackObject.enabled = false;
         WeakPointHitBox.enabled = false;
     }
 
@@ -429,18 +460,20 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             }   
         }
 
-        if (collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
-        {
-            patrolType = 1;     //敵を見つけて追いかけるモード
-            trackingTime = _trackingRate;
-        }
-
         if (collision.CompareTag("Player") && patrolType == 1 && AttackPhase == 0 && stanTimeRemain <= 0)
         {
             AttackPhase = 1;
             patrolType = 2;
+            AttackObject.enabled = false;
         }
 
+        if (collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
+        {
+            patrolType = 1;     //敵を見つけて追いかけるモード
+            //trackingTime = _trackingRate;
+            AttackObject.enabled = true;
+            playerHitBox.enabled = false;
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
