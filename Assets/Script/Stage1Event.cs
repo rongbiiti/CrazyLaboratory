@@ -8,17 +8,17 @@ public class Stage1Event : MonoBehaviour {
     [SerializeField] private PlayerController _playercontroller;    // プレイヤーコントローラー
     [SerializeField] private CameraController _cameracontroller;    // カメラコントローラー
     [SerializeField] private Explodable _explodable;         // 通気口の破壊スクリプト
-    [SerializeField] private Transform _vent;               // 通気口
+    [SerializeField, CustomLabel("通気口")] private Transform _vent;               // 通気口
     [SerializeField] private GameObject[] _enemys;          // 敵
-    [SerializeField] private GameObject _tutorial;          // チュートリアル
-    [SerializeField, CustomLabel("通気口揺らす時間")] private float _ventShakeTime;     // 通気口が揺れる時間　設定用
-    [SerializeField, CustomLabel("カメラズーム時間")] private float _cameraZoomTime;    // カメラズーム時間　設定用
-    [SerializeField, CustomLabel("敵出現間隔")] private float _enemyEnableTime;          // 敵出現間隔　設定用
+    [SerializeField, CustomLabel("チュートリアル")] private GameObject _tutorial;          // チュートリアル
+    [SerializeField, CustomLabel("銃入手直後待機時間")] private float _firstWaitTime = 0.5f;    // 銃入手直後待機時間　設定用
+    [SerializeField, CustomLabel("通気口揺らす時間")] private float _ventShakeTime = 1.5f;     // 通気口が揺れる時間　設定用
+    [SerializeField, CustomLabel("最初の敵出現後待機時間")] private float _enemySpawnAfterWaitTime = 0.5f;    // 最初の敵出現後待機時間　設定用
+    [SerializeField, CustomLabel("カメラズーム時間")] private float _cameraZoomTime = 0.5f;    // カメラズーム時間　設定用
+    [SerializeField, CustomLabel("敵出現間隔")] private float _enemyEnableTime = 1.5f;          // 敵出現間隔　設定用
     [SerializeField, CustomLabel("カメラズーム位置")] private Vector2 _cameraZoomPosition;    // カメラズーム位置
-    [SerializeField, CustomLabel("カメラズームサイズ")] private float _cameraZoomSize;   // カメラズームサイズ
+    [SerializeField, CustomLabel("カメラズームサイズ")] private float _cameraZoomSize = 8f;   // カメラズームサイズ
     private float ventshaketime;            // 通気口が揺れる時間　分岐用
-    private float camerazoomtime;           // カメラズーム時間　分岐用
-    private float enemyenabletime;          // 敵出現間隔　分岐用
     private int enemycount;                 // 出現した敵カウント
     private BoxCollider2D boxCollider;      // このオブジェクトーのコライダー
     private Vector3 ventstartposition;      // 通気口初期位置
@@ -57,20 +57,21 @@ public class Stage1Event : MonoBehaviour {
     private IEnumerator Event()
     {
         PlayerStop();
-        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitForSeconds(_firstWaitTime);
         CameraZoomIn();
+
         yield return new WaitForSeconds(_cameraZoomTime);
         ventshaketime += _ventShakeTime;
         SoundManagerV2.Instance.PlaySE(42);
         Debug.Log("通気口ゆれる");
+
         yield return new WaitForSeconds(_ventShakeTime);
-        _explodable.explode();
-        ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
-        ef.doExplosion(_explodable.gameObject.transform.position);
-        SoundManagerV2.Instance.PlaySE(8);
+        VentBrake();
         StartCoroutine("EnemySetActive");
+
+        yield return new WaitForSeconds(_enemySpawnAfterWaitTime);
         CameraZoomOut();
-        yield return new WaitForSeconds(0.5f);
         PlayerControllerSetActive();
         TutorialActive();
     }
@@ -98,6 +99,14 @@ public class Stage1Event : MonoBehaviour {
     {
         _vent.position = ventstartposition;
         isShakeVent = false;
+    }
+
+    private void VentBrake()
+    {
+        _explodable.explode();
+        ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
+        ef.doExplosion(_explodable.gameObject.transform.position);
+        SoundManagerV2.Instance.PlaySE(8);
     }
 
     private IEnumerator EnemySetActive()

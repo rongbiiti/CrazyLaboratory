@@ -29,6 +29,7 @@ public class CameraController : MonoBehaviour
     private float zoomSizeTarget;   // ズーム時目標サイズ
     private float zoomtime;     // ズームに使う秒数
     private bool isZoom;        // ズーム中か
+    private float startTime;     // ズーム中に使う
 
     private void Awake()
     {
@@ -69,8 +70,10 @@ public class CameraController : MonoBehaviour
         if (isZoom) {
             newPosition.x = zoomPoint.x;
             newPosition.y = zoomPoint.y;
-            transform.position = Vector3.Lerp(transform.position, newPosition, zoomtime * 2 * Time.deltaTime);
-            cam.orthographicSize -= (cam.orthographicSize - zoomSizeTarget) / zoomtime * Time.deltaTime;
+            float diff = Time.timeSinceLevelLoad - startTime;
+            float rate = diff / zoomtime;
+            transform.position = Vector3.Lerp(transform.position, newPosition, rate);
+            cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoomSizeTarget, rate);
         } else {
             transform.position = Vector3.Lerp(transform.position, newPosition, _cameraSpeed * Time.deltaTime);
         }
@@ -127,6 +130,7 @@ public class CameraController : MonoBehaviour
         zoomSizeTarget = zoomSize;
         zoomtime = zoomTime;
         isZoom = true;
+        startTime = Time.timeSinceLevelLoad;
     }
 
     public void EventCameraEnd(float zoomTime)
@@ -135,6 +139,7 @@ public class CameraController : MonoBehaviour
         zoomSizeTarget = zoomPreviousSize;
         zoomtime = zoomTime;
         StartCoroutine(ZoomFlagFalse(zoomTime));
+        startTime = Time.timeSinceLevelLoad;
     }
 
     private IEnumerator ZoomFlagFalse(float falseTime)
