@@ -323,6 +323,7 @@ GameObject:
   - component: {fileID: 50589174739764992}
   - component: {fileID: 114182179619804420}
   - component: {fileID: 114486822744042728}
+  - component: {fileID: 114676206917427612}
   m_Layer: 11
   m_Name: ChildSpider_ceiling
   m_TagString: Enemy
@@ -3445,6 +3446,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unmanagedIndex: 4
   Value: 0
+--- !u!114 &114676206917427612
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1389062540019876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d353a7d0404651f45a10112d2a25dd75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isTruePopEffect: 0
+  _popEffect: {fileID: 0}
+  _tuukikou: {fileID: 0}
+  _fragmentTuukikou: {fileID: 0}
+  _distance: 1
+  _ventShakeTime: 1.5
 --- !u!114 &114704105934860312
 MonoBehaviour:
   m_ObjectHideFlags: 1
