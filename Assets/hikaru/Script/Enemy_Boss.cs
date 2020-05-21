@@ -61,9 +61,9 @@ public class Enemy_Boss : MonoBehaviour
     private float DirectionX;   //方向    左なら1　右なら-1を格納する　移動の計算式に使う
     private float FallLocationY;    //降下時点のY座標
 
-    [SerializeField] private float _bossRightMaxPx; //ボスの右側の移動範囲の上限
-    [SerializeField] private float _bossLeftMaxPx; //ボスの左側の移動範囲の上限
-    [SerializeField] private float _bossUnderMaxPy; //ボスの下側の移動範囲の上限
+    [SerializeField] private float _bossRightMaxPx = -53.9f; //ボスの右側の移動範囲の上限
+    [SerializeField] private float _bossLeftMaxPx = -103.97f; //ボスの左側の移動範囲の上限
+    [SerializeField] private float _stageCenterPx = -79.85f;  //ステージの真ん中のｘ座標
     /*******************BodyPress*********************/
     [SerializeField] private float _bodyPressRate = 3f;
     private float BodyPressTime;
@@ -240,10 +240,10 @@ public class Enemy_Boss : MonoBehaviour
                             animator.SetBool("Stand2", true);
                             animator.SetBool("Atack", false);     
                             var BossP = transform.position;
-                            var PlayerP = playerObject.transform.position;
+                            //var PlayerP = playerObject.transform.position;
                             if(0.0f > playerObject.transform.localScale.x)
                             {
-                                BossP.x = PlayerP.x + _playerX;
+                                //BossP.x = PlayerP.x + _playerX;
                                 if (_bossRightMaxPx <= BossP.x)
                                 {
                                     BossP.x = _bossRightMaxPx;
@@ -251,7 +251,7 @@ public class Enemy_Boss : MonoBehaviour
                             }
                             else
                             {
-                                BossP.x = PlayerP.x - _playerX;
+                                //BossP.x = PlayerP.x - _playerX;
                                 if (BossP.x <= _bossLeftMaxPx)
                                 {
                                     BossP.x = _bossLeftMaxPx;
@@ -419,15 +419,15 @@ public class Enemy_Boss : MonoBehaviour
                                 float sin = Mathf.Sin(2 * Mathf.PI * f * Acceleration);    //2 * Mathf.PI =  棒の直径 × π
 
                                 Acceleration += Time.deltaTime;    //加速度の数値を上げる
-                                Vector2 speed = new Vector2(moveSpeed * DirectionX, 0);
+                                Vector2 speed = new Vector2(moveSpeed * DirectionX, 0); //横の移動の設定
                                 rb.velocity = speed;
-                                Vector3 po = transform.position;
-                                this.transform.position = new Vector3(po.x, FallLocationY + sin * 5, po.z);
-                                //Debug.Log(sin* 5);
+                                Vector3 po = transform.position;    //今の座標を取得
+                                this.transform.position = new Vector3(po.x, FallLocationY + sin * 5, po.z); //縦の波の動きの設定
                                 if (_bossLeftMaxPx >= transform.position.x && DirectionX == -1 || _bossRightMaxPx <= transform.position.x && DirectionX == 1)
                                 { 
                                     DirectionX *= -1;
                                 }
+                                
                             }
 
                             break;

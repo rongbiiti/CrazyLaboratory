@@ -280,6 +280,7 @@ public class PlayerController : MonoBehaviour
         pool = gameObject.AddComponent<ObjectPool>();
         pool.CreatePool(_acidbulletPrefab, 6);
         Instantiate(_rsdAcdPool);
+        damageEffect = Instantiate(_damageEffect);
     }
 
     private void Start()
@@ -294,16 +295,8 @@ public class PlayerController : MonoBehaviour
         boxcol = transform.GetChild(7).GetComponent<BoxCollider2D>();
         fireCheckPoint = transform.GetChild(8).gameObject;
         cubismRender = GetComponent<CubismRenderController>();
-        
         jumpTimeCounter = pm.JumpTime;
-        HP = _maxHP;
-        if (!SaveManager.Instance.IsNewGame)
-        {
-            HP = SaveManager.Instance.save.playerHP;
-        }
-        
-        _HPbar.maxValue = _maxHP;
-        _HPbar.value = HP;
+
         if (!isBGMMute) {
 
         }
@@ -355,9 +348,16 @@ public class PlayerController : MonoBehaviour
             equipment = Equipment.Handgun;
         }
 
-        damageEffect = Instantiate(_damageEffect);
-
         startMoveSpeed = pm.MoveSpeed;
+
+        HP = _maxHP;
+        if (!SaveManager.Instance.IsNewGame) {
+            HP = SaveManager.Instance.save.playerHP;
+        }
+
+        _HPbar.maxValue = _maxHP;
+        _HPbar.value = HP;
+        _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = true;
     }
 
     private void Update()
