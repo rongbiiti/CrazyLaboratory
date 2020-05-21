@@ -14,6 +14,7 @@ public class PlayerHPbarScript : MonoBehaviour
 	[SerializeField,CustomLabel("25%以下の色")] private Color _dangerColor;
 	[SerializeField, CustomLabel("画面効果")] private Image _dangerEffect;
 	float time = 0f;
+    [HideInInspector]public bool isStartFunctionCalledAfter;  // PlayerのStart関数でvalueが変わった際はHP減少演出をしない。
 	
 	private void Start ()
 	{
@@ -23,7 +24,7 @@ public class PlayerHPbarScript : MonoBehaviour
 		_healbar.maxValue = mySlider.maxValue;
 		_healbar.value = mySlider.value;
 		targetValue = mySlider.value;
-		_dangerEffect.color = Color.clear;	
+		_dangerEffect.color = Color.clear;
 	}
 
 	private void FixedUpdate()
@@ -56,6 +57,7 @@ public class PlayerHPbarScript : MonoBehaviour
 
 	public void ChangeValue()
 	{
+        if (!isStartFunctionCalledAfter) return;
 		DangerEffectChange();
 		if (mySlider.value < targetValue)	// ダメージ
 		{
@@ -73,11 +75,8 @@ public class PlayerHPbarScript : MonoBehaviour
 
 	private void DangerEffectChange()
 	{
-		if (mySlider.value < 2500f)
-		{
-			return;
-		}
-		if (mySlider.value < 5000f)
+		
+		if (mySlider.value < 5000f && mySlider.value >= 2500)
 		{
 			_dangerEffect.color = _coutionColor;
 		}
