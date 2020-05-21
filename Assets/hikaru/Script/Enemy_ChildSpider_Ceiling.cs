@@ -11,6 +11,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         PointC,
         PointD,
         PlayerHitBox,
+        AttackObject,
         Hit_WeakPoint,
         count,
     }
@@ -64,8 +65,23 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
     [SerializeField] private bool _trackingStart;   //追いかけることから始めるかどうか
     [SerializeField] private Vector2 _difference = new Vector2(30f,10f);    //プレイヤーとエネミーのｘとｙの差分を使ってどこまで追いかけるか、に使う
 
+    private BoxCollider2D bodyCollider;
+    private BoxCollider2D playerHitBox;
+    private BoxCollider2D AttackObject;
+    private BoxCollider2D WeakPointHitBox;
+
+
     Rigidbody2D rb;
     Animator animator;
+
+    private void Awake()
+    {
+        bodyCollider = GetComponent<BoxCollider2D>();
+        playerHitBox = transform.GetChild((int)Child.PlayerHitBox).GetComponent<BoxCollider2D>();
+        AttackObject = transform.GetChild((int)Child.AttackObject).GetComponent<BoxCollider2D>();
+        WeakPointHitBox = transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<BoxCollider2D>();
+    }
+
 
     // Use this for initialization
     void Start()
@@ -102,6 +118,9 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         enemyHpbar.SetBarValue(_HP, nowHP);
         playerObject = GameObject.FindGameObjectWithTag("Player");
         rb = GetComponent<Rigidbody2D>();
+
+        AttackObject.enabled = false;
+
         animator = GetComponent<Animator>();
 
         if (_trackingStart)
@@ -124,6 +143,8 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                     gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
                 _direction = 1;    //右
             }
+            AttackObject.enabled = true;
+            playerHitBox.enabled = false;
         }
     }
 
@@ -142,6 +163,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
             movetype = 2;
             AttackPhase = 0;
             Count = 0;
+            AllColliderEnable();
             transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = true;
             transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = true;
             transform.GetChild((int)Child.PlayerHitBox).gameObject.SetActive(true);
@@ -359,6 +381,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                         {
                             AttackPhase = 2;
                             Count = 0;
+                            SoundManagerV2.Instance.PlaySE(25);
                         }
                     }
                     else if (AttackPhase == 2 && stanTimeRemain <= 0)   //敵に攻撃
@@ -372,6 +395,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                             Count = 0;
                             stanTimeRemain += 2;
                             patrolType = (byte)PATROL_TYPE.tracking;
+                            AttackObject.enabled = true;
                             //trackingTime = _trackingRate + stanTimeRemain;
                         }
                     }
@@ -379,6 +403,51 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
             }
         }
     }
+
+    public void AllColliderEnable()
+    {
+        bodyCollider.enabled = true;
+        playerHitBox.enabled = true;
+        WeakPointHitBox.enabled = true;
+    }
+
+    public void AllColliderDisable()
+    {
+        bodyCollider = GetComponent<BoxCollider2D>();
+        playerHitBox = transform.GetChild((int)Child.PlayerHitBox).GetComponent<BoxCollider2D>();
+        WeakPointHitBox = transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<BoxCollider2D>();
+        bodyCollider.enabled = false;
+        playerHitBox.enabled = false;
+        AttackObject.enabled = false;
+        WeakPointHitBox.enabled = false;
+    }
+
+    public void HitBoxDisable()
+    {
+        playerHitBox.enabled = false;
+        AttackObject.enabled = false;
+        WeakPointHitBox.enabled = false;
+    }
+
+    // 死亡時処理
+    private void Kill()
+    {
+        isZeroHP = true;
+        animator.SetBool("Walk", false);
+        animator.SetBool("Stand", false);
+        animator.SetBool("Stun", false);
+        animator.SetBool("Death", true);
+        ScoreManager.Instance.KillCnt++;
+        ScoreManager.Instance.TotalKillCnt++;
+        HitBoxDisable();
+        //Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
+        //Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
+        //Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+        //Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+        SoundManagerV2.Instance.PlaySE(26);
+        SoundManagerV2.Instance.PlaySE(37);
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -391,9 +460,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
             enemyHpbar.SetBarValue(_HP, nowHP);
             if (nowHP <= 0)
             {
-                isZeroHP = true;
-                transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
-                transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                Kill();
             }
         }
 
@@ -401,7 +468,10 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         {
             AttackPhase = 1;
             patrolType = (byte)PATROL_TYPE.Attack;
+            AttackObject.enabled = false;
         }
+
+
 
         if (collision.CompareTag("Player") && patrolType == (byte)PATROL_TYPE.crawl)   //パトロール中にplayerを見つけた時
         {
@@ -423,9 +493,13 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                     gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
                 _direction = 1;    //右
             }
+            AttackObject.enabled = true;
+            playerHitBox.enabled = false;
         }
 
     }
+
+    
 
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -446,66 +520,64 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
             }
         }
 
-        if (patrolType != (byte)PATROL_TYPE.crawl)
-        {
 
-            if (collision.CompareTag("ResidualAcid"))
+        if (collision.CompareTag("ResidualAcid"))
+        {
+            if (acidDamageTime <= 0)
             {
-                if (acidDamageTime <= 0)
+                GameObject acidParentBlock = collision.transform.parent.gameObject;
+                var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
+                var _sprite = sprite.sprite;
+                var halfX = _sprite.bounds.extents.x;
+                var _vec = new Vector3(-halfX, 0f, 0f); // これは左上
+                var _unvec = new Vector3(halfX, 0f, 0f); // これは右上
+                var _pos = sprite.transform.TransformPoint(_vec);
+                var _unpos = sprite.transform.TransformPoint(_unvec);
+                if (transform.position.x >= _pos.x && transform.position.x <= _unpos.x)
                 {
-                    GameObject acidParentBlock = collision.transform.parent.gameObject;
-                    var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
-                    var _sprite = sprite.sprite;
-                    var halfX = _sprite.bounds.extents.x;
-                    var _vec = new Vector3(-halfX, 0f, 0f); // これは左上
-                    var _unvec = new Vector3(halfX, 0f, 0f); // これは右上
-                    var _pos = sprite.transform.TransformPoint(_vec);
-                    var _unpos = sprite.transform.TransformPoint(_unvec);
-                    if (transform.position.x >= _pos.x && transform.position.x <= _unpos.x)
+                    acidDamageTime += _acidDamageRate;
+                    nowHP -= _acidDamage;
+                    enemyHpbar.SetBarValue(_HP, nowHP);
+                    if (nowHP <= 0)
                     {
-                        acidDamageTime += _acidDamageRate;
-                        nowHP -= _acidDamage;
-                        enemyHpbar.SetBarValue(_HP, nowHP);
-                        if (nowHP <= 0)
-                        {
-                            isZeroHP = true;
-                            transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
-                            transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
-                        }
-                        SoundManagerV2.Instance.PlaySE(4);
-                        Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
+                        isZeroHP = true;
+                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
+                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
                     }
-                }
-            }
-            else if (collision.CompareTag("WallReAcid"))
-            {
-                if (acidDamageTime <= 0)
-                {
-                    GameObject acidParentBlock = collision.transform.parent.gameObject;
-                    var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
-                    var _sprite = sprite.sprite;
-                    var _halfY = _sprite.bounds.extents.y;
-                    var _vec = new Vector3(0f, -_halfY, 0f); // これは上
-                    var _unvec = new Vector3(0f, _halfY, 0f); // これは下
-                    var _pos = sprite.transform.TransformPoint(_vec);
-                    var _unpos = sprite.transform.TransformPoint(_unvec);
-                    if (transform.position.y >= _pos.y && transform.position.y <= _unpos.y)
-                    {
-                        acidDamageTime += _acidDamageRate;
-                        nowHP -= _acidDamage;
-                        enemyHpbar.SetBarValue(_HP, nowHP);
-                        if (nowHP <= 0)
-                        {
-                            isZeroHP = true;
-                            transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
-                            transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
-                        }
-                        SoundManagerV2.Instance.PlaySE(4);
-                        Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
-                    }
+                    SoundManagerV2.Instance.PlaySE(4);
+                    Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
                 }
             }
         }
+        else if (collision.CompareTag("WallReAcid"))
+        {
+            if (acidDamageTime <= 0)
+            {
+                GameObject acidParentBlock = collision.transform.parent.gameObject;
+                var sprite = acidParentBlock.GetComponent<SpriteRenderer>();
+                var _sprite = sprite.sprite;
+                var _halfY = _sprite.bounds.extents.y;
+                var _vec = new Vector3(0f, -_halfY, 0f); // これは上
+                var _unvec = new Vector3(0f, _halfY, 0f); // これは下
+                var _pos = sprite.transform.TransformPoint(_vec);
+                var _unpos = sprite.transform.TransformPoint(_unvec);
+                if (transform.position.y >= _pos.y && transform.position.y <= _unpos.y)
+                {
+                    acidDamageTime += _acidDamageRate;
+                    nowHP -= _acidDamage;
+                    enemyHpbar.SetBarValue(_HP, nowHP);
+                    if (nowHP <= 0)
+                    {
+                        isZeroHP = true;
+                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
+                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                    }
+                    SoundManagerV2.Instance.PlaySE(4);
+                    Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
+                }
+            }
+        }
+        
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
