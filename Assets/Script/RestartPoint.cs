@@ -63,41 +63,47 @@ public class RestartPoint : MonoBehaviour {
 
 		foreach (var obj in fallBlockStartTrf)
 		{
-			Destroy(_fallBlockTransform[i++].gameObject);
-			Instantiate(_fallBlockPrefab, obj.transform.position, obj.transform.rotation);
+			Destroy(_fallBlockTransform[i].gameObject);
+            _fallBlockTransform[i++] = Instantiate(_fallBlockPrefab, obj.transform.position, obj.transform.rotation);
 		}
 		i = 0;
 		
 		foreach (var obj in fallMedkitStartTrf)
 		{
-			Destroy(_fallMedkitTransform[i++].gameObject);
-			Instantiate(_fallMedkitPrefab, obj.transform.position, obj.transform.rotation);
+			Destroy(_fallMedkitTransform[i].gameObject);
+            _fallMedkitTransform[i++] = Instantiate(_fallMedkitPrefab, obj.transform.position, obj.transform.rotation);
 		}
 		Debug.Log("ガレキと回復箱再生完了");
 		i = 0;
 
 		foreach (var obj in fallBridgeStartTrf)
 		{
-			Destroy(_fallBridgeTransform[i++].gameObject);
-			Instantiate(_fallBridgePrefab, obj.transform.position, obj.transform.rotation);
+			Destroy(_fallBridgeTransform[i].gameObject);
+            _fallBridgeTransform[i++] = Instantiate(_fallBridgePrefab, obj.transform.position, obj.transform.rotation);
 		}
 		i = 0;
 		Debug.Log("落ちる橋再生完了");
 
 		foreach (var obj in medkitStartTrf)
 		{
-			Destroy(medkitStartTrf[i++]);
-			Instantiate(_medkitPrefab, obj.transform.position, obj.transform.rotation);
+			Destroy(_medkitTransform[i]);
+            _medkitTransform[i++] = Instantiate(_medkitPrefab, obj.transform.position, obj.transform.rotation);
 		}
 		Debug.Log("回復薬再生完了");
 		i = 0;
 
 		foreach (var obj in beakerStartTrf)
 		{
-			Destroy(beakerStartTrf[i]);
-			Instantiate(_beakerPrefab, obj.transform.position, beakerRotation[i++]);
+			Destroy(_beakerTransform[i]);
+            _beakerTransform[i++] = Instantiate(_beakerPrefab, obj.transform.position, beakerRotation[i++]);
 		}
 		Debug.Log("酸の容器再生完了");
-	}
+        fallBlockStartTrf = _fallBlockTransform;
+        fallMedkitStartTrf = _fallMedkitTransform;
+        fallBridgeStartTrf = _fallBridgeTransform;
+        medkitStartTrf = _medkitTransform;
+        beakerStartTrf = _beakerTransform;
+
+    }
 	
 }
