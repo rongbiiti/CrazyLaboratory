@@ -297,41 +297,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     break;
 
                 case 1:
-                    //if (playerObject.transform.position.x >= transform.position.x && !directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
-                    //{
-                    //    directionChangeFlag = true;
-                    //    directionTime = _directionRate;
-                    //    directionChange = true;
-                    //    //_direction *= -1;
-                    //    //_directionChange = true;
-                    //    //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
-                    //}
-                    //else if (playerObject.transform.position.x <= transform.position.x && directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
-                    //{
-                    //    directionChangeFlag = true;
-                    //    directionTime = _directionRate;
-                    //    directionChange = false;
-                    //    //_direction *= -1;
-                    //    //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
-                    //}
-
-                    //if (AttackPhase == 0 && stanTimeRemain <= 0)
-                    //{
-                    //    // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
-                    //    myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
-                    //}
-
-                    //var difference = playerObject.transform.position.x - gameObject.transform.position.x;
-                    //if (difference < 0)
-                    //{
-                    //    difference *= -1;
-                    //}
-
-                    //if (difference >= _tracking)
-                    //{
-                    //    patrolType = 0;
-                    //}
-                    //break;
                     var diPx = playerObject.transform.position.x - transform.position.x;
                     var diPy = playerObject.transform.position.y - transform.position.y;
                     if (diPx < 0) diPx *= -1;
