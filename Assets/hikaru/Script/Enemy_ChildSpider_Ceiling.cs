@@ -23,6 +23,10 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         Attack,     //攻撃
     }
 
+    [SerializeField, CustomLabel("死亡時煙エフェクト")] private GameObject _smokeEffect;
+    [SerializeField, CustomLabel("死亡時血しぶきエフェクト1")] private GameObject _bloodSplashEffect1;
+    [SerializeField, CustomLabel("死亡時血しぶきエフェクト2")] private GameObject _bloodSplashEffect2;
+    [SerializeField, CustomLabel("死亡時血しぶきエフェクト3")] private GameObject _bloodSplashEffect3;
     [SerializeField] private float _HP = 1f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _PlayerDamage = 1000f;
@@ -440,10 +444,12 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         ScoreManager.Instance.KillCnt++;
         ScoreManager.Instance.TotalKillCnt++;
         HitBoxDisable();
-        //Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
-        //Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
-        //Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
-        //Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+        Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
+        Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
+        Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+        if (GetComponent<Rigidbody2D>().velocity.y == 0) {
+            Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+        }
         SoundManagerV2.Instance.PlaySE(26);
         SoundManagerV2.Instance.PlaySE(37);
     }
@@ -540,11 +546,8 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                     enemyHpbar.SetBarValue(_HP, nowHP);
                     if (nowHP <= 0)
                     {
-                        isZeroHP = true;
-                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
-                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                        Kill();
                     }
-                    SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
                 }
             }
@@ -568,11 +571,8 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                     enemyHpbar.SetBarValue(_HP, nowHP);
                     if (nowHP <= 0)
                     {
-                        isZeroHP = true;
-                        transform.GetChild((int)Child.PlayerHitBox).GetComponent<Collider2D>().enabled = false;
-                        transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<Collider2D>().enabled = false;
+                        Kill();
                     }
-                    SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
                 }
             }
