@@ -111,10 +111,12 @@ public class Enemy_Boss : MonoBehaviour
         /*transform*/
         startScale = transform.localScale;
         startposition = transform.position;
+
         /*HP*/
         nowHP = _HP;
         enemyHpbar = GetComponent<EnemyHpbar>();
         enemyHpbar.SetBarValue(_HP, nowHP);
+
         /*GameObject*/
         playerObject = GameObject.FindGameObjectWithTag("Player");
         _switchObject.transform.parent = null;
@@ -134,6 +136,8 @@ public class Enemy_Boss : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         Thread = _ThreadObject.transform.GetChild(0).GetComponent<Enemy_Boss_Thread>();
+
+        
     }
 
     private void OnEnable()
@@ -388,18 +392,22 @@ public class Enemy_Boss : MonoBehaviour
                                     Acceleration = IntAcceleration;
                                     moveSpeed = _horizontalSpeed;
                                     
+                                    //端まで移動したら反転する
                                     if(playerObject.transform.position.x >= transform.position.x)
                                     {
                                         DirectionX = 1f;
                                         var ls = startScale;
                                         transform.localScale = new Vector2(ls.x,-ls.y);
                                     }
+
                                     else
                                     {
                                         DirectionX = -1f;
                                         var ls = startScale;
                                         transform.localScale = new Vector2(ls.x, ls.y);
                                     }
+
+                                    
 
                                     //AttackType = (byte)e_AttackType.BeforAttack;
                                     //AttackTime += _beforeAttackRate;
@@ -426,8 +434,30 @@ public class Enemy_Boss : MonoBehaviour
                                 if (_bossLeftMaxPx >= transform.position.x && DirectionX == -1 || _bossRightMaxPx <= transform.position.x && DirectionX == 1)
                                 { 
                                     DirectionX *= -1;
+                                    var ls = transform.localScale;
+                                    transform.localScale = new Vector2(ls.x, -ls.y);
                                 }
-                                
+
+                                if (transform.position.x >= _stageCenterPx && DirectionX == 1)     //|| _stageCenterPx >= transform.position.x && DirectionX == -1
+                                {
+                                    if ((byte)_activityTypeCount[ActivityCount + 1] == (byte)e_ActivityType.Attack)
+                                    {
+                                        ActivityCount++;
+                                        if (DirectionX == -1)
+                                        {
+                                            DirectionX = 1f;
+                                            var ls = startScale;
+                                            transform.localScale = new Vector2(ls.x, -ls.y);
+                                        }
+                                        if (DirectionX == 1)
+                                        {
+                                            DirectionX = -1f;
+                                            var ls = startScale;
+                                            transform.localScale = new Vector2(ls.x, ls.y);
+                                        }
+                                    }
+                                }
+
                             }
 
                             break;
