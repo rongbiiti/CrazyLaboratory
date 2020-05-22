@@ -7,7 +7,7 @@ public class EnemyPopEffect : MonoBehaviour {
 
     [SerializeField, CustomLabel("出現エフェクトさせる")] private bool _isTruePopEffect;
     [SerializeField, CustomLabel("出現エフェクト")] private GameObject _popEffect;
-    [SerializeField, CustomLabel("通気口")] private GameObject _tuukikou;
+    [SerializeField, CustomLabel("ステージ上の通気口")] private GameObject _tuukikou;
     [SerializeField, CustomLabel("破片プレハブ")] private GameObject _fragmentTuukikou;
     [SerializeField, CustomLabel("検知距離")] private float _distance = 1f;
     [SerializeField, CustomLabel("通気口揺らす時間")] private float _ventShakeTime = 1.5f;     // 通気口が揺れる時間　設定用

@@ -377,6 +377,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
     {
         bodyCollider = GetComponent<BoxCollider2D>();
         playerHitBox = transform.GetChild((int)Child.PlayerHitBox).GetComponent<BoxCollider2D>();
+        AttackObject = transform.GetChild((int)Child.AttackObject).GetComponent<BoxCollider2D>();
         WeakPointHitBox = transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<BoxCollider2D>();
         bodyCollider.enabled = false;
         playerHitBox.enabled = false;
@@ -405,7 +406,9 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
         Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
         Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
-        Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+        if(GetComponent<Rigidbody2D>().velocity.y == 0) {
+            Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+        }
         SoundManagerV2.Instance.PlaySE(26);
         SoundManagerV2.Instance.PlaySE(37);
     }
@@ -481,7 +484,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     {
                         Kill();
                     }
-                    SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
                 }
             }
@@ -507,7 +509,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     {
                         Kill();
                     }
-                    SoundManagerV2.Instance.PlaySE(4);
                     Debug.Log("酸に触れて " + _acidDamage + " ダメージを受けた");
                 }
             }
