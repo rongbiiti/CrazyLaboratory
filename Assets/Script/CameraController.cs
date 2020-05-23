@@ -53,9 +53,9 @@ public class CameraController : MonoBehaviour
 
         Vector3 newPosition = transform.position;
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
-        if (viewPos.y > 0.72f && !isFocasUnder) {
+        if (viewPos.y > 0.75f && !isFocasUnder) {
             newPosition.y = player.transform.position.y - offset.y;
-        } else if ((viewPos.y < 0.3f && !isFocasUnder) || pc.IsGhost) {
+        } else if ((viewPos.y < 0.25f && !isFocasUnder) || pc.IsGhost) {
             newPosition.y = player.transform.position.y + offset.y;
         }
 
@@ -63,7 +63,12 @@ public class CameraController : MonoBehaviour
         if ((_stage_edge_x <= player.transform.position.x && _stage_edge_x_right >= player.transform.position.x)
             || (_stage_edge_x <= transform.position.x && _stage_edge_x_right >= transform.position.x))
         {
-            newPosition.x = player.transform.position.x + offset.x;
+            if (viewPos.x > 0.52f) {
+                newPosition.x = player.transform.position.x - offset.x;
+            } else if (viewPos.x < 0.48f || pc.IsGhost) {
+                newPosition.x = player.transform.position.x + offset.x;
+            }
+
         }
         
         newPosition.z = player.transform.position.z + offset.z;
