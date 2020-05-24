@@ -17,6 +17,7 @@ public class CameraController : MonoBehaviour
     private GameObject player;
     private PlayerController pc;
     private Camera cam;
+    private Rigidbody2D prb;
     private Vector3 offset = Vector3.zero;
     private bool isFloarChange;
     private bool isFocasUnder;
@@ -30,6 +31,7 @@ public class CameraController : MonoBehaviour
     private float zoomtime;     // ズームに使う秒数
     private bool isZoom;        // ズーム中か
     private float startTime;     // ズーム中に使う
+    private float playerMoveTimeCount;
 
     private void Awake()
     {
@@ -45,12 +47,11 @@ public class CameraController : MonoBehaviour
         offset = transform.position - player.transform.position;
         cam = GetComponent<Camera>();
         pc = player.GetComponent<PlayerController>();
+        prb = player.GetComponent<Rigidbody2D>();
     }
 
     private void LateUpdate()
     {
-        
-
         Vector3 newPosition = transform.position;
         Vector3 viewPos = cam.WorldToViewportPoint(player.transform.position);
         if (viewPos.y > 0.75f && !isFocasUnder) {
@@ -59,16 +60,19 @@ public class CameraController : MonoBehaviour
             newPosition.y = player.transform.position.y + offset.y;
         }
 
+        if(prb.velocity.x < -2.1f || 2.1f < prb.velocity.x) {
+            playerMoveTimeCount += Time.deltaTime;
+        } else {
+            playerMoveTimeCount = 0;
+            offset.x = 0;
+        }
+
         // Xがステージの端より内側だったらプレイヤーのX座標を追いかける
         if ((_stage_edge_x <= player.transform.position.x && _stage_edge_x_right >= player.transform.position.x)
             || (_stage_edge_x <= transform.position.x && _stage_edge_x_right >= transform.position.x))
         {
-            if (viewPos.x > 0.52f) {
-                newPosition.x = player.transform.position.x - offset.x;
-            } else if (viewPos.x < 0.48f || pc.IsGhost) {
-                newPosition.x = player.transform.position.x + offset.x;
-            }
-
+            if(0.2f < playerMoveTimeCount)
+            newPosition.x = player.transform.position.x + offset.x;
         }
         
         newPosition.z = player.transform.position.z + offset.z;
@@ -80,7 +84,7 @@ public class CameraController : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, newPosition, rate);
             cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoomSizeTarget, rate);
         } else {
-            transform.position = Vector3.Lerp(transform.position, newPosition, _cameraSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, newPosition, 18 * Time.deltaTime);
         }
 
         
