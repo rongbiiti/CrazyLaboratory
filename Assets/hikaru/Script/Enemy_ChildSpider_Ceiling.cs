@@ -143,8 +143,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
             else
             {
                 directionChange = true;
-                if (_direction == -1)
-                    gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
+                gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
                 _direction = 1;    //右
             }
             AttackObject.enabled = true;
@@ -204,14 +203,13 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                 if (playerObject.transform.position.x <= gameObject.transform.position.x)
                 {
                     directionChange = false;
-                    gameObject.transform.localScale = new Vector2(startScale.x, startScale.y);
+                    gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
                     _direction = -1;     //左
                 }
                 else
                 {
                     directionChange = true;
-                    if (_direction == -1)
-                        gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
+                    gameObject.transform.localScale = new Vector2(startScale.x, startScale.y);
                     _direction = 1;    //右
                 }
             }
@@ -305,10 +303,6 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                 pointWaitTime += _pointWaitRate;
             }
 
-
-
-
-
             // transformを取得
             Transform myTransform = this.transform;
 
@@ -364,8 +358,6 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                         //_direction *= -1;
                         //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
-
-
 
                     if (AttackPhase == 0 && stanTimeRemain <= 0)
                     {
