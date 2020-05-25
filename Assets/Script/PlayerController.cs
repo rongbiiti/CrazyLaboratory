@@ -495,6 +495,8 @@ public class PlayerController : MonoBehaviour
                 jumpMinTime = pm.JumpMinTime;
                 SoundManagerV2.Instance.PlaySE(9);
                 groundingTime = 0;
+            } else {
+                isJumpingCheck = true;
             }
         }
 

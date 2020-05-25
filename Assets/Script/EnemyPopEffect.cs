@@ -91,9 +91,13 @@ public class EnemyPopEffect : MonoBehaviour {
         yield return new WaitForSeconds(_ventShakeTime);
         //instantiatedPopEffect = Instantiate(_popEffect, transform.position, Quaternion.identity);
         SoundManagerV2.Instance.PlaySE(8);
-        explodable.explode();
-        ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
-        ef.doExplosion(transform.position);
+        //explodable.explode();
+        //ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
+        //ef.doExplosion(transform.position);
+        Rigidbody2D rb = _tuukikou.transform.GetChild(0).GetComponent<Rigidbody2D>();
+        rb.gravityScale = 2;
+        rb.velocity = new Vector2(0, 6);
+        _tuukikou.transform.GetChild(0).gameObject.AddComponent<AutoDestroy>().time = 5f;
         enemy_ChildSpiderAnimTest.enabled = true;
         enemyHpbar.hpbar.gameObject.SetActive(true);
         cubismRender.Opacity = 1f;
