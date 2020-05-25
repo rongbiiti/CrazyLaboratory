@@ -74,7 +74,6 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
     private BoxCollider2D AttackObject;
     private BoxCollider2D WeakPointHitBox;
 
-
     Rigidbody2D rb;
     Animator animator;
 
@@ -444,11 +443,19 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         ScoreManager.Instance.KillCnt++;
         ScoreManager.Instance.TotalKillCnt++;
         HitBoxDisable();
-        Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation);
-        Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation);
-        Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation);
+        GameObject deathEffect0 = Instantiate(_smokeEffect, transform.position, _smokeEffect.transform.rotation) as GameObject;
+        deathEffect0.transform.parent = transform;
+        deathEffect0.transform.localScale = Vector3.one;
+        GameObject deathEffect1 = Instantiate(_bloodSplashEffect1, transform.position, _bloodSplashEffect1.transform.rotation) as GameObject;
+        deathEffect1.transform.parent = transform;
+        deathEffect1.transform.localScale = Vector3.one;
+        GameObject deathEffect2 = Instantiate(_bloodSplashEffect2, transform.position, _bloodSplashEffect2.transform.rotation) as GameObject;
+        deathEffect2.transform.parent = transform;
+        deathEffect2.transform.localScale = Vector3.one;
         if (GetComponent<Rigidbody2D>().velocity.y == 0) {
-            Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation);
+            GameObject deathEffect3 = Instantiate(_bloodSplashEffect3, transform.position - new Vector3(0, 0.8F, 0), _bloodSplashEffect3.transform.rotation) as GameObject;
+            deathEffect3.transform.parent = transform;
+            deathEffect3.transform.localScale = Vector3.one;
         }
         SoundManagerV2.Instance.PlaySE(26);
         SoundManagerV2.Instance.PlaySE(37);
