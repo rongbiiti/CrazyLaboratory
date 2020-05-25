@@ -19,6 +19,7 @@ public class Enemy_Boss : MonoBehaviour
         Stan,           //スタン
         Jump,           //ジャンプ
         Attack,         //攻撃
+        CallSpider,     //子蜘蛛を呼ぶ
         BodyPress,      //ボディプレス
     }
 
@@ -431,6 +432,7 @@ public class Enemy_Boss : MonoBehaviour
                                 rb.velocity = speed;
                                 Vector3 po = transform.position;    //今の座標を取得
                                 this.transform.position = new Vector3(po.x, FallLocationY + sin * 5, po.z); //縦の波の動きの設定
+
                                 if (_bossLeftMaxPx >= transform.position.x && DirectionX == -1 || _bossRightMaxPx <= transform.position.x && DirectionX == 1)
                                 { 
                                     DirectionX *= -1;
@@ -438,7 +440,7 @@ public class Enemy_Boss : MonoBehaviour
                                     transform.localScale = new Vector2(ls.x, -ls.y);
                                 }
 
-                                if (transform.position.x >= _stageCenterPx && DirectionX == 1)     //|| _stageCenterPx >= transform.position.x && DirectionX == -1
+                                if (transform.position.x >= _stageCenterPx && DirectionX == 1)     //transform.position.x >= _stageCenterPx && DirectionX == 1 || _stageCenterPx >= transform.position.x && DirectionX == -1
                                 {
                                     if ((byte)_activityTypeCount[ActivityCount + 1] == (byte)e_ActivityType.Attack)
                                     {
@@ -473,32 +475,6 @@ public class Enemy_Boss : MonoBehaviour
                             break;
                     }
 
-                    //if(AttackType == (byte)e_AttackType.fallmove && AttackTime <= 0)
-                    //{
-                    //    animator.SetBool("Stand1", false);
-                    //    animator.SetBool("Stand2", true);
-                    //    animator.SetBool("BodyPress", false);
-                    //    animator.SetBool("Atack", false);
-                    //    animator.SetBool("Jump", false);
-                    //    animator.SetBool("Stun", false);
-
-                    //    Vector2 speed = new Vector2(0.0f, moveSpeed);
-                    //    rb.velocity = speed;
-                    //    if (startPlayerPosition.y + _playerY >= transform.position.y)
-                    //    {
-                    //        AttackType = (byte)e_AttackType.BeforAttack;
-                    //        AttackTime += _beforeAttackRate;
-                    //        rb.velocity = new Vector2(0.0f, 0.0f);
-                    //    }
-                    //}
-                    
-                    //if(AttackType == (byte)e_AttackType.AfterAttack && AttackTime <= 0)
-                    //{            
-                    //    Vector2 speed = new Vector2(0.0f, moveSpeed);
-                    //    rb.velocity = speed;
-                    //    animator.SetBool("Stand2", true);
-                    //    animator.SetBool("Atack", false);
-                    //}
                     break;
 
                 case (byte)e_ActivityType.BodyPress:
