@@ -71,7 +71,7 @@ public class CameraController : MonoBehaviour
         if ((_stage_edge_x <= player.transform.position.x && _stage_edge_x_right >= player.transform.position.x)
             || (_stage_edge_x <= transform.position.x && _stage_edge_x_right >= transform.position.x))
         {
-            if(0.2f < playerMoveTimeCount)
+            if(0.2f < playerMoveTimeCount || viewPos.x < 0.47f || 0.53f < viewPos.x)
             newPosition.x = player.transform.position.x + offset.x;
         }
         
@@ -84,7 +84,14 @@ public class CameraController : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, newPosition, rate);
             cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, zoomSizeTarget, rate);
         } else {
-            transform.position = Vector3.MoveTowards(transform.position, newPosition, 18 * Time.deltaTime);
+            if (!pc.IsGhost) {
+                transform.position = Vector3.MoveTowards(transform.position, newPosition, 18 * Time.deltaTime);
+            } else {
+                newPosition.x = player.transform.position.x + offset.x;
+                newPosition.y = player.transform.position.y + offset.y;
+                newPosition.z = player.transform.position.z + offset.z;
+                transform.position = Vector3.Lerp(transform.position, newPosition, 6f * Time.deltaTime);
+            }
         }
 
         
@@ -104,7 +111,7 @@ public class CameraController : MonoBehaviour
         var position = player.transform.position;
         newPosition.y = position.y + offset.y;
         newPosition.z = position.z + offset.z;
-        transform.position = Vector3.Lerp(transform.position, newPosition, 2.5f * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, newPosition, 3f * Time.deltaTime);
         if(YAxisFixTime <= 0f) {
             isFloarChange = false;
         }

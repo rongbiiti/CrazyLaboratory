@@ -103,9 +103,13 @@ public class Stage1Event : MonoBehaviour {
 
     private void VentBrake()
     {
-        _explodable.explode();
-        ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
-        ef.doExplosion(_explodable.gameObject.transform.position);
+        //_explodable.explode();
+        //ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
+        //ef.doExplosion(_explodable.gameObject.transform.position);
+        Rigidbody2D rb = _vent.GetChild(0).GetComponent<Rigidbody2D>();
+        rb.gravityScale = 2;
+        rb.velocity = new Vector2(0, 6);
+        _vent.GetChild(0).gameObject.AddComponent<AutoDestroy>().time = 5f;
         SoundManagerV2.Instance.PlaySE(8);
     }
 
