@@ -114,6 +114,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             transform.position = startPosition;
             transform.localScale = startScale;
             gameObject.transform.eulerAngles = startRotation;
+
             AttackPhase = 0;
             Count = 0;
             _waitPosition.SetActive(false);
@@ -145,7 +146,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             }
 
             Direction(playerObject.transform.position);
-
+            
         }
 
     }
@@ -466,7 +467,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                         _directionChange = true;
                         break;
                 }
-                //Direction(playerObject.transform.position);
+                Direction(playerObject.transform.position);
                 return;
             }
         }
