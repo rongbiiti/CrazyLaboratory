@@ -12,6 +12,7 @@ public class FallBlock : MonoBehaviour {
     private Explodable explodable;
     private GameObject medKit = null;
     [SerializeField, CustomLabel("エフェクト")] private GameObject _effect;
+    private CameraShake cameraShake;
     private GameObject effect;
     private bool isThreadBreaked;
 
@@ -23,6 +24,7 @@ public class FallBlock : MonoBehaviour {
     void Start () {
         explodable = GetComponent<Explodable>();
         effect = Instantiate(_effect);
+        cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
         if (transform.childCount == 0) return;
         if (transform.GetChild(0).gameObject.CompareTag("ItemMedkit"))
         {
@@ -30,6 +32,7 @@ public class FallBlock : MonoBehaviour {
             medKit.SetActive(false);
             medKit.transform.SetParent(transform.parent);
         }
+        
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -47,6 +50,7 @@ public class FallBlock : MonoBehaviour {
             explodable.explode();
             ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
             ef.doExplosion(transform.position);
+            cameraShake.Shake(0.25f, 0.2f);
             SoundManagerV2.Instance.PlaySE(8);
         }
     }

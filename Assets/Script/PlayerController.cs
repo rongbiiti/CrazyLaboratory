@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     [SerializeField, Range(0, 999), CustomLabel("弾の最大所持数")] private int _bulletCapacity = 10;
-    [HideInInspector, CustomLabel("ホールメイカー弾最大所持数")] private int _hmBulletCapacity = 20;
+    [HideInInspector, CustomLabel("ホールメイカー弾最大所持数")] private int _hmBulletCapacity = 9999;
     [HideInInspector, CustomLabel("ホールメイカー弾同時発射数")] private int _hmShotBullets = 6;
     [HideInInspector, CustomLabel("ホールメイカー拡散範囲")] private float _hmSpreadRange = 45f;
     [HideInInspector, CustomLabel("ホールメイカー発射間隔")] private float _hmFireRate = 2.5f;
@@ -566,7 +566,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!(0 < HP)) return;
+        // HPが0だった場合の処理
+        if (!(0 < HP)) {
+            rb.AddForce(new Vector2(pm.MoveForceMultiplier * (0 * pm.MoveSpeed - rb.velocity.x), Physics.gravity.y * pm.GravityRate));
+            return;
+        }
+
         sm.PlayTime += Time.deltaTime;
         sm.GameClearTime += Time.deltaTime;
         
@@ -853,8 +858,21 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
+            // ↓はHPが0になった瞬間の処理。
             if (HP <= 0)
             {
+                animator.SetBool("Stand", true);
+                animator.SetBool("Wait", false);
+                animator.SetBool("Run", false);
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
+                animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
+
+                // リスタートするときの位置が初期位置のままだったらシーンリロードさせる。
+                // でなければ（リスタートを一度でも通過していれば）リスタートコルーチン発動。
                 if (startPosition == restartPosition)
                 {
                     FadeManager.Instance.LoadScene(SceneManager.GetActiveScene().name, 1f);
@@ -1106,7 +1124,7 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.HoleMaker;
-            hmBullets += 4;
+            hmBullets += 100;
             
         } else if (collision.CompareTag("RestartPoint")) {
             restartPosition = transform.position;
@@ -1181,21 +1199,37 @@ public class PlayerController : MonoBehaviour
         
     }
 
+
+    // リスタート時の処理
     private IEnumerator Restart(float interval)
     {
         yield return new WaitForSeconds(interval);
+        // リトライ回数足す
         sm.RetryCnt++;
         sm.TotalRetryCnt++;
+
+        // startで取得しておいたリスタートポイントたちのメソッド実行
         foreach (var rps in restartPoints)
         {
             RestartPoint rp = rps.GetComponent<RestartPoint>();
             rp.TurnOnSpawner();
         }
+
+        // 位置を最後に通ったリスタートポイントの位置に転送、カメラもその位置に。
         transform.position = restartPosition;
         cam.transform.position = restartCameraPosition;
+
+        // リジッドボディの加速度もゼロにする
         rb.velocity = Vector2.zero;
+
+        // HPをリスタートポイント通過時のHPに戻し、HPバーのvalueにその値を代入する。
+        _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = false;
         HP = restartHP;
         _HPbar.value = HP;
+        _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = true;
+
+        // リスタートを一度でも通ったことがあったら銃をもたせる。
+        // でなければ（Stage1でリスタートポイント通過前に死亡）銃未所持状態に戻す
         if (startPosition != restartPosition || isStartGetGun)
         {
             isGetGun = true;

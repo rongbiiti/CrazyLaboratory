@@ -55,6 +55,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
     private bool isReachTargetPosition;
     private bool istargetPointA;
     Rigidbody2D rb;
+    private CameraShake cameraShake;
 
     Animator animator;
     private CubismModel Model;
@@ -84,7 +85,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         animator = GetComponent<Animator>();
         Model = this.FindCubismModel();
         rb = GetComponent<Rigidbody2D>();
-
+        cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
 
     }
 
@@ -460,6 +461,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             {
                 prb.velocity = direction * _nockBuckPower;
                 SoundManagerV2.Instance.PlaySE(34);
+                cameraShake.Shake(0.35f, 0.4f);
             }
         }
     }
@@ -505,6 +507,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             {
                 prb.velocity = direction * _nockBuckPower;
                 SoundManagerV2.Instance.PlaySE(34);
+                cameraShake.Shake(0.35f, 0.4f);
             }
         }
     }

@@ -34,26 +34,42 @@ public class FadeManager : MonoBehaviour
 	/// <summary>
 	/// デバッグモード .
 	/// </summary>
-	public bool DebugMode = true;
+	public bool DebugMode = false;
 	/// <summary>フェード中の透明度</summary>
 	private float fadeAlpha = 0;
 	/// <summary>フェード中かどうか</summary>
 	private bool isFading = false;
 	/// <summary>フェード色</summary>
 	public Color fadeColor = Color.black;
+    /// <summary>ロゴのプレハブ</summary>
+    public GameObject _logoPrefab;
+    /// <summary>ロゴのオフセット</summary>
+    public Vector3 _logoOffSet;
+    /// <summary>生成したプレハブ</summary>
+    private GameObject logo;
+    /// <summary>カメラ</summary>
+    private Transform cam;
 
 
-	public void Awake ()
+    public void Awake ()
 	{
 		if (this != Instance) {
 			Destroy (this.gameObject);
 			return;
 		}
-
-		DontDestroyOnLoad (this.gameObject);
+        
+        logo = Instantiate(_logoPrefab, Vector3.zero, Quaternion.identity);
+        logo.transform.parent = transform;
+        logo.SetActive(false);
+        DontDestroyOnLoad(this.gameObject);
 	}
 
-	public void OnGUI ()
+    private void Start()
+    {
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+    }
+
+    public void OnGUI ()
 	{
 
 		// Fade .
@@ -122,33 +138,43 @@ public class FadeManager : MonoBehaviour
 	/// <param name='interval'>暗転にかかる時間(秒)</param>
 	private IEnumerator TransScene (string scene, float interval)
 	{
+        interval = 1.667f;
+        logo.transform.position = cam.position - _logoOffSet;
+        logo.SetActive(true);
 		//だんだん暗く .
 		this.isFading = true;
 		float time = 0;
 		while (time <= interval) {
-			this.fadeAlpha = Mathf.Lerp (0f, 1f, time / interval);
+			//this.fadeAlpha = Mathf.Lerp (0f, 1f, time / interval);
 			time += Time.deltaTime;
-			yield return 0;
+            logo.transform.position = cam.position - _logoOffSet;
+            yield return 0;
 		}
 
 		//シーン切替 .
 		SceneManager.LoadScene (scene);
+        logo.SetActive(false);
 
-		//だんだん明るく .
-		time = 0;
-		while (time <= interval) {
+        //だんだん明るく .
+        time = 0;
+        
+        while (time <= interval) {
 			this.fadeAlpha = Mathf.Lerp (1f, 0f, time / interval);
 			time += Time.deltaTime;
 			yield return 0;
 		}
 
 		this.isFading = false;
-	}
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+    }
 	
 	private IEnumerator FadeDisplay (float interval)
 	{
-		//だんだん暗く .
-		this.isFading = true;
+        interval = 1.667f;
+        logo.transform.position = cam.position - _logoOffSet;
+        logo.SetActive(true);
+        //だんだん暗く .
+        this.isFading = true;
 		float time = 0;
 		while (time <= interval) {
 			this.fadeAlpha = Mathf.Lerp (0f, 1f, time / interval);
@@ -156,8 +182,11 @@ public class FadeManager : MonoBehaviour
 			yield return 0;
 		}
 
-		//だんだん明るく .
-		time = 0;
+        logo.SetActive(false);
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+
+        //だんだん明るく .
+        time = 0;
 		while (time <= interval) {
 			this.fadeAlpha = Mathf.Lerp (1f, 0f, time / interval);
 			time += Time.deltaTime;
