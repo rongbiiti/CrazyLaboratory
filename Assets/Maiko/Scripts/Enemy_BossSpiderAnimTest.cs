@@ -20,6 +20,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         Stan,           //スタン
         Jump,           //ジャンプ
         Attack,         //攻撃
+        CallSpider,     //子蜘蛛を呼ぶ
         BodyPress,      //ボディプレス
     }
 
@@ -61,10 +62,13 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     [SerializeField] private float YenAround = 2f;   //一周するのにかかる時間
     private float DirectionX;   //方向    左なら1　右なら-1を格納する　移動の計算式に使う
     private float FallLocationY;    //降下時点のY座標
-
+    private bool CenterIfflag;     //中央に向かってすぎる時の処理をするタイミング用
     [SerializeField] private float _bossRightMaxPx = -53.9f; //ボスの右側の移動範囲の上限
     [SerializeField] private float _bossLeftMaxPx = -103.97f; //ボスの左側の移動範囲の上限
     [SerializeField] private float _stageCenterPx = -79.85f;  //ステージの真ん中のｘ座標
+    /*******************CallSpider*********************/
+    [SerializeField] private float _callRate;   //呼ぶ時間
+    private float CallTime;     //呼ぶ時間格納用
     /*******************BodyPress*********************/
     [SerializeField] private float _bodyPressRate = 3f;
     private float BodyPressTime;
@@ -83,14 +87,13 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private byte ActivityType;     //行動のタイプ
     [SerializeField] e_ActivityType[] _activityTypeCount;
     private byte ActivityCount;     //カウントによって行動を登録
-    [SerializeField] private float _activityRate;   //次に行動する時間
-    private float ActivityTime;     //次に行動する時間の格納用
+    //[SerializeField] private float _activityRate;   //次に行動する時間
+    //private float ActivityTime;     //次に行動する時間の格納用
     /*******************GameObject**********************/
     [SerializeField] private GameObject _switchObject;   //上昇して行動を切り替えさせるためのオブジェクト
     [SerializeField] private GameObject _attackObject;   //攻撃のオブジェクト
     [SerializeField] private GameObject _bodyPressEndObject;    //ボディプレスを止めるためのオブジェクト
     [SerializeField] private GameObject _ThreadObject;  //糸のオブジェクト
-    [SerializeField] private GameObject[] _PatrolPoint;
     /**********************************************/
     [SerializeField] private float _destroyTime = 2f;
 
@@ -185,19 +188,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 gameObject.SetActive(false);
                 enemyHpbar.hpbar.gameObject.SetActive(false);
             }
-            //if (0 < transform.localScale.x)
-            //{
-            //    transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            //}
-            //else if (transform.localScale.x < 0)
-            //{
-            //    transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            //}
-            //if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
-            //{
-            //    Destroy(enemyHpbar.hpbar.gameObject);
-            //    Destroy(gameObject);
-            //}
         }
         else
         {
@@ -306,9 +296,9 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
 
                             transform.position = BossP;
                             break;
-                        case (byte)e_AttackType.horizontalmove:
-
-                            break;
+                        //case (byte)e_AttackType.horizontalmove:
+                        //    //
+                        //    break;
                         case (byte)e_AttackType.BeforAttack:
                             animator.SetBool("Stand2", false);
                             animator.SetBool("Atack", true);
@@ -379,10 +369,21 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     SwitchFlag = false;
                 }
             }
-            if (0 < ActivityTime)   //行動までの時間
+
+            if(0 < CallTime)
             {
-                ActivityTime -= Time.deltaTime;
+                CallTime -= Time.deltaTime;
+                if(CallTime <= 0)
+                {
+                    _switchObject.SetActive(true);
+                    SwitchFlag = false;
+                    //InitActivityType((byte)_activityTypeCount[ActivityCount]);
+                }
             }
+            //if (0 < ActivityTime)   //行動までの時間
+            //{
+            //    ActivityTime -= Time.deltaTime;
+            //}
 
             switch (ActivityType)   //行動のタイプによって動きを変える
             {
@@ -481,9 +482,11 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                                     DirectionX *= -1;
                                     var ls = transform.localScale;
                                     transform.localScale = new Vector2(ls.x, -ls.y);
+                                    CenterIfflag = true;
                                 }
 
-                                if (transform.position.x >= _stageCenterPx && DirectionX == 1)     //|| _stageCenterPx >= transform.position.x && DirectionX == -1
+                                if (CenterIfflag == true && (transform.position.x >= _stageCenterPx && DirectionX == 1 ||
+                                    _stageCenterPx >= transform.position.x && DirectionX == -1))     //|| _stageCenterPx >= transform.position.x && DirectionX == -1
                                 {
                                     if ((byte)_activityTypeCount[ActivityCount + 1] == (byte)e_ActivityType.Attack)
                                     {
@@ -494,15 +497,21 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                                             var ls = startScale;
                                             transform.localScale = new Vector2(ls.x, -ls.y);
                                         }
-                                        if (DirectionX == 1)
+                                        else if (DirectionX == 1)
                                         {
                                             DirectionX = -1f;
                                             var ls = startScale;
                                             transform.localScale = new Vector2(ls.x, ls.y);
                                         }
+                                        CenterIfflag = false;
+                                    }
+                                    else
+                                    {
+                                        speed = new Vector2(0, 0); //横の移動の設定
+                                        rb.velocity = speed;
+                                        InitActivityType((byte)_activityTypeCount[++ActivityCount]);
                                     }
                                 }
-
                             }
 
                             break;
@@ -518,32 +527,14 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                             break;
                     }
 
-                    //if(AttackType == (byte)e_AttackType.fallmove && AttackTime <= 0)
-                    //{
-                    //    animator.SetBool("Stand1", false);
-                    //    animator.SetBool("Stand2", true);
-                    //    animator.SetBool("BodyPress", false);
-                    //    animator.SetBool("Atack", false);
-                    //    animator.SetBool("Jump", false);
-                    //    animator.SetBool("Stun", false);
+                    break;
 
-                    //    Vector2 speed = new Vector2(0.0f, moveSpeed);
-                    //    rb.velocity = speed;
-                    //    if (startPlayerPosition.y + _playerY >= transform.position.y)
-                    //    {
-                    //        AttackType = (byte)e_AttackType.BeforAttack;
-                    //        AttackTime += _beforeAttackRate;
-                    //        rb.velocity = new Vector2(0.0f, 0.0f);
-                    //    }
-                    //}
-
-                    //if(AttackType == (byte)e_AttackType.AfterAttack && AttackTime <= 0)
-                    //{            
-                    //    Vector2 speed = new Vector2(0.0f, moveSpeed);
-                    //    rb.velocity = speed;
-                    //    animator.SetBool("Stand2", true);
-                    //    animator.SetBool("Atack", false);
-                    //}
+                case (byte)e_ActivityType.CallSpider:
+                    if(CallTime <= 0)
+                    {
+                        Vector2 speed = new Vector2(0.0f, _ascentSpeed);    
+                        rb.velocity = speed;    //上昇する
+                    }
                     break;
 
                 case (byte)e_ActivityType.BodyPress:
@@ -563,16 +554,16 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         //Debug.Log(SwitchFlag);
         switch (Type)
         {
-            case (byte)e_ActivityType.Stan:
+            case (byte)e_ActivityType.Stan: //スタンの初期変更
                 ActivityType = (byte)e_ActivityType.Stan;
                 StanType = (byte)e_StanType.move;
                 break;
-            case (byte)e_ActivityType.Jump:
+
+            case (byte)e_ActivityType.Jump: //ジャンプの初期変更
                 _ThreadObject.SetActive(false);
                 ActivityType = (byte)e_ActivityType.Jump;
                 AttackType = 0;
                 JumpTime = _jumpRate;
-
                 PlayerDamage = _AttackHitDamage;
                 if (transform.localScale.y < 0)
                 {
@@ -580,17 +571,34 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     gameObject.transform.localScale = new Vector3(ls.x, -ls.y, ls.z);
                 }
                 break;
-            case (byte)e_ActivityType.Attack:
+
+            case (byte)e_ActivityType.Attack:   //攻撃の初期変更
                 _ThreadObject.SetActive(true);
                 ActivityType = (byte)e_ActivityType.Attack;
                 AttackType = (byte)e_AttackType.fallmove;
                 int range = Random.Range(_rangeMin, _rangeMax);
                 AttackTime += range;
                 transform.eulerAngles = new Vector3(0.0f, 0.0f, 90f);
+                transform.position = new Vector2(_stageCenterPx, transform.position.y);
                 moveSpeed = -_fallSpeed;
                 PlayerDamage = _AttackHitDamage;
+                CenterIfflag = false;
                 break;
-            case (byte)e_ActivityType.BodyPress:
+
+            case (byte)e_ActivityType.CallSpider:
+                ActivityType = (byte)e_ActivityType.CallSpider;
+                CallTime = _callRate;
+                if(playerObject.transform.position.x >= transform.position.x)
+                {
+                    transform.localScale = new Vector3(startScale.x, startScale.y);
+                }
+                else
+                {
+                    transform.localScale = new Vector3(startScale.x, -startScale.y);
+                }
+                break;
+                
+            case (byte)e_ActivityType.BodyPress:    //ボディプレスの初期変更
                 _ThreadObject.SetActive(false);
                 ActivityType = (byte)e_ActivityType.BodyPress;
                 BodyPressTime = _bodyPressRate;
