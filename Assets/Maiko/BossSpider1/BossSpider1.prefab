@@ -686,9 +686,9 @@ GameObject:
   - component: {fileID: 61658732517931030}
   - component: {fileID: 114361233519926854}
   - component: {fileID: 114253676310408624}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BossSpider1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3544,6 +3544,7 @@ MonoBehaviour:
   _bossRightMaxPx: -53.9
   _bossLeftMaxPx: -103.09
   _stageCenterPx: -79.85
+  _callRate: 5
   _bodyPressRate: 3
   _bodyPressFallSpeed: 50
   _stanRate: 4
@@ -3551,13 +3552,11 @@ MonoBehaviour:
   _StanFallSpeed: 10
   _jumpRate: 3
   _jumpSpeed: 30
-  _activityTypeCount: 01000000020000000200000003000000
-  _activityRate: 0
+  _activityTypeCount: 0100000002000000020000000300000004000000
   _switchObject: {fileID: 1261530602207148}
   _attackObject: {fileID: 1365669267286376}
   _bodyPressEndObject: {fileID: 1469336310631386}
   _ThreadObject: {fileID: 0}
-  _PatrolPoint: []
   _destroyTime: 2
 --- !u!114 &114257380864726906
 MonoBehaviour:
