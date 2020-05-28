@@ -2,6 +2,16 @@
 	"Version": 3,
 	"Parameters": [
 		{
+			"Id": "ParamX",
+			"GroupId": "",
+			"Name": "体の回転X"
+		},
+		{
+			"Id": "ParamY",
+			"GroupId": "",
+			"Name": "体の回転Y"
+		},
+		{
 			"Id": "eyeParam",
 			"GroupId": "",
 			"Name": "目　開閉"
@@ -128,12 +138,16 @@
 			"Name": "銃(左)"
 		},
 		{
+			"Id": "Part6",
+			"Name": "頭部"
+		},
+		{
 			"Id": "Part4",
 			"Name": "体"
 		},
 		{
-			"Id": "Part6",
-			"Name": "頭部"
+			"Id": "Part13",
+			"Name": "生首"
 		},
 		{
 			"Id": "Part15",
@@ -146,10 +160,6 @@
 		{
 			"Id": "Part7",
 			"Name": "目"
-		},
-		{
-			"Id": "Part13",
-			"Name": "生首"
 		}
 	]
 }
