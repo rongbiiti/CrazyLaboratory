@@ -467,6 +467,8 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
+            animator.SetBool("Death1", false);
+            animator.SetBool("Death2", false);
             jumpWaitTime = jumpWaitTime * 0 + (0.0167f * pm.JumpWaitTime);
             groundingTime = 0;
             
@@ -487,6 +489,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Run", false);
                 animator.SetBool("Stand", false);
                 animator.SetBool("Wait", false);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
 
                 isJumpingCheck = false;
                 jumpTimeCounter = pm.JumpTime;
@@ -507,7 +511,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //{11(6),3(7),手前}{15(11),14(12)奥側} 手のパーツ
-        if (!isGetGun){                             //銃を持ってるとき、右手に銃を持たす
+        if (!isGetGun){                             //銃を持っていない
             Model.Parts[6].Opacity = 1;
             Model.Parts[7].Opacity = 0;
             Model.Parts[11].Opacity = 1;
@@ -649,7 +653,9 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
-            animator.SetBool("Wait", false);      
+            animator.SetBool("Wait", false);
+            animator.SetBool("Death1", false);
+            animator.SetBool("Death2", false);
         }
 
         // 地面にいるとき
@@ -679,6 +685,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", true);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
                 // ここに着地した瞬間の処理書くといいかも
             }
             else if ((im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey) && jumpWaitTime < 0 && im.MoveStopKey == 0)    // 移動中
@@ -693,6 +701,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
             }
             else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey  && jumpWaitTime < 0)    // 待機モーション中
             {
@@ -711,6 +721,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
             }
             // 空中にいるとき
         } else {
@@ -861,7 +873,7 @@ public class PlayerController : MonoBehaviour
             // ↓はHPが0になった瞬間の処理。
             if (HP <= 0)
             {
-                animator.SetBool("Stand", true);
+                animator.SetBool("Stand", false);
                 animator.SetBool("Wait", false);
                 animator.SetBool("Run", false);
                 animator.SetBool("JumpStart", false);
@@ -870,6 +882,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
+                animator.SetBool("Death1", true);
+                animator.SetBool("Death2", false);
 
                 // リスタートするときの位置が初期位置のままだったらシーンリロードさせる。
                 // でなければ（リスタートを一度でも通過していれば）リスタートコルーチン発動。
@@ -1195,6 +1209,8 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("JumpUp", false);
         animator.SetBool("JumpDown", false);
         animator.SetBool("JumpEnd", false);
+        animator.SetBool("Death1", false);
+        animator.SetBool("Death2", false);
         rb.velocity = Vector2.zero;
         
     }
