@@ -61,6 +61,9 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
     private CubismModel Model;
     private float anitime = 0f;
 
+    [SerializeField, CustomLabel("鎌の当たり判定")] private BoxCollider2D[] _sickle;
+    private GameObject[] attackEffect = new GameObject[4];
+
     // Use this for initialization
     void Start()
     {
@@ -86,6 +89,12 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         Model = this.FindCubismModel();
         rb = GetComponent<Rigidbody2D>();
         cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
+
+        int i = 0;
+        foreach(var skl in _sickle) {
+            attackEffect[i++] = skl.transform.GetChild(0).gameObject;
+            attackEffect[i++] = skl.transform.GetChild(1).gameObject;
+        }
 
     }
 
@@ -201,12 +210,16 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
                 AttackTime -= Time.deltaTime;
                 if(AttackTime <= 0) {
                     SoundManagerV2.Instance.PlaySE(33);
+                    AttackEffectEnable();
                 }
             }
 
             if (0 < AfterAttackTime)
             {
                 AfterAttackTime -= Time.deltaTime;
+                if(AfterAttackTime <= 0) {
+                    AttackEffectDisable();
+                }
             }
 
             if (0 < JumpTime)
@@ -339,6 +352,56 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         isReachTargetPosition = false;
     }
 
+    private void Kill()
+    {
+        isZeroHP = true;
+        animator.SetBool("Stand", false);
+        animator.SetBool("Stun", false);
+        animator.SetBool("BeforeAtack", false);
+        animator.SetBool("Atack", false);
+        animator.SetBool("Jump", false);
+        animator.SetBool("Death", true);
+        ScoreManager.Instance.KillCnt++;
+        ScoreManager.Instance.TotalKillCnt++;
+
+        int a = 0;
+        foreach(var skl in _sickle) {
+            skl.enabled = false;
+            attackEffect[a++].SetActive(false);
+        }
+
+        for (int i = 0; i < (int)Child.count; i++) {
+            gameObject.transform.GetChild(i).transform.GetComponent<Collider2D>().enabled = false;
+        }
+        if (0 < transform.localScale.x) {
+            GameObject obj = Instantiate(_deathEffect, transform.position, Quaternion.identity) as GameObject;
+            obj.transform.parent = transform;
+        } else {
+            GameObject obj = Instantiate(_deathEffectReverse, transform.position, Quaternion.identity) as GameObject;
+            obj.transform.parent = transform;
+        }
+        SoundManagerV2.Instance.PlaySE(35);
+        SoundManagerV2.Instance.PlaySE(37);
+    }
+
+    private void AttackEffectDisable()
+    {
+        int a = 0;
+        foreach (var skl in _sickle) {
+            skl.enabled = false;
+            attackEffect[a++].SetActive(false);
+        }
+    }
+
+    private void AttackEffectEnable()
+    {
+        int a = 0;
+        foreach (var skl in _sickle) {
+            skl.enabled = true;
+            attackEffect[a++].SetActive(true);
+        }
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -408,28 +471,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             enemyHpbar.SetBarValue(_HP, nowHP);
             if (nowHP <= 0)
             {
-                isZeroHP = true;
-                animator.SetBool("Stand", false);
-                animator.SetBool("Stun", false);
-                animator.SetBool("BeforeAtack", false);
-                animator.SetBool("Atack", false);
-                animator.SetBool("Jump", false);
-                animator.SetBool("Death", true);
-                ScoreManager.Instance.KillCnt++;
-                ScoreManager.Instance.TotalKillCnt++;
-                for (int i = 0; i < (int)Child.count; i++)
-                {
-                    gameObject.transform.GetChild(i).transform.GetComponent<Collider2D>().enabled = false;
-                }
-                if (0 < transform.localScale.x) {
-                    GameObject obj = Instantiate(_deathEffect, transform.position, Quaternion.identity) as GameObject;
-                    obj.transform.parent = transform;
-                } else {
-                    GameObject obj = Instantiate(_deathEffectReverse, transform.position, Quaternion.identity) as GameObject;
-                    obj.transform.parent = transform;
-                }
-                SoundManagerV2.Instance.PlaySE(35);
-                SoundManagerV2.Instance.PlaySE(37);
+                Kill();
 
             } else {
                 if (0 < transform.localScale.x) {

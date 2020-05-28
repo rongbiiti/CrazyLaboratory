@@ -603,11 +603,11 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (im.MoveKey >= 0.2 && !flip && im.MoonWalkKey == 0) {
+        if (im.MoveKey >= 0.005 && !flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = true;
         }
-        if (im.MoveKey <= -0.2 && flip && im.MoonWalkKey == 0) {
+        if (im.MoveKey <= -0.005 && flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
