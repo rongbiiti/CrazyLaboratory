@@ -861,6 +861,11 @@ public class PlayerController : MonoBehaviour
             // ↓はHPが0になった瞬間の処理。
             if (HP <= 0)
             {
+                if (isAcidDamage) {
+
+                } else {
+
+                }
                 animator.SetBool("Stand", true);
                 animator.SetBool("Wait", false);
                 animator.SetBool("Run", false);
