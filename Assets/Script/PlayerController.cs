@@ -863,16 +863,22 @@ public class PlayerController : MonoBehaviour
                 invincibleTime += _resetInvincibleTime;
                 damageEffect.transform.position = transform.position;
                 damageEffect.SetActive(true);
-                cubismRender.Opacity = 0.3f;
+                if(0 < HP) {
+                    cubismRender.Opacity = 0.3f;
+                }
+                
             } else {
-                foreach (var dr in Drawables) {
-                    dr.Color = _colorInAcidDamage;
+                if(0 < HP) {
+                    foreach (var dr in Drawables) {
+                        dr.Color = _colorInAcidDamage;
+                    }
                 }
             }
 
             // ↓はHPが0になった瞬間の処理。
             if (HP <= 0)
             {
+                
                 animator.SetBool("Stand", false);
                 animator.SetBool("Wait", false);
                 animator.SetBool("Run", false);
@@ -882,8 +888,12 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
-                animator.SetBool("Death1", true);
-                animator.SetBool("Death2", false);
+                
+                if (isAcidDamage) {
+                    animator.SetBool("Death1", true);
+                } else {
+                    animator.SetBool("Death2", true);
+                }
 
                 // リスタートするときの位置が初期位置のままだったらシーンリロードさせる。
                 // でなければ（リスタートを一度でも通過していれば）リスタートコルーチン発動。
@@ -1201,6 +1211,9 @@ public class PlayerController : MonoBehaviour
     {
         anicount = 0.0f;
         animator.SetBool("Stand", true);
+        if (animator.GetBool("Death1") || animator.GetBool("Death2")) {
+            animator.SetBool("Stand", false);
+        }
         animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
         animator.SetBool("JumpStart", false);
@@ -1209,8 +1222,6 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("JumpUp", false);
         animator.SetBool("JumpDown", false);
         animator.SetBool("JumpEnd", false);
-        animator.SetBool("Death1", false);
-        animator.SetBool("Death2", false);
         rb.velocity = Vector2.zero;
         
     }
