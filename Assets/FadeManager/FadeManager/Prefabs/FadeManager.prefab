@@ -23,7 +23,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 130190}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -44,7 +44,7 @@ MonoBehaviour:
   fadeColor: {r: 0, g: 0, b: 0, a: 1}
   _logoPrefab: {fileID: 1811154789052336, guid: 0186722e55973cb43be61336ce053778,
     type: 2}
-  _logoOffSet: {x: -1.56001, y: -9.23, z: -11}
+  _logoOffSet: {x: 0.5078, y: 1.24, z: -11}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

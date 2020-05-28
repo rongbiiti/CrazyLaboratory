@@ -9,9 +9,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f1ee1adc36a8a04a8d7c42ac5d6bc27, type: 3}
-  m_Name: Scene1.fade
+  m_Name: Dark.fade
   m_EditorClassIdentifier: 
-  MotionName: Assets/Maiko/SpiderRogo/Scene1.motion3.json
+  MotionName: Assets/Maiko/SpiderRogo/Dark.motion3.json
   FadeInTime: 1
   FadeOutTime: 1
   ParameterIds:
@@ -38,7 +38,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1.333
+      time: 1.667
       value: 0
       inSlope: 0
       outSlope: 0
@@ -47,7 +47,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1.667
+      time: 2
       value: 10
       inSlope: 0
       outSlope: 0
@@ -62,4 +62,4 @@ MonoBehaviour:
   - -1
   ParameterFadeOutTimes:
   - -1
-  MotionLength: 1.667
+  MotionLength: 2
