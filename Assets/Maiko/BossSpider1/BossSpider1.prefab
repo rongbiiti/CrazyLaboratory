@@ -11,6 +11,22 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1504027686493114}
   m_IsPrefabParent: 1
+--- !u!1 &1020881942503056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4710295592455170}
+  - component: {fileID: 61130453332675006}
+  m_Layer: 19
+  m_Name: AnimeObject
+  m_TagString: PatrolPoint
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1027048343462690
 GameObject:
   m_ObjectHideFlags: 1
@@ -1625,6 +1641,7 @@ Transform:
   - {fileID: 4348354024129718}
   - {fileID: 4375019990254450}
   - {fileID: 4828978122897134}
+  - {fileID: 4710295592455170}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1705,6 +1722,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4773992121726564}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4710295592455170
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1020881942503056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.59, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4613982558725506}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4728815034224502
 Transform:
@@ -3065,6 +3095,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!61 &61130453332675006
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1020881942503056}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.57, y: 2.17}
+  m_EdgeRadius: 0
 --- !u!61 &61197347144891686
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -3530,6 +3585,10 @@ MonoBehaviour:
   _PlayerDamageRate: 3
   _nockBuckPower: 300
   _nockBuckUpperPower: 0.38
+  _aniFallSpeed: 30
+  _aniFallEndPosition: 20
+  _aniPosition: {x: -78.77, y: 52.8}
+  _aniRoarRate: 5
   _rangeMin: 2
   _rangeMax: 4
   _beforeAttackRate: 0.7
@@ -3552,11 +3611,12 @@ MonoBehaviour:
   _StanFallSpeed: 10
   _jumpRate: 3
   _jumpSpeed: 30
-  _activityTypeCount: 0100000002000000020000000300000004000000
+  _activityTypeCount: 0200000002000000030000000400000001000000
   _switchObject: {fileID: 1261530602207148}
   _attackObject: {fileID: 1365669267286376}
   _bodyPressEndObject: {fileID: 1469336310631386}
   _ThreadObject: {fileID: 0}
+  _animeObject: {fileID: 1020881942503056}
   _destroyTime: 2
 --- !u!114 &114257380864726906
 MonoBehaviour:
