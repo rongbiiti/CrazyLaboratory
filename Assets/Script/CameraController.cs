@@ -39,6 +39,9 @@ public class CameraController : MonoBehaviour
         {
             Destroy(GetComponent<CheatMenu>());
         }
+        if (!GetComponent<CameraShake>()) {
+            gameObject.AddComponent<CameraShake>();
+        }
     }
 
     private void Start()

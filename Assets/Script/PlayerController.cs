@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     [SerializeField, Range(0, 999), CustomLabel("弾の最大所持数")] private int _bulletCapacity = 10;
-    [HideInInspector, CustomLabel("ホールメイカー弾最大所持数")] private int _hmBulletCapacity = 20;
+    [HideInInspector, CustomLabel("ホールメイカー弾最大所持数")] private int _hmBulletCapacity = 9999;
     [HideInInspector, CustomLabel("ホールメイカー弾同時発射数")] private int _hmShotBullets = 6;
     [HideInInspector, CustomLabel("ホールメイカー拡散範囲")] private float _hmSpreadRange = 45f;
     [HideInInspector, CustomLabel("ホールメイカー発射間隔")] private float _hmFireRate = 2.5f;
@@ -467,6 +467,8 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Wait", false);
+            animator.SetBool("Death1", false);
+            animator.SetBool("Death2", false);
             jumpWaitTime = jumpWaitTime * 0 + (0.0167f * pm.JumpWaitTime);
             groundingTime = 0;
             
@@ -487,6 +489,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Run", false);
                 animator.SetBool("Stand", false);
                 animator.SetBool("Wait", false);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
 
                 isJumpingCheck = false;
                 jumpTimeCounter = pm.JumpTime;
@@ -507,7 +511,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //{11(6),3(7),手前}{15(11),14(12)奥側} 手のパーツ
-        if (!isGetGun){                             //銃を持ってるとき、右手に銃を持たす
+        if (!isGetGun){                             //銃を持っていない
             Model.Parts[6].Opacity = 1;
             Model.Parts[7].Opacity = 0;
             Model.Parts[11].Opacity = 1;
@@ -566,7 +570,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!(0 < HP)) return;
+        // HPが0だった場合の処理
+        if (!(0 < HP)) {
+            rb.AddForce(new Vector2(pm.MoveForceMultiplier * (0 * pm.MoveSpeed - rb.velocity.x), Physics.gravity.y * pm.GravityRate));
+            return;
+        }
+
         sm.PlayTime += Time.deltaTime;
         sm.GameClearTime += Time.deltaTime;
         
@@ -598,11 +607,11 @@ public class PlayerController : MonoBehaviour
             }
         }
         
-        if (im.MoveKey >= 0.2 && !flip && im.MoonWalkKey == 0) {
+        if (im.MoveKey >= 0.005 && !flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = true;
         }
-        if (im.MoveKey <= -0.2 && flip && im.MoonWalkKey == 0) {
+        if (im.MoveKey <= -0.005 && flip && im.MoonWalkKey == 0) {
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
             flip = false;
         }
@@ -644,7 +653,9 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("JumpEnd", false);
             animator.SetBool("Run", false);
             animator.SetBool("Stand", false);
-            animator.SetBool("Wait", false);      
+            animator.SetBool("Wait", false);
+            animator.SetBool("Death1", false);
+            animator.SetBool("Death2", false);
         }
 
         // 地面にいるとき
@@ -674,6 +685,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpUp-run", false);
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", true);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
                 // ここに着地した瞬間の処理書くといいかも
             }
             else if ((im.MoveKey < -moveDeadZone || moveDeadZone < im.MoveKey) && jumpWaitTime < 0 && im.MoveStopKey == 0)    // 移動中
@@ -688,6 +701,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
             }
             else if (anicount >= 5.0f && im.MoveKey >= -moveDeadZone && moveDeadZone >= im.MoveKey  && jumpWaitTime < 0)    // 待機モーション中
             {
@@ -706,6 +721,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("JumpDown", false);
                 animator.SetBool("JumpEnd", false);
                 animator.SetBool("Wait", false);
+                animator.SetBool("Death1", false);
+                animator.SetBool("Death2", false);
             }
             // 空中にいるとき
         } else {
@@ -846,15 +863,40 @@ public class PlayerController : MonoBehaviour
                 invincibleTime += _resetInvincibleTime;
                 damageEffect.transform.position = transform.position;
                 damageEffect.SetActive(true);
-                cubismRender.Opacity = 0.3f;
+                if(0 < HP) {
+                    cubismRender.Opacity = 0.3f;
+                }
+                
             } else {
-                foreach (var dr in Drawables) {
-                    dr.Color = _colorInAcidDamage;
+                if(0 < HP) {
+                    foreach (var dr in Drawables) {
+                        dr.Color = _colorInAcidDamage;
+                    }
                 }
             }
 
+            // ↓はHPが0になった瞬間の処理。
             if (HP <= 0)
             {
+                
+                animator.SetBool("Stand", false);
+                animator.SetBool("Wait", false);
+                animator.SetBool("Run", false);
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
+                animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpDown", false);
+                animator.SetBool("JumpEnd", false);
+                
+                if (isAcidDamage) {
+                    animator.SetBool("Death1", true);
+                } else {
+                    animator.SetBool("Death2", true);
+                }
+
+                // リスタートするときの位置が初期位置のままだったらシーンリロードさせる。
+                // でなければ（リスタートを一度でも通過していれば）リスタートコルーチン発動。
                 if (startPosition == restartPosition)
                 {
                     FadeManager.Instance.LoadScene(SceneManager.GetActiveScene().name, 1f);
@@ -1106,7 +1148,7 @@ public class PlayerController : MonoBehaviour
             Destroy(collision.gameObject);
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.HoleMaker;
-            hmBullets += 4;
+            hmBullets += 100;
             
         } else if (collision.CompareTag("RestartPoint")) {
             restartPosition = transform.position;
@@ -1169,6 +1211,9 @@ public class PlayerController : MonoBehaviour
     {
         anicount = 0.0f;
         animator.SetBool("Stand", true);
+        if (animator.GetBool("Death1") || animator.GetBool("Death2")) {
+            animator.SetBool("Stand", false);
+        }
         animator.SetBool("Wait", false);
         animator.SetBool("Run", false);
         animator.SetBool("JumpStart", false);
@@ -1181,21 +1226,37 @@ public class PlayerController : MonoBehaviour
         
     }
 
+
+    // リスタート時の処理
     private IEnumerator Restart(float interval)
     {
         yield return new WaitForSeconds(interval);
+        // リトライ回数足す
         sm.RetryCnt++;
         sm.TotalRetryCnt++;
+
+        // startで取得しておいたリスタートポイントたちのメソッド実行
         foreach (var rps in restartPoints)
         {
             RestartPoint rp = rps.GetComponent<RestartPoint>();
             rp.TurnOnSpawner();
         }
+
+        // 位置を最後に通ったリスタートポイントの位置に転送、カメラもその位置に。
         transform.position = restartPosition;
         cam.transform.position = restartCameraPosition;
+
+        // リジッドボディの加速度もゼロにする
         rb.velocity = Vector2.zero;
+
+        // HPをリスタートポイント通過時のHPに戻し、HPバーのvalueにその値を代入する。
+        _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = false;
         HP = restartHP;
         _HPbar.value = HP;
+        _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = true;
+
+        // リスタートを一度でも通ったことがあったら銃をもたせる。
+        // でなければ（Stage1でリスタートポイント通過前に死亡）銃未所持状態に戻す
         if (startPosition != restartPosition || isStartGetGun)
         {
             isGetGun = true;
