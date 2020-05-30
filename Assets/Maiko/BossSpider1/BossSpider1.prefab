@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4710295592455170}
   - component: {fileID: 61130453332675006}
+  - component: {fileID: 114716146375447004}
   m_Layer: 19
   m_Name: AnimeObject
   m_TagString: PatrolPoint
@@ -3589,7 +3590,7 @@ MonoBehaviour:
   _aniFallEndPosition: 20
   _aniPosition: {x: -78.77, y: 52.8}
   _aniRoarRate: 5
-  _aniRoarswing: 0.5
+  _aniRoarswing: 0.4
   _rangeMin: 2
   _rangeMax: 4
   _beforeAttackRate: 0.7
@@ -4118,6 +4119,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moc: {fileID: 11400000, guid: 53cf0ce2552e32048bbf308eb0ab5467, type: 2}
+--- !u!114 &114716146375447004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1020881942503056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3922c0da6f70f9d41bfbb5e8c89c0efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playercontroller: {fileID: 0}
+  _cameracontroller: {fileID: 0}
+  _firstWaitTime: 0.5
+  _cameraZoomTime: 7
+  _cameraZoomPosition: {x: -78.77, y: 15}
+  _cameraZoomSize: 8
 --- !u!114 &114716602200716704
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -50,6 +50,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     [SerializeField] private Vector2 _aniPosition;  //演出の初期時点
     [SerializeField] private float _aniRoarRate;    //咆哮の時間
     private float AniRoarTime;  //咆哮時間格納用
+    [SerializeField] private float _aniRoarswing;   //咆哮のカメラの揺れの強さ
     /*******************Attack*********************/
     private byte AttackType;    //攻撃のタイプ 0:Wait 1:攻撃前befor 2:攻撃attack 3:攻撃後after
     [SerializeField] private int _rangeMin = 2;     //ランダムの最小値
@@ -113,6 +114,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private Vector3 startPlayerPosition;
     private Vector2 StartAnimeObjectPo; //アニメオブジェクトのスタートポジション
     private GameObject playerObject;  //playerのオブジェクトを格納
+    private CameraShake cameraShake;
     Rigidbody2D rb;
     Animator animator;
     private CubismModel Model;
@@ -153,7 +155,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         animator = GetComponent<Animator>();
         Model = this.FindCubismModel();
         Thread = _ThreadObject.transform.GetChild(0).GetComponent<Enemy_Boss_Thread>();
-
+        cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
         IntAnime();
 
 
@@ -210,6 +212,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             else if(AniRoarTime <= 0)
             {
                 AniRoarTime = _aniRoarRate;
+                cameraShake.Shake(_aniRoarRate, _aniRoarswing); //カメラの揺れ
+                GameObject.Find("Main Camera").GetComponent<RadialBlurSc>().RadialBlur(_aniRoarRate, _aniRoarswing);
                 /*咆哮のアニメーションと咆哮のSEはここ*/
 
 
@@ -699,7 +703,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             if (collision.CompareTag("Player"))
             {
                 AnimeMove = true;
-                _animeObject.SetActive(false);
+                //_animeObject.SetActive(false);
                 /*真正面の画像差し替えとアニメーションはここからがいいかも*/
 
             }
