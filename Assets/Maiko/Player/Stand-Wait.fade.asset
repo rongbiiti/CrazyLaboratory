@@ -15,6 +15,7 @@ MonoBehaviour:
   FadeInTime: 1
   FadeOutTime: 1
   ParameterIds:
+  - ParamY
   - eyeParam
   - DirectionParam
   - ClothesParam
@@ -30,6 +31,29 @@ MonoBehaviour:
   - RightLegParam2
   - RightLegParam3
   ParameterCurves:
+  - serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 7
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   - serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -885,7 +909,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 2.333
-      value: -4
+      value: 12
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -895,15 +919,15 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 2.667
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: -71.85634
+      outSlope: -72.07216
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 3
-      value: -4
+      value: -12
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -921,7 +945,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 3.667
-      value: -4
+      value: -12
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1206,7 +1230,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 2.667
-      value: -4
+      value: -12
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1224,7 +1248,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 3.333
-      value: -4
+      value: -12
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1242,7 +1266,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 4
-      value: -4
+      value: -12
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1251,7 +1275,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 4.333
-      value: -4
+      value: -12
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1294,7 +1318,9 @@ MonoBehaviour:
   - -1
   - -1
   - -1
+  - -1
   ParameterFadeOutTimes:
+  - -1
   - -1
   - -1
   - -1
