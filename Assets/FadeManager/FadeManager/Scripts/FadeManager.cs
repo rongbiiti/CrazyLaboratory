@@ -11,7 +11,6 @@ using System.Collections.Generic;
 public class FadeManager : MonoBehaviour
 {
 
-
     #region Singleton
 
     private static FadeManager instance;
