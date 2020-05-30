@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 [ExecuteInEditMode]
 public class RadialBlurSc : MonoBehaviour
@@ -6,10 +7,9 @@ public class RadialBlurSc : MonoBehaviour
 
     [SerializeField]
     private Shader _shader;
-    [SerializeField, Range(4, 16)]
-    private int _sampleCount = 8;
+    private int _sampleCount = 12;
     [SerializeField, Range(0.0f, 1.0f)]
-    private float _strength = 0.5f;
+    private float _strength;
 
     private Material _material;
 
@@ -26,5 +26,26 @@ public class RadialBlurSc : MonoBehaviour
         _material.SetInt("_SampleCount", _sampleCount);
         _material.SetFloat("_Strength", _strength);
         Graphics.Blit(source, dest, _material);
+    }
+
+    public void RadialBlur(float duration, float maxStrength)
+    {
+        StartCoroutine(DoRadialBlur(duration, maxStrength));
+    }
+
+    private IEnumerator DoRadialBlur(float duration, float maxStrength)
+    {
+        float elapsed = 0f;
+        _strength = 0f;
+
+        while (elapsed <= duration) {
+
+            _strength = Mathf.Sin(Mathf.PI * (1 / duration) * elapsed) * maxStrength;
+
+            elapsed += Time.deltaTime;
+
+            yield return null;
+        }
+        _strength = 0f;
     }
 }

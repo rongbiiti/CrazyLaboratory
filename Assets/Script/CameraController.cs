@@ -53,6 +53,14 @@ public class CameraController : MonoBehaviour
         prb = player.GetComponent<Rigidbody2D>();
     }
 
+    private void Update()
+    {
+        //if (Input.GetKeyUp(KeyCode.Space)) {
+        //    GetComponent<RadialBlurSc>().RadialBlur(1.5f, 0.3f);
+        //}
+        
+    }
+
     private void LateUpdate()
     {
         Vector3 newPosition = transform.position;

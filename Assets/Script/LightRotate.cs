@@ -8,7 +8,7 @@ public class LightRotate : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        transform.Rotate(0, 0, _speed, Space.World);
+        transform.Rotate(0, _speed, 0, Space.World);
     }
 
 
