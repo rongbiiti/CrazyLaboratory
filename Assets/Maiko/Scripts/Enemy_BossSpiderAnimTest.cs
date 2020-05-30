@@ -42,6 +42,14 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     [SerializeField] private float _nockBuckPower = 300f;
     [SerializeField] private float _nockBuckUpperPower = 0.38f;
     private float moveSpeed;   //スピード格納用
+    /*****************Anime********************/    //最初の演出用
+    private bool AnimeSwitch;   //演出用に動くか TRUE:演出用  FALSE:ゲーム用
+    private bool AnimeMove;     //動くタイミング用スイッチ
+    [SerializeField] private float _aniFallSpeed;
+    [SerializeField] private float _aniFallEndPosition; //降下終了時点
+    [SerializeField] private Vector2 _aniPosition;  //演出の初期時点
+    [SerializeField] private float _aniRoarRate;    //咆哮の時間
+    private float AniRoarTime;  //咆哮時間格納用
     /*******************Attack*********************/
     private byte AttackType;    //攻撃のタイプ 0:Wait 1:攻撃前befor 2:攻撃attack 3:攻撃後after
     [SerializeField] private int _rangeMin = 2;     //ランダムの最小値
@@ -86,14 +94,13 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     /*******************ActivityTime***********************/
     private byte ActivityType;     //行動のタイプ
     [SerializeField] e_ActivityType[] _activityTypeCount;
-    private byte ActivityCount;     //カウントによって行動を登録
-    //[SerializeField] private float _activityRate;   //次に行動する時間
-    //private float ActivityTime;     //次に行動する時間の格納用
+    private int ActivityCount;     //カウントによって行動を登録
     /*******************GameObject**********************/
     [SerializeField] private GameObject _switchObject;   //上昇して行動を切り替えさせるためのオブジェクト
     [SerializeField] private GameObject _attackObject;   //攻撃のオブジェクト
     [SerializeField] private GameObject _bodyPressEndObject;    //ボディプレスを止めるためのオブジェクト
     [SerializeField] private GameObject _ThreadObject;  //糸のオブジェクト
+    [SerializeField] private GameObject _animeObject;   //アニメ用オブジェクト当たり判定
     /**********************************************/
     [SerializeField] private float _destroyTime = 2f;
 
@@ -104,6 +111,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private Vector2 startScale;
     private Vector2 startposition;
     private Vector3 startPlayerPosition;
+    private Vector2 StartAnimeObjectPo; //アニメオブジェクトのスタートポジション
     private GameObject playerObject;  //playerのオブジェクトを格納
     Rigidbody2D rb;
     Animator animator;
@@ -117,6 +125,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         /*transform*/
         startScale = transform.localScale;
         startposition = transform.position;
+        StartAnimeObjectPo = _animeObject.transform.position;
 
         /*HP*/
         nowHP = _HP;
@@ -131,6 +140,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         _attackObject.SetActive(false);
         _ThreadObject.transform.position = new Vector3(-75f, 77f, 0.0f);
         _ThreadObject.SetActive(false);
+        //_animeObject.transform.parent = null;
 
         /**/
         var p = playerObject.transform.position;
@@ -138,11 +148,13 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         startPlayerPosition = p;
         ActivityCount = 0;
         StanType = (byte)e_StanType.Wait;
-        InitActivityType((byte)_activityTypeCount[ActivityCount]);
+        //InitActivityType((byte)_activityTypeCount[ActivityCount]);
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         Model = this.FindCubismModel();
         Thread = _ThreadObject.transform.GetChild(0).GetComponent<Enemy_Boss_Thread>();
+
+        IntAnime();
 
 
     }
@@ -157,7 +169,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             enemyHpbar.SetBarValue(_HP, nowHP);
             enemyHpbar.hpbar.gameObject.SetActive(true);
             isZeroHP = false;
-            ActivityCount = 0;
+            ActivityCount = _activityTypeCount.Length - 1;  //ジャンプの数値を格納
             InitActivityType((byte)_activityTypeCount[ActivityCount]);
             JumpTime += _jumpRate;
             _switchObject.SetActive(true);
@@ -177,6 +189,35 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (AnimeSwitch)
+        {
+            if (!AnimeMove) return;
+            if(0 < AniRoarTime)
+            {
+                AniRoarTime -= Time.deltaTime;
+                if(AniRoarTime <= 0)
+                {
+                    InitActivityType((byte)_activityTypeCount[ActivityCount]);
+                    AnimeSwitch = false;
+                    return;
+                }
+            }
+            Vector2 speed = new Vector2(0, 0); //横の移動の設定
+            if ( transform.position.y >= _aniFallEndPosition)
+            {
+                speed = new Vector2(0, moveSpeed); //横の移動の設定
+            }
+            else if(AniRoarTime <= 0)
+            {
+                AniRoarTime = _aniRoarRate;
+                /*咆哮のアニメーションと咆哮のSEはここ*/
+
+
+            }
+            rb.velocity = speed;
+            return;
+        }
+
         if (isZeroHP)
         {
             if (0 < _destroyTime)
@@ -438,7 +479,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                                     Acceleration = IntAcceleration;
                                     moveSpeed = _horizontalSpeed;
 
-                                    //端まで移動したら反転する
+                                    
                                     if (playerObject.transform.position.x >= transform.position.x)
                                     {
                                         DirectionX = 1f;
@@ -452,9 +493,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                                         var ls = startScale;
                                         transform.localScale = new Vector2(ls.x, ls.y);
                                     }
-
-
-
                                     //AttackType = (byte)e_AttackType.BeforAttack;
                                     //AttackTime += _beforeAttackRate;
                                     FallLocationY = transform.position.y;
@@ -549,6 +587,17 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         }
     }
 
+    void IntAnime()
+    {
+        transform.position = _aniPosition;
+        _ThreadObject.SetActive(true);
+        AnimeSwitch = true;
+        transform.eulerAngles = new Vector3(0.0f, 0.0f, 90f);
+        _animeObject.transform.position = StartAnimeObjectPo;
+        _animeObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
+        moveSpeed = -_aniFallSpeed;
+    }
+
     void InitActivityType(byte Type)
     {
         //Debug.Log(SwitchFlag);
@@ -573,16 +622,42 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 break;
 
             case (byte)e_ActivityType.Attack:   //攻撃の初期変更
+                
                 _ThreadObject.SetActive(true);
                 ActivityType = (byte)e_ActivityType.Attack;
-                AttackType = (byte)e_AttackType.fallmove;
-                int range = Random.Range(_rangeMin, _rangeMax);
-                AttackTime += range;
                 transform.eulerAngles = new Vector3(0.0f, 0.0f, 90f);
-                transform.position = new Vector2(_stageCenterPx, transform.position.y);
-                moveSpeed = -_fallSpeed;
                 PlayerDamage = _AttackHitDamage;
                 CenterIfflag = false;
+
+                if (AnimeSwitch)
+                {
+                    AttackType = (byte)e_AttackType.horizontalmove; //上から降りてプレイヤーの中心点
+                    Acceleration = IntAcceleration;
+                    moveSpeed = _horizontalSpeed;
+                    FallLocationY = transform.position.y;
+                    //端まで移動したら反転する
+                    if (playerObject.transform.position.x >= transform.position.x)
+                    {
+                        DirectionX = 1f;
+                        var ls = startScale;
+                        transform.localScale = new Vector2(ls.x, -ls.y);
+                    }
+
+                    else
+                    {
+                        DirectionX = -1f;
+                        var ls = startScale;
+                        transform.localScale = new Vector2(ls.x, ls.y);
+                    }
+                }
+                else
+                {
+                    AttackType = (byte)e_AttackType.fallmove;
+                    int range = Random.Range(_rangeMin, _rangeMax);
+                    AttackTime += range;
+                    transform.position = new Vector2(_stageCenterPx, transform.position.y);
+                    moveSpeed = -_fallSpeed;
+                }
                 break;
 
             case (byte)e_ActivityType.CallSpider:
@@ -597,7 +672,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     transform.localScale = new Vector3(startScale.x, -startScale.y);
                 }
                 break;
-                
+
             case (byte)e_ActivityType.BodyPress:    //ボディプレスの初期変更
                 _ThreadObject.SetActive(false);
                 ActivityType = (byte)e_ActivityType.BodyPress;
@@ -615,10 +690,21 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         return (byte)_activityTypeCount[ActivityCount];
     }
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (isZeroHP) return;
+
+        if (AnimeSwitch)
+        {
+            if (collision.CompareTag("Player"))
+            {
+                AnimeMove = true;
+                _animeObject.SetActive(false);
+                /*真正面の画像差し替えとアニメーションはここからがいいかも*/
+
+            }
+            return;
+        }
 
         // 弱点のみ、IsTriggerをオンにしている。
         if (collision.CompareTag("AcidFlask"))
@@ -721,17 +807,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             }
             SoundManagerV2.Instance.PlaySE(2);
         }
-
-        //if (collision.CompareTag("WaitingPoint"))
-        //{
-        //    if (ActivityType == (byte)e_ActivityType.Stan)
-        //    {
-        //        rb.velocity = new Vector2(0.0f, 0.0f);
-        //        StanType = (byte)e_StanType.Stan;
-        //        StanTime = _stanRate;
-
-        //    }
-        //}
 
 
     }
