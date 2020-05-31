@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D capcol;
     private BoxCollider2D boxcol;
     private CubismRenderController cubismRender;
+    private CircleCollider2D headCollider;
     public bool _Debug;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField, CustomLabel("デバッグテキスト")] private Text _debug;
@@ -277,33 +278,30 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        // 弾のオブジェクトプールを作成
         pool = gameObject.AddComponent<ObjectPool>();
         pool.CreatePool(_acidbulletPrefab, 6);
-        Instantiate(_rsdAcdPool);
-        damageEffect = Instantiate(_damageEffect);
-    }
 
-    private void Start()
-    {
-        sm = ScoreManager.Instance;
-        sm.StageScoreReset();
-        im = InputManager.Instance;
-        pm = PlayerManager.Instance;
-        cam = GameObject.Find("Main Camera");
+        // 残留酸のオブジェクトプールを生成
+        Instantiate(_rsdAcdPool);
+
+        // ダメージ受けたときのエフェクトを生成
+        damageEffect = Instantiate(_damageEffect);
+
+        // 自身にアタッチされている各種コンポーネントを取得
         rb = GetComponent<Rigidbody2D>();
         capcol = GetComponent<CapsuleCollider2D>();
         boxcol = transform.GetChild(7).GetComponent<BoxCollider2D>();
         fireCheckPoint = transform.GetChild(8).gameObject;
+        headCollider = transform.GetChild(9).GetComponent<CircleCollider2D>();
+        // 頭のコライダーをオフにする
+        headCollider.enabled = false;
         cubismRender = GetComponent<CubismRenderController>();
-        jumpTimeCounter = pm.JumpTime;
+        PreCalcSpreadAngle();
 
-        if (!isBGMMute) {
-
-        }
         if (_hmShotBullets % 2 != 0) {
             _hmShotBullets--;
         }
-        PreCalcSpreadAngle();
 
         //アニメーション関連
         Model = this.FindCubismModel();
@@ -321,6 +319,23 @@ public class PlayerController : MonoBehaviour
         SetState(State.None, first: true);
         drawables = transform.GetChild(5).gameObject;
         drwablsStartOffset = drawables.transform.localPosition;
+    }
+
+    private void Start()
+    {
+        sm = ScoreManager.Instance;
+        sm.StageScoreReset();
+        im = InputManager.Instance;
+        pm = PlayerManager.Instance;
+        cam = GameObject.Find("Main Camera");
+        
+        jumpTimeCounter = pm.JumpTime;
+
+        if (!isBGMMute) {
+
+        }
+
+        
 
         if (_isUIDisplay) {
             _bulletsRemain.text = " ∞ ";
@@ -895,6 +910,9 @@ public class PlayerController : MonoBehaviour
                     animator.SetBool("Death2", true);
                 }
 
+                StartCoroutine("SlowMotion");
+                headCollider.enabled = true;
+
                 // リスタートするときの位置が初期位置のままだったらシーンリロードさせる。
                 // でなければ（リスタートを一度でも通過していれば）リスタートコルーチン発動。
                 if (startPosition == restartPosition)
@@ -1242,6 +1260,9 @@ public class PlayerController : MonoBehaviour
             rp.TurnOnSpawner();
         }
 
+        // 頭のコライダーをオフにする
+        headCollider.enabled = false;
+
         // 位置を最後に通ったリスタートポイントの位置に転送、カメラもその位置に。
         transform.position = restartPosition;
         cam.transform.position = restartCameraPosition;
@@ -1275,6 +1296,14 @@ public class PlayerController : MonoBehaviour
             AnimStop();
             
         }
+    }
+
+    private IEnumerator SlowMotion()
+    {
+        yield return new WaitForSeconds(0.1f);
+        Time.timeScale = 0.2f;
+        yield return new WaitForSeconds(0.18f);
+        Time.timeScale = 1f;
     }
 
     public void GetGun()

@@ -46,6 +46,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
     private Vector2 startposition;
     private int patrolType;     //0:パトロール 1:追尾 3:攻撃
     private GameObject playerObject;  //playerのオブジェクトを格納
+    private PlayerController playerController;
     [SerializeField] private float _jumpRate = 2f;   //ジャンプの時間の入力
     private float JumpTime;    //ジャンプの時間を格納
     [SerializeField] private float _jumpPower = 2000f;  //ジャンプの力
@@ -76,6 +77,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         enemyHpbar.SetBarValue(_HP, nowHP);
         patrolType = 0;
         playerObject = GameObject.FindGameObjectWithTag("Player");
+        playerController = playerObject.GetComponent<PlayerController>();
         targetPosition = _AttackPosition.transform.position;
         _collisionDisplacePosition = transform.position.x - _WaitPosition.transform.position.x;
 
@@ -493,17 +495,17 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
             _PlayerDamageTime += _PlayerDamageRate;
-            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
             Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
             Vector2 targetPos = collision.gameObject.transform.position;
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            if (!playerController.IsNotNockBack && playerController.Hp > 0)
             {
                 prb.velocity = direction * _nockBuckPower;
                 SoundManagerV2.Instance.PlaySE(34);
                 cameraShake.Shake(0.35f, 0.4f);
+                playerController.Damage(_PlayerDamage);
             }
         }
     }
@@ -539,17 +541,17 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
 
         if (collision.gameObject.CompareTag("Player") && stanTimeRemain <= 0)
         {
-            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
             Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
             Vector2 targetPos = collision.gameObject.transform.position;
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            if (!playerController.IsNotNockBack)
             {
                 prb.velocity = direction * _nockBuckPower;
                 SoundManagerV2.Instance.PlaySE(34);
                 cameraShake.Shake(0.35f, 0.4f);
+                playerController.Damage(_PlayerDamage);
             }
         }
     }
