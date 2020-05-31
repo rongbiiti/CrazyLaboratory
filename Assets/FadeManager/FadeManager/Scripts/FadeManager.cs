@@ -164,11 +164,12 @@ public class FadeManager : MonoBehaviour
 
         //シーン切替 .
         SceneManager.LoadScene(scene);
+        
+        yield return 0;
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
         logo.SetActive(false);
-
         //だんだん明るく .
-        time = 0;
-
+        time = 0;       
         while (time <= interval)
         {
             this.fadeAlpha = Mathf.Lerp(1f, 0f, time / interval);
@@ -194,10 +195,10 @@ public class FadeManager : MonoBehaviour
             time += Time.deltaTime;
             yield return 0;
         }
-
-        logo.SetActive(false);
+       
+        yield return 0;
         cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
-
+        logo.SetActive(false);
         //だんだん明るく .
         time = 0;
         while (time <= interval)
