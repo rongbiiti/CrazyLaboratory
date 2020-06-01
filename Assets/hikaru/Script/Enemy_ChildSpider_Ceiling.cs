@@ -172,6 +172,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
             animator.SetBool("Walk", false);
             animator.SetBool("Stand", false);
             animator.SetBool("Stun", false);
+            animator.SetBool("Death", false);
             rb.bodyType = RigidbodyType2D.Kinematic;
 
             for (int i = 0; i < _PatrolPoint.Length; i++)
@@ -202,13 +203,13 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
                 if (playerObject.transform.position.x <= gameObject.transform.position.x)
                 {
                     directionChange = false;
-                    gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
+                    gameObject.transform.localScale = new Vector2(startScale.x, startScale.y);
                     _direction = -1;     //左
                 }
                 else
                 {
                     directionChange = true;
-                    gameObject.transform.localScale = new Vector2(startScale.x, startScale.y);
+                    gameObject.transform.localScale = new Vector2(-startScale.x, startScale.y);
                     _direction = 1;    //右
                 }
             }

@@ -78,6 +78,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     /*******************CallSpider*********************/
     [SerializeField] private float _callRate;   //呼ぶ時間
     private float CallTime;     //呼ぶ時間格納用
+    [SerializeField] private Vector2 _eneSpawnPo1;   //エネミースポーン1
+    [SerializeField] private Vector2 _eneSpawnPo2;   //エネミースポーン2
     /*******************BodyPress*********************/
     [SerializeField] private float _bodyPressRate = 3f;
     private float BodyPressTime;
@@ -102,6 +104,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     [SerializeField] private GameObject _bodyPressEndObject;    //ボディプレスを止めるためのオブジェクト
     [SerializeField] private GameObject _ThreadObject;  //糸のオブジェクト
     [SerializeField] private GameObject _animeObject;   //アニメ用オブジェクト当たり判定
+    [SerializeField] private GameObject _SpiderObject1;  //子蜘蛛のオブジェクト1
+    [SerializeField] private GameObject _SpiderObject2;  //子蜘蛛のオブジェクト2
     /**********************************************/
     [SerializeField] private float _destroyTime = 2f;
 
@@ -422,13 +426,12 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 {
                     _switchObject.SetActive(true);
                     SwitchFlag = false;
-                    //InitActivityType((byte)_activityTypeCount[ActivityCount]);
+                    _SpiderObject1.transform.position = _eneSpawnPo1;
+                    _SpiderObject1.SetActive(true);
+                    _SpiderObject2.transform.position = _eneSpawnPo2;
+                    _SpiderObject2.SetActive(true);
                 }
             }
-            //if (0 < ActivityTime)   //行動までの時間
-            //{
-            //    ActivityTime -= Time.deltaTime;
-            //}
 
             switch (ActivityType)   //行動のタイプによって動きを変える
             {
@@ -576,6 +579,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     {
                         Vector2 speed = new Vector2(0.0f, _ascentSpeed);    
                         rb.velocity = speed;    //上昇する
+                        
                     }
                     break;
 
@@ -667,7 +671,9 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             case (byte)e_ActivityType.CallSpider:
                 ActivityType = (byte)e_ActivityType.CallSpider;
                 CallTime = _callRate;
-                if(playerObject.transform.position.x >= transform.position.x)
+                cameraShake.Shake(_callRate, _aniRoarswing); //カメラの揺れ
+                GameObject.Find("Main Camera").GetComponent<RadialBlurSc>().RadialBlur(_callRate, _aniRoarswing);
+                if (playerObject.transform.position.x >= transform.position.x)
                 {
                     transform.localScale = new Vector3(startScale.x, startScale.y);
                 }
@@ -764,6 +770,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 rb.velocity = new Vector2(0.0f, 0.0f);
                 InitActivityType((byte)_activityTypeCount[ActivityCount]);
                 _bodyPressEndObject.SetActive(false);
+                cameraShake.Shake(0.5f, _aniRoarswing); //カメラの揺れ
             }
 
             if (ActivityType == (byte)e_ActivityType.Stan)
@@ -775,7 +782,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
                 var p = transform.position;
                 transform.position = new Vector3(p.x, startposition.y, p.z);
-
+                cameraShake.Shake(0.5f, _aniRoarswing); //カメラの揺れ
                 if (transform.localScale.y > 0)
                 {
                     var ls = transform.localScale;

@@ -69,6 +69,7 @@ public class FadeManager : MonoBehaviour
         logo.SetActive(false);
         DontDestroyOnLoad(this.gameObject);
         animator = logo.GetComponent<Animator>();
+
     }
 
     private void Start()
@@ -167,7 +168,7 @@ public class FadeManager : MonoBehaviour
         //だんだん暗く .
         this.isFading = true;
         float time = 0;
-        
+
         while (time <= interval)
         {
             animator.SetBool("Dark", true); 
