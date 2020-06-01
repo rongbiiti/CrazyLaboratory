@@ -589,6 +589,14 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     {
                         Vector2 speed = new Vector2(0.0f, moveSpeed);
                         rb.velocity = speed;
+                        animator.SetBool("Stand1", false);
+                        animator.SetBool("Stand2", false);
+                        animator.SetBool("BodyPress", true);
+                        animator.SetBool("BeforeAtack", false);
+                        animator.SetBool("Atack", false);
+                        animator.SetBool("Jump", false);
+                        animator.SetBool("Stun", false);
+                        animator.SetBool("Death", false);
                     }
                     break;
             }
@@ -643,6 +651,16 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     Acceleration = IntAcceleration;
                     moveSpeed = _horizontalSpeed;
                     FallLocationY = transform.position.y;
+
+                    animator.SetBool("Stand1", false);
+                    animator.SetBool("Stand2", true);
+                    animator.SetBool("BodyPress", false);
+                    animator.SetBool("BeforeAtack", false);
+                    animator.SetBool("Atack", false);
+                    animator.SetBool("Jump", false);
+                    animator.SetBool("Stun", false);
+                    animator.SetBool("Death", false);
+
                     //端まで移動したら反転する
                     if (playerObject.transform.position.x >= transform.position.x)
                     {
@@ -691,6 +709,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
                 _bodyPressEndObject.SetActive(true);
                 PlayerDamage = _BodyPressHitDamage;
+ 
                 break;
         }
     }

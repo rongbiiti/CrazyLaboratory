@@ -1,21 +1,21 @@
 {
 	"Version": 3,
 	"FileReferences": {
-		"Moc": "BossSpider.moc3",
+		"Moc": "BossSpider1.moc3",
 		"Textures": [
-			"BossSpider.512/texture_00.png"
+			"BossSpider1.512/texture_00.png"
 		],
-		"DisplayInfo": "BossSpider.cdi3.json"
+		"DisplayInfo": "BossSpider1.cdi3.json"
 	},
 	"Groups": [
 		{
 			"Target": "Parameter",
-			"Name": "LipSync",
+			"Name": "EyeBlink",
 			"Ids": []
 		},
 		{
 			"Target": "Parameter",
-			"Name": "EyeBlink",
+			"Name": "LipSync",
 			"Ids": []
 		}
 	]

@@ -5,9 +5,9 @@
 		"Fps": 30.0,
 		"Loop": true,
 		"AreBeziersRestricted": true,
-		"CurveCount": 12,
-		"TotalSegmentCount": 12,
-		"TotalPointCount": 48,
+		"CurveCount": 13,
+		"TotalSegmentCount": 13,
+		"TotalPointCount": 52,
 		"UserDataCount": 0,
 		"TotalUserDataSize": 0
 	},
@@ -59,6 +59,21 @@
 		},
 		{
 			"Target": "Parameter",
+			"Id": "WeaknessParam",
+			"Segments": [
+				0,
+				10,
+				1,
+				0.333,
+				10,
+				0.667,
+				10,
+				1,
+				10
+			]
+		},
+		{
+			"Target": "Parameter",
 			"Id": "HeadParam",
 			"Segments": [
 				0,
@@ -92,14 +107,14 @@
 			"Id": "FrontLegParam2",
 			"Segments": [
 				0,
-				30,
+				15,
 				1,
 				0.333,
-				30,
+				15,
 				0.667,
-				30,
+				15,
 				1,
-				30
+				15
 			]
 		},
 		{
@@ -107,14 +122,14 @@
 			"Id": "FrontLegParam3",
 			"Segments": [
 				0,
-				30,
+				15,
 				1,
 				0.333,
-				30,
+				15,
 				0.667,
-				30,
+				15,
 				1,
-				30
+				15
 			]
 		},
 		{
@@ -122,14 +137,14 @@
 			"Id": "FrontLegParam4",
 			"Segments": [
 				0,
-				30,
+				15,
 				1,
 				0.333,
-				30,
+				15,
 				0.667,
-				30,
+				15,
 				1,
-				30
+				15
 			]
 		},
 		{
@@ -152,14 +167,14 @@
 			"Id": "BackLegParam2",
 			"Segments": [
 				0,
-				30,
+				15,
 				1,
 				0.333,
-				30,
+				15,
 				0.667,
-				30,
+				15,
 				1,
-				30
+				15
 			]
 		},
 		{
@@ -167,14 +182,14 @@
 			"Id": "BackLegParam3",
 			"Segments": [
 				0,
-				30,
+				15,
 				1,
 				0.333,
-				30,
+				15,
 				0.667,
-				30,
+				15,
 				1,
-				30
+				15
 			]
 		},
 		{
@@ -182,14 +197,14 @@
 			"Id": "BackLegParam4",
 			"Segments": [
 				0,
-				30,
+				15,
 				1,
 				0.333,
-				30,
+				15,
 				0.667,
-				30,
+				15,
 				1,
-				30
+				15
 			]
 		}
 	]
