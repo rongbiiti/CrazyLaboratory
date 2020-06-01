@@ -218,6 +218,8 @@ public class FadeManager : MonoBehaviour
 
         //シーン切替 .
         SceneManager.LoadScene(scene);
+        yield return 0;
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
 
         //だんだん明るく .
         time = 0;
