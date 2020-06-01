@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: BeakerMaterial
-  m_Shader: {fileID: 4800000, guid: 46e0298785d62c04b930b06bfa4758cc, type: 3}
+  m_Shader: {fileID: 4800000, guid: 98a399b976e62d64dacc9271c81442c3, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA _ALPHAPREMULTIPLY_ON _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
@@ -38,6 +38,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EnvMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -56,25 +60,37 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - PixelSnap: 0
+    - _Blur: 10
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
+    - _Distance: 1
+    - _DistortionPower: 0
     - _DstBlend: 10
     - _GlossMapScale: 1
     - _Glossiness: 0.96
     - _GlossyReflections: 1
     - _Metallic: 0.8
     - _Mode: 3
+    - _NormalScale: 0
     - _OcclusionStrength: 1
     - _OutLineSpread: 0
     - _Parallax: 0.02
+    - _RefractionIndex: 2.053
+    - _Shiness: 10
+    - _Shininess: 0
     - _Smoothness: 0.26
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _SpecularPower: 0
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _NoiseSizeScroll: {r: 16, g: 16, b: 0, a: 0}
+    - _NoiseTilingOffset: {r: 0.1, g: 0.1, b: 0, a: 0}
     - _OutLineColor: {r: 0.81960785, g: 1, b: 0.8117647, a: 1}
+    - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Tint: {r: 1, g: 1, b: 1, a: 1}
