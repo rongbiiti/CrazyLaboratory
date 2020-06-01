@@ -546,7 +546,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            if (!playerController.IsNotNockBack)
+            if (!playerController.IsNotNockBack && playerController.Hp > 0)
             {
                 prb.velocity = direction * _nockBuckPower;
                 SoundManagerV2.Instance.PlaySE(34);
