@@ -204,27 +204,27 @@ public class FadeManager : MonoBehaviour
         float time = 0;
         while (time <= interval)
         {
-            animator.SetBool("Dark", true);
-            //this.fadeAlpha = Mathf.Lerp(0f, 1f, time / interval);
+            //animator.SetBool("Dark", true);
+            this.fadeAlpha = Mathf.Lerp(0f, 1f, time / interval);
             time += Time.deltaTime;
             yield return 0;
         }
        
         yield return 0;
         cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        animator.SetBool("Dark", false);
+        //animator.SetBool("Dark", false);
         //logo.SetActive(false);
         //だんだん明るく .
         time = 0;
         while (time <= interval)
         {
-            animator.SetBool("Light", true);
-            //this.fadeAlpha = Mathf.Lerp(1f, 0f, time / interval);
+            //animator.SetBool("Light", true);
+            this.fadeAlpha = Mathf.Lerp(1f, 0f, time / interval);
             time += Time.deltaTime;
             yield return 0;
         }
 
-        animator.SetBool("Light", false);
+        //animator.SetBool("Light", false);
         logo.SetActive(false);
         this.isFading = false;
     }
