@@ -94,7 +94,7 @@ public class TotalResultManager : MonoBehaviour {
                 break;
             case 2:
             case 3:
-                FadeManager.Instance.LoadScene("TitleScene", 1.5f);
+                FadeManager.Instance.LoadSceneNormalTrans("TitleScene", 1.5f);
                 status = 99;
                 break;
         }

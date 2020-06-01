@@ -54,7 +54,7 @@ public class TitleSceneManager : MonoBehaviour {
 
     public void NewGame()
     {
-        FadeManager.Instance.LoadScene("Stage1", 2f);
+        FadeManager.Instance.LoadSceneNormalTrans("PrologueScene", 2f);
         SoundManagerV2.Instance.PlaySE(16);
         _startMenu.SetActive(false);
         SaveManager.Instance.IsNewGame = true;
@@ -112,7 +112,7 @@ public class TitleSceneManager : MonoBehaviour {
     {
         SoundManagerV2.Instance.PlaySE(21);
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadScene("Stage1", 2f);
+        FadeManager.Instance.LoadSceneNormalTrans("Stage1", 2f);
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();
@@ -122,7 +122,7 @@ public class TitleSceneManager : MonoBehaviour {
     {
         SoundManagerV2.Instance.PlaySE(21);
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadScene("Stage2", 2f);
+        FadeManager.Instance.LoadSceneNormalTrans("Stage2", 2f);
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();
@@ -132,7 +132,7 @@ public class TitleSceneManager : MonoBehaviour {
     {
         SoundManagerV2.Instance.PlaySE(21);
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadScene("Stage3", 2f);
+        FadeManager.Instance.LoadSceneNormalTrans("Stage3", 2f);
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();

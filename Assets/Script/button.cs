@@ -42,27 +42,27 @@ public class button : MonoBehaviour {
     
     public void BackToTitle()
     {
-        FadeManager.Instance.LoadScene("TitleScene",0.5f);
+        FadeManager.Instance.LoadSceneNormalTrans("TitleScene",0.5f);
     }
 
     public void Stage1Load()
     {
-        FadeManager.Instance.LoadScene("Stage1",0.5f);
+        FadeManager.Instance.LoadSceneNormalTrans("Stage1",0.5f);
     }
 
     public void Stage2Load()
     {
-        FadeManager.Instance.LoadScene("Stage2",0.5f);
+        FadeManager.Instance.LoadSceneNormalTrans("Stage2",0.5f);
     }
     
     public void Stage3Load()
     {
-        FadeManager.Instance.LoadScene("Stage3",0.5f);
+        FadeManager.Instance.LoadSceneNormalTrans("Stage3",0.5f);
     }
     
     public void GotoEndingScene()
     {
-        FadeManager.Instance.LoadScene("EndingScene",0.5f);
+        FadeManager.Instance.LoadSceneNormalTrans("EndingScene",0.5f);
     }
 
     public void HPMAX()
