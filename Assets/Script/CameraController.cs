@@ -75,15 +75,16 @@ public class CameraController : MonoBehaviour
             playerMoveTimeCount += Time.deltaTime;
         } else {
             playerMoveTimeCount = 0;
-            offset.x = 0;
         }
 
         // Xがステージの端より内側だったらプレイヤーのX座標を追いかける
         if ((_stage_edge_x <= player.transform.position.x && _stage_edge_x_right >= player.transform.position.x)
             || (_stage_edge_x <= transform.position.x && _stage_edge_x_right >= transform.position.x))
         {
-            if(0.2f < playerMoveTimeCount || viewPos.x < 0.47f || 0.53f < viewPos.x)
-            newPosition.x = player.transform.position.x + offset.x;
+            if(0.15f < playerMoveTimeCount || viewPos.x <= 0.47f || 0.53f <= viewPos.x) {
+                newPosition.x = player.transform.position.x + offset.x;
+            }
+            
         }
         
         newPosition.z = player.transform.position.z + offset.z;
@@ -97,6 +98,11 @@ public class CameraController : MonoBehaviour
         } else {
             if (!pc.IsGhost) {
                 transform.position = Vector3.MoveTowards(transform.position, newPosition, 18 * Time.deltaTime);
+                if (prb.velocity.x < -19f || 19f < prb.velocity.x) {
+                    newPosition.x = player.transform.position.x + offset.x;
+                    transform.position = Vector3.MoveTowards(transform.position, newPosition, 100 * Time.deltaTime);
+                }
+                    
             } else {
                 newPosition.x = player.transform.position.x + offset.x;
                 newPosition.y = player.transform.position.y + offset.y;

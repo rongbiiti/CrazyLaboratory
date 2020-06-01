@@ -54,6 +54,7 @@ public class Enemy_AntAnimTest : MonoBehaviour {
     private float trackingTime;   //追跡時間の格納用
     [SerializeField] private float _tracking = 30f;     //エネミーの追跡範囲
     private GameObject playerObject;  //playerのオブジェクトを格納
+    private PlayerController playerController;
 
     Animator animator;
     private CubismModel Model;
@@ -86,6 +87,7 @@ public class Enemy_AntAnimTest : MonoBehaviour {
         enemyHpbar.SetBarValue(_HP, nowHP);
         patrolType = 0;
         playerObject = GameObject.FindGameObjectWithTag("Player");
+        playerController = playerObject.GetComponent<PlayerController>();
 
         animator = GetComponent<Animator>();
         Model = this.FindCubismModel();
@@ -400,16 +402,16 @@ public class Enemy_AntAnimTest : MonoBehaviour {
         if (collision.CompareTag("Player") && AttackPhase == 2 && _PlayerDamageTime <= 0 && stanTimeRemain <= 0)
         {
             _PlayerDamageTime += _PlayerDamageRate;
-            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
             Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
             Vector2 targetPos = collision.gameObject.transform.position;
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            if (!playerController.IsNotNockBack && playerController.Hp > 0)
             {
                 prb.velocity = direction * _nockBuckPower;
                 SoundManagerV2.Instance.PlaySE(2);
+                playerController.Damage(_PlayerDamage);
             }
         }
     }
@@ -449,18 +451,18 @@ public class Enemy_AntAnimTest : MonoBehaviour {
 
         if (collision.gameObject.CompareTag("Player") && stanTimeRemain <= 0)
         {
-            collision.gameObject.GetComponent<PlayerController>().Damage(_PlayerDamage);
             Rigidbody2D prb = collision.gameObject.GetComponent<Rigidbody2D>();
             Vector2 targetPos = collision.gameObject.transform.position;
             float y = _nockBuckUpperPower;
             float x = targetPos.x;
             Vector2 direction = new Vector2(x - transform.position.x, y).normalized;
-            if (!collision.gameObject.GetComponent<PlayerController>().IsNotNockBack)
+            if (!playerController.IsNotNockBack && playerController.Hp > 0)
             {
                 prb.velocity = direction * _nockBuckPower;
+                playerController.Damage(_PlayerDamage);
+                SoundManagerV2.Instance.PlaySE(2);
             }
 
-            SoundManagerV2.Instance.PlaySE(2);
         }
     }
 }

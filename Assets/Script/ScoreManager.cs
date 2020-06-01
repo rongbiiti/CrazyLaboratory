@@ -181,11 +181,11 @@ public class ScoreManager : MonoBehaviour
 
 	public void Test()
 	{
-		playTime = 364f;
-		killCnt = 5;
-		retryCnt = 1;
-		stunCnt = 6;
-		medGetCnt = 12;
+        gameClearTime = 364f;
+        totalKillCnt = 5;
+        totalRetryCnt = 1;
+        totalStunCnt = 6;
+        totalMedGetCnt = 12;
 		SceneName = SceneManager.GetActiveScene().name;
 	}
 

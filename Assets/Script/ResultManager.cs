@@ -99,21 +99,21 @@ public class ResultManager : MonoBehaviour
 				switch (sm.SceneName)
 				{
 					case "Stage2":
-						FadeManager.Instance.LoadScene("Stage3", 1.5f);
+						FadeManager.Instance.LoadSceneNormalTrans("Stage3", 1.5f);
 						status = 99;
 						break;
 					case "Stage3":
-						FadeManager.Instance.LoadScene("EndingScene", 1.5f);
+						FadeManager.Instance.LoadSceneNormalTrans("EndingScene", 1.5f);
 						status = 99;
 						break;
 					default:
-						FadeManager.Instance.LoadScene("Stage2", 1.5f);
+						FadeManager.Instance.LoadSceneNormalTrans("Stage2", 1.5f);
 						status = 99;
 						break;
 				}
 				break;
 			case 3:
-				FadeManager.Instance.LoadScene("TitleScene", 1.5f);
+				FadeManager.Instance.LoadSceneNormalTrans("TitleScene", 1.5f);
 				status = 99;
 				break;
 		}
