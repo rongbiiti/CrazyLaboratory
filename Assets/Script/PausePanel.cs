@@ -107,7 +107,7 @@ public class PausePanel : MonoBehaviour
 	public void Restart()
 	{
 		ClosePausePanel();
-		FadeManager.Instance.LoadScene(SceneManager.GetActiveScene().name, 1f);
+		FadeManager.Instance.LoadSceneNormalTrans(SceneManager.GetActiveScene().name, 1f);
 	}
 
 	public void Quit()
