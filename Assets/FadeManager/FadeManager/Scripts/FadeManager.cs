@@ -162,6 +162,9 @@ public class FadeManager : MonoBehaviour
     /// <param name='interval'>暗転にかかる時間(秒)</param>
     private IEnumerator TransScene(string scene, float interval)
     {
+        yield return 0;
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        yield return new WaitForSeconds(1.5f);
         interval = 2.00f;
         logo.transform.position = cam.position - _logoOffSet;
         logo.SetActive(true);
@@ -207,6 +210,8 @@ public class FadeManager : MonoBehaviour
 
     private IEnumerator TransSceneNormal(string scene, float interval)
     {
+        yield return 0;
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
         //だんだん暗く .
         this.isFading = true;
         float time = 0;
@@ -236,6 +241,9 @@ public class FadeManager : MonoBehaviour
 
     private IEnumerator FadeDisplay(float interval)
     {
+        yield return 0;
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        yield return new WaitForSeconds(1.5f);
         interval = 2.00f;
         logo.transform.position = cam.position - _logoOffSet;
         logo.SetActive(true);
@@ -271,6 +279,8 @@ public class FadeManager : MonoBehaviour
 
     private IEnumerator FadeDisplayNomal(float interval)
     {
+        yield return 0;
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
         //だんだん暗く .
         this.isFading = true;
         float time = 0;

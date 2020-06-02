@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngineInternal;
 
+using System.Collections;
+
 public class TitleSceneManager : MonoBehaviour {
 
     private bool isAnyKeyPress;
@@ -116,6 +118,7 @@ public class TitleSceneManager : MonoBehaviour {
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();
+        StartCoroutine(PlayBGM(1));
     }
     
     public void Stage2()
@@ -126,6 +129,7 @@ public class TitleSceneManager : MonoBehaviour {
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();
+        StartCoroutine(PlayBGM(0));
     }
     
     public void Stage3()
@@ -145,5 +149,11 @@ public class TitleSceneManager : MonoBehaviour {
         #elif UNITY_STANDALONE
               UnityEngine.Application.Quit();
         #endif
-    }    
+    }
+
+    private IEnumerator PlayBGM(int i)
+    {
+        yield return new WaitForSeconds(2.1f);
+        SoundManagerV2.Instance.PlayBGM(i);
+    }
 }

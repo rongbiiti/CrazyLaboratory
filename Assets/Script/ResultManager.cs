@@ -108,6 +108,7 @@ public class ResultManager : MonoBehaviour
 						break;
 					default:
 						FadeManager.Instance.LoadSceneNormalTrans("Stage2", 1.5f);
+                        StartCoroutine(PlayBGM(0));
 						status = 99;
 						break;
 				}
@@ -160,4 +161,10 @@ public class ResultManager : MonoBehaviour
 		_count5.SetActive(true);
 		_Text5.SetActive(true);
 	}
+
+    private IEnumerator PlayBGM(int i)
+    {
+        yield return new WaitForSeconds(1.45f);
+        SoundManagerV2.Instance.PlayBGM(i);
+    }
 }

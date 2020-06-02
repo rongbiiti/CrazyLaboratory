@@ -48,6 +48,7 @@ public class Elevator : MonoBehaviour
 			SaveManager.Instance.Save(pc.Hp, 3);
 			ScoreManager.Instance.SceneName = SceneManager.GetActiveScene().name;
 			FadeManager.Instance.LoadSceneNormalTrans("HayatoScene_16", 1.5f);
+            yield return new WaitForSeconds(1.45f);
 		}
 		else
 		{
