@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 224048820227770652}
   - component: {fileID: 222012221680548736}
   - component: {fileID: 114444002311434742}
+  - component: {fileID: 114569513779411326}
   m_Layer: 5
   m_Name: BuledDateText
   m_TagString: Untagged
@@ -40,7 +41,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8632076, g: 1, b: 0.9148607, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -54,13 +55,27 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 100
-    m_Alignment: 0
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u30D3\u30EB\u30C9\u3057\u305F\u65E5\uFF1A2020\u5E744\u670814\u65E5\uFF08\u706B\uFF09"
+  m_Text: "\u30D3\u30EB\u30C9\u3057\u305F\u65E5\uFF1A2020\u5E745\u670828\u65E5\uFF08\u6728\uFF09"
+--- !u!114 &114569513779411326
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1169900487769766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 2, y: -2}
+  m_UseGraphicAlpha: 1
 --- !u!222 &222012221680548736
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -82,6 +97,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -108.000015, y: 492.99994}
+  m_AnchoredPosition: {x: 0, y: 456}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}

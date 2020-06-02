@@ -35,7 +35,11 @@ public class PausePanel : MonoBehaviour
 			{
 				OpenPausePanel();
 			}
-		}
+		} else if (Input.GetButtonDown("Cancel")) {
+            if (_pauseMenu.activeSelf) {
+                ClosePausePanel();
+            }
+        }
 		
 	}
 
@@ -51,7 +55,7 @@ public class PausePanel : MonoBehaviour
 
 	public void ClosePausePanel()
 	{
-		_pauseMenu.SetActive(false);
+        _pauseMenu.SetActive(false);
 		_restartPanel.SetActive(false);
 		_optionPanel.SetActive(false);
 		_quitPanel.SetActive(false);
@@ -109,6 +113,13 @@ public class PausePanel : MonoBehaviour
 		ClosePausePanel();
 		FadeManager.Instance.LoadSceneNormalTrans(SceneManager.GetActiveScene().name, 1f);
 	}
+
+    public void Title()
+    {
+        ClosePausePanel();
+        FadeManager.Instance.LoadSceneNormalTrans("TitleScene", 1.5f);
+        ScoreManager.Instance.IsStage2RestartPointReached = false;
+    }
 
 	public void Quit()
 	{

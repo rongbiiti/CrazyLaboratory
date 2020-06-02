@@ -138,7 +138,7 @@ public class InputManager : MonoBehaviour
         get { return trigger; }
     }
     
-    /* -- 立ち止まる --------------------------------------------------------------------------------- */
+    /* -- 方向変えず移動 --------------------------------------------------------------------------------- */
     private int moonWalkKey = 0;
     public int MoonWalkKey
     
@@ -339,26 +339,26 @@ public class InputManager : MonoBehaviour
         }
         
         // 操作タイプ切り替え
-        if (Input.GetButtonDown("ControlTypeChange"))
-        {
-            controlTypeChange = 1;
-            controlMode = ControlMode.TypeA;
-        }
-        else if (Input.GetButton("ControlTypeChange"))
-        {
-            controlTypeChange = 2;
-        }
-        else if (Input.GetButtonUp("ControlTypeChange"))
-        {
-            controlTypeChange = 0;
-        }
+        //if (Input.GetButtonDown("ControlTypeChange"))
+        //{
+        //    controlTypeChange = 1;
+        //    controlMode = ControlMode.TypeA;
+        //}
+        //else if (Input.GetButton("ControlTypeChange"))
+        //{
+        //    controlTypeChange = 2;
+        //}
+        //else if (Input.GetButtonUp("ControlTypeChange"))
+        //{
+        //    controlTypeChange = 0;
+        //}
         
-        // 方向を変えずに移動
-        if (Input.GetButtonDown("Pause")) {
+        // ポーズメニュー
+        if (Input.GetButtonDown("PauseMenu")) {
             pauseKey = 1;
-        } else if (Input.GetButton("Pause")) {
+        } else if (Input.GetButton("PauseMenu")) {
             pauseKey = 2;
-        } else if (Input.GetButtonUp("Pause")) {
+        } else if (Input.GetButtonUp("PauseMenu")) {
             pauseKey = 0;
         }
     }
