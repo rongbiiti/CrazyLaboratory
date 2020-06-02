@@ -238,6 +238,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 AniRoarTime = _aniRoarRate;
                 cameraShake.Shake(_aniRoarRate, _aniRoarswing); //カメラの揺れ
                 GameObject.Find("Main Camera").GetComponent<RadialBlurSc>().RadialBlur(_aniRoarRate, _aniRoarswing);
+                SoundManagerV2.Instance.PlaySE(45);
 
             }
             var po = _bossSpiderFront.transform.position;
@@ -251,7 +252,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
-                FadeManager.Instance.LoadSceneNormalTrans("BossDeath", 0.3f);
+                FadeManager.Instance.LoadSceneNormalTrans("BossDeath", 0.5f);
             }
             else
             {
@@ -815,6 +816,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 InitActivityType((byte)_activityTypeCount[ActivityCount]);
                 _bodyPressEndObject.SetActive(false);
                 cameraShake.Shake(0.5f, _aniRoarswing); //カメラの揺れ
+                SoundManagerV2.Instance.PlaySE(46);
             }
 
             if (ActivityType == (byte)e_ActivityType.Stan)
