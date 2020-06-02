@@ -31,7 +31,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         Stan,           //スタン
         afterStan,      //スタン後
     }
-
+    
     [SerializeField] private float _HP = 12f;
     [SerializeField] private float _HitDamage = 1f;
     [SerializeField] private float _AttackHitDamage = 3000f;        //攻撃のダメージ
@@ -104,6 +104,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     [SerializeField] private GameObject _bodyPressEndObject;    //ボディプレスを止めるためのオブジェクト
     [SerializeField] private GameObject _ThreadObject;  //糸のオブジェクト
     [SerializeField] private GameObject _animeObject;   //アニメ用オブジェクト当たり判定
+    [SerializeField] private GameObject _bossSpiderFront;   //ボスの正面オブジェクト
     [SerializeField] private GameObject _SpiderObject1;  //子蜘蛛のオブジェクト1
     [SerializeField] private GameObject _SpiderObject2;  //子蜘蛛のオブジェクト2
     /**********************************************/
@@ -117,13 +118,17 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private Vector2 startposition;
     private Vector3 startPlayerPosition;
     private Vector2 StartAnimeObjectPo; //アニメオブジェクトのスタートポジション
+    private Vector2 StartBossFrontPo;   //正面ボスのポジション
     private GameObject playerObject;  //playerのオブジェクトを格納
     private CameraShake cameraShake;
     Rigidbody2D rb;
+    Rigidbody2D rdFront;
     Animator animator;
+    Animator animetorFront;
     private CubismModel Model;
     private float anitime = 0f;
     Enemy_Boss_Thread Thread;   //ボスのクモの糸のスクリプト
+    private bool Threadflag;    //蜘蛛の糸 false:横のクモの糸につく　true:正面のクモの糸につく
 
     // Use this for initialization
     void Start()
@@ -132,6 +137,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         startScale = transform.localScale;
         startposition = transform.position;
         StartAnimeObjectPo = _animeObject.transform.position;
+        StartBossFrontPo = _bossSpiderFront.transform.position;
 
         /*HP*/
         nowHP = _HP;
@@ -156,7 +162,9 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         StanType = (byte)e_StanType.Wait;
         //InitActivityType((byte)_activityTypeCount[ActivityCount]);
         rb = GetComponent<Rigidbody2D>();
+        rdFront = _bossSpiderFront.GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        animetorFront = _bossSpiderFront.GetComponent<Animator>();
         Model = this.FindCubismModel();
         Thread = _ThreadObject.transform.GetChild(0).GetComponent<Enemy_Boss_Thread>();
         cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
@@ -188,6 +196,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             animator.SetBool("Jump", false);
             animator.SetBool("Stun", false);
             animator.SetBool("Death", false);
+            animetorFront.SetBool("Stand", false);
+            animetorFront.SetBool("Roar", false);
         }
 
     }
@@ -209,7 +219,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 }
             }
             Vector2 speed = new Vector2(0, 0); //横の移動の設定
-            if ( transform.position.y >= _aniFallEndPosition)
+            //if ( transform.position.y >= _aniFallEndPosition)
+            if( _bossSpiderFront.transform.position.y >= _aniFallEndPosition )
             {
                 speed = new Vector2(0, moveSpeed); //横の移動の設定
             }
@@ -218,11 +229,13 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 AniRoarTime = _aniRoarRate;
                 cameraShake.Shake(_aniRoarRate, _aniRoarswing); //カメラの揺れ
                 GameObject.Find("Main Camera").GetComponent<RadialBlurSc>().RadialBlur(_aniRoarRate, _aniRoarswing);
-                /*咆哮のアニメーションと咆哮のSEはここ*/
-
+                animetorFront.SetBool("Stand", false);
+                animetorFront.SetBool("Roar", true);
 
             }
-            rb.velocity = speed;
+            var po = _bossSpiderFront.transform.position;
+            _ThreadObject.transform.position = new Vector2(po.x, po.y + 17.0f);
+            rdFront.velocity = speed;
             return;
         }
 
@@ -598,12 +611,14 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     void IntAnime()
     {
         transform.position = _aniPosition;
+        _bossSpiderFront.transform.position = _aniPosition;
         _ThreadObject.SetActive(true);
         AnimeSwitch = true;
         transform.eulerAngles = new Vector3(0.0f, 0.0f, 90f);
         _animeObject.transform.position = StartAnimeObjectPo;
         _animeObject.transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f);
         moveSpeed = -_aniFallSpeed;
+        Threadflag = true; //真正面の方の子蜘蛛につく
     }
 
     void InitActivityType(byte Type)
@@ -639,6 +654,13 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
 
                 if (AnimeSwitch)
                 {
+                    if(Threadflag)
+                    {
+                        transform.position = _bossSpiderFront.transform.position;
+                        _bossSpiderFront.transform.position = StartBossFrontPo;
+                        var po = transform.position;
+                        _ThreadObject.transform.position = new Vector2(po.x, po.y + 17f);
+                    }
                     AttackType = (byte)e_AttackType.horizontalmove; //上から降りてプレイヤーの中心点
                     Acceleration = IntAcceleration;
                     moveSpeed = _horizontalSpeed;
@@ -711,7 +733,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 AnimeMove = true;
                 //_animeObject.SetActive(false);
                 /*真正面の画像差し替えとアニメーションはここからがいいかも*/
-
+                animetorFront.SetBool("Stand", true);
+                animetorFront.SetBool("Roar", false);
             }
             return;
         }
