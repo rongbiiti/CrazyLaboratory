@@ -373,6 +373,10 @@ public class PlayerController : MonoBehaviour
         _HPbar.maxValue = _maxHP;
         _HPbar.value = HP;
         _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = true;
+
+        if (ScoreManager.Instance.IsStage2RestartPointReached) {
+            Stage2RestartValueLoad();
+        }
     }
 
     private void Update()
@@ -1296,6 +1300,22 @@ public class PlayerController : MonoBehaviour
             AnimStop();
             
         }
+    }
+
+    public void Stage2RestartValueSave()
+    {
+        ScoreManager.Instance.Stage2RestartPosition = transform.position.x;
+        ScoreManager.Instance.Stage2RestartHP = HP;
+    }
+
+    public void Stage2RestartValueLoad()
+    {
+        transform.position = new Vector3(ScoreManager.Instance.Stage2RestartPosition, transform.position.y, transform.position.z);
+        cam.transform.position = new Vector3(ScoreManager.Instance.Stage2RestartPosition, cam.transform.position.y, cam.transform.position.z);
+        _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = false;
+        HP = ScoreManager.Instance.Stage2RestartHP;
+        _HPbar.value = HP;
+        _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = true;
     }
 
     private IEnumerator SlowMotion()

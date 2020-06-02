@@ -43,26 +43,31 @@ public class button : MonoBehaviour {
     public void BackToTitle()
     {
         FadeManager.Instance.LoadSceneNormalTrans("TitleScene",0.5f);
+        ScoreManager.Instance.IsStage2RestartPointReached = false;
     }
 
     public void Stage1Load()
     {
         FadeManager.Instance.LoadSceneNormalTrans("Stage1",0.5f);
+        ScoreManager.Instance.IsStage2RestartPointReached = false;
     }
 
     public void Stage2Load()
     {
         FadeManager.Instance.LoadSceneNormalTrans("Stage2",0.5f);
+        ScoreManager.Instance.IsStage2RestartPointReached = false;
     }
     
     public void Stage3Load()
     {
         FadeManager.Instance.LoadSceneNormalTrans("Stage3",0.5f);
+        ScoreManager.Instance.IsStage2RestartPointReached = false;
     }
     
     public void GotoEndingScene()
     {
         FadeManager.Instance.LoadSceneNormalTrans("EndingScene",0.5f);
+        ScoreManager.Instance.IsStage2RestartPointReached = false;
     }
 
     public void HPMAX()

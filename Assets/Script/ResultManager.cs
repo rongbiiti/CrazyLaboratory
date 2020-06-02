@@ -100,6 +100,7 @@ public class ResultManager : MonoBehaviour
 				{
 					case "Stage2":
 						FadeManager.Instance.LoadSceneNormalTrans("Stage3", 1.5f);
+                        ScoreManager.Instance.IsStage2RestartPointReached = false;
                         StartCoroutine(PlayBGM(2));
                         status = 99;
 						break;
