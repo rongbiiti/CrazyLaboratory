@@ -160,7 +160,17 @@ public class ScoreManager : MonoBehaviour
 		set { sceneName = value; }
 	}
 
-	private void Start () {
+    // ステージ2のリスタートポイントに到達したか
+    private bool isStage2RestartPointReached;
+
+    public bool IsStage2RestartPointReached
+    {
+        get { return isStage2RestartPointReached; }
+        set { isStage2RestartPointReached = value; }
+    }
+
+
+    private void Start () {
 		
 	}
 
