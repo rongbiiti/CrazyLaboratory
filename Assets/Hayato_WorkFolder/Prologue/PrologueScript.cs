@@ -52,6 +52,8 @@ public class PrologueScript : MonoBehaviour {
         }
         yield return null;
         FadeManager.Instance.LoadSceneNormalTrans("Stage1", 1.5f);
+        yield return new WaitForSeconds(1.4f);
+        SoundManagerV2.Instance.PlayBGM(1);
     }
 
     private void SkipGuageControl()

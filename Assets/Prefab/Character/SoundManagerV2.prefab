@@ -34,7 +34,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1409630507401836}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 32, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -58,6 +58,9 @@ MonoBehaviour:
     Mute: 0
   BGM:
   - {fileID: 8300000, guid: ee0f8d6cd56641f41b0ff94601f11d27, type: 3}
+  - {fileID: 8300000, guid: ab81d36664fc5504eada020380ab2106, type: 3}
+  - {fileID: 8300000, guid: 029d1dbebb2f9d9449251efd5290df6f, type: 3}
+  - {fileID: 8300000, guid: 4f1c86e449c5242459c9756d95bf2331, type: 3}
   SE:
   - {fileID: 8300000, guid: bfc30bfdfff95224db2536cfe2d531a2, type: 3}
   - {fileID: 8300000, guid: c64b5e2ab87c64e4e989e2d370f29290, type: 3}
@@ -104,4 +107,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 37b54eb307b69154d90a9567eaf33468, type: 3}
   - {fileID: 8300000, guid: 21dd528041bdd874082c10f53d096057, type: 3}
   - {fileID: 8300000, guid: 3396b9af85499e049a88be8ae6173ce4, type: 3}
+  - {fileID: 8300000, guid: 6237e70c5544b4241a6fd379309161e1, type: 3}
+  - {fileID: 8300000, guid: 7c95ac5b4b102dd4d8d46738aa593ee6, type: 3}
+  - {fileID: 8300000, guid: c36f76fa354469444ad7958b7a15619a, type: 3}
   Voice: []

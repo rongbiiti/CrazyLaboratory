@@ -57,6 +57,8 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
     [SerializeField] private int _childNullCount = 4;   //子を離す数
     Animator animator;
 
+    private GameObject attackEffect;
+
     // Use this for initialization
     void Start()
     {
@@ -90,6 +92,8 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             transform.GetChild(i).gameObject.SetActive(false);
             transform.GetChild(i).transform.parent = null;
         }
+
+        attackEffect = transform.GetChild(0).GetChild(0).gameObject;
 
         animator = GetComponent<Animator>();
         int z = (int)Start_Rotation_Z;
@@ -200,6 +204,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                 attackWaitTime -= Time.deltaTime;
                 if(attackWaitTime <= 0) {
                     SoundManagerV2.Instance.PlaySE(30);
+                    attackEffect.SetActive(true);
                 }
             }
 
@@ -439,6 +444,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                 _waitPosition.SetActive(true);
                 PointCount = 0;
                 waitType = false;
+                attackEffect.SetActive(false);
                 return;
             }
 
