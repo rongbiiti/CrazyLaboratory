@@ -51,6 +51,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     [SerializeField] private float _aniRoarRate;    //咆哮の時間
     private float AniRoarTime;  //咆哮時間格納用
     [SerializeField] private float _aniRoarswing;   //咆哮のカメラの揺れの強さ
+    private bool AniRoarflag;   //叫んで一回のみ通るようにするフラグ
     /*******************Attack*********************/
     private byte AttackType;    //攻撃のタイプ 0:Wait 1:攻撃前befor 2:攻撃attack 3:攻撃後after
     [SerializeField] private int _rangeMin = 2;     //ランダムの最小値
@@ -129,6 +130,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private float anitime = 0f;
     Enemy_Boss_Thread Thread;   //ボスのクモの糸のスクリプト
     private bool Threadflag;    //蜘蛛の糸 false:横のクモの糸につく　true:正面のクモの糸につく
+    
 
     // Use this for initialization
     void Start()
@@ -215,6 +217,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 {
                     InitActivityType((byte)_activityTypeCount[ActivityCount]);
                     AnimeSwitch = false;
+                    _bossSpiderFront.SetActive(false);
                     return;
                 }
             }
@@ -222,15 +225,19 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             //if ( transform.position.y >= _aniFallEndPosition)
             if( _bossSpiderFront.transform.position.y >= _aniFallEndPosition )
             {
-                speed = new Vector2(0, moveSpeed); //横の移動の設定
+                speed = new Vector2(0, moveSpeed); //縦の移動の設定
+                if(_bossSpiderFront.transform.position.y <= _aniFallEndPosition + 10f && !AniRoarflag)
+                {
+                    AniRoarflag = true;
+                    animetorFront.SetBool("Stand", false);
+                    animetorFront.SetBool("Roar", true);
+                }
             }
             else if(AniRoarTime <= 0)
             {
                 AniRoarTime = _aniRoarRate;
                 cameraShake.Shake(_aniRoarRate, _aniRoarswing); //カメラの揺れ
                 GameObject.Find("Main Camera").GetComponent<RadialBlurSc>().RadialBlur(_aniRoarRate, _aniRoarswing);
-                animetorFront.SetBool("Stand", false);
-                animetorFront.SetBool("Roar", true);
 
             }
             var po = _bossSpiderFront.transform.position;
@@ -244,11 +251,14 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
+                FadeManager.Instance.LoadSceneNormalTrans("BossDeath", 0.3f);
             }
             else
             {
+                //FadeManager.Instance.LoadSceneNormalTrans("", 0.3f);
                 gameObject.SetActive(false);
                 enemyHpbar.hpbar.gameObject.SetActive(false);
+
             }
         }
         else
@@ -309,7 +319,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                         case (byte)e_StanType.afterStan:
                             InitActivityType((byte)e_ActivityType.Jump);
                             StanType = (byte)e_StanType.Wait;
-                            ActivityCount--;    //スタンした時の行動に戻す
+                            ActivityCount = 0;    //攻撃の２番目に設定する
                             break;
                     }
                 }
@@ -768,14 +778,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
-                animator.SetBool("Stand1", false);
-                animator.SetBool("Stand2", false);
-                animator.SetBool("BodyPress", false);
-                animator.SetBool("BeforeAtack", false);
-                animator.SetBool("Atack", false);
-                animator.SetBool("Jump", false);
-                animator.SetBool("Stun", false);
-                animator.SetBool("Death", true);
             }
         }
 
