@@ -130,7 +130,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private float anitime = 0f;
     Enemy_Boss_Thread Thread;   //ボスのクモの糸のスクリプト
     private bool Threadflag;    //蜘蛛の糸 false:横のクモの糸につく　true:正面のクモの糸につく
-    
+    [SerializeField] private Shutter _shutter1;
+    [SerializeField] private Shutter _shutter2;
 
     // Use this for initialization
     void Start()
@@ -765,6 +766,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 /*真正面の画像差し替えとアニメーションはここからがいいかも*/
                 animetorFront.SetBool("Stand", true);
                 animetorFront.SetBool("Roar", false);
+                _shutter1.CloseShutter();
+                _shutter2.CloseShutter();
             }
             return;
         }
