@@ -21,13 +21,32 @@ GameObject:
   - component: {fileID: 224490442614667962}
   - component: {fileID: 222038546842584676}
   - component: {fileID: 114250001092255030}
+  - component: {fileID: 95185277393369242}
   m_Layer: 5
   m_Name: Cut6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
+--- !u!95 &95185277393369242
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1754071650548814}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1c125ea6302710a4aae0c9cc06e34f41, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114250001092255030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -47,7 +66,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 0db9623dcc02fe24cb53a46be928fd87, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 93d93ef0c219f2148a99f8fabd9d1e05, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
