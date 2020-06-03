@@ -221,16 +221,9 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
     {
         if (isZeroHP)
         {
-            if (0 < transform.localScale.x)
-            {
-                transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            }
-            else if (transform.localScale.x < 0)
-            {
-                transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            }
-            if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
-            {
+            if (0 < _destroyTime) {
+                _destroyTime -= Time.deltaTime;
+            } else {
                 gameObject.SetActive(false);
                 enemyHpbar.hpbar.gameObject.SetActive(false);
             }
