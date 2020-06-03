@@ -455,7 +455,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 {
                     _switchObject.SetActive(true);
                     SwitchFlag = false;
-
                     Instantiate(_ChildSpiderPrefab, _eneSpawnPo1.position, Quaternion.identity);
                     Instantiate(_ChildSpiderPrefab, _eneSpawnPo2.position, Quaternion.identity);
                     //_SpiderObject1.transform.position = _eneSpawnPo1;
@@ -730,6 +729,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             case (byte)e_ActivityType.CallSpider:
                 ActivityType = (byte)e_ActivityType.CallSpider;
                 CallTime = _callRate;
+                SoundManagerV2.Instance.PlaySE(45);
                 cameraShake.Shake(_callRate, _aniRoarswing); //カメラの揺れ
                 GameObject.Find("Main Camera").GetComponent<RadialBlurSc>().RadialBlur(_callRate, _aniRoarswing);
                 if (playerObject.transform.position.x >= transform.position.x)
