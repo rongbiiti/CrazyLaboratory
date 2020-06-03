@@ -37,6 +37,8 @@ public class TotalResultManager : MonoBehaviour {
     private void Start()
     {
         sound = SoundManagerV2.Instance;
+        sound.PlaySE(49);
+        sound.StopBGM();
         sm = ScoreManager.Instance;
         sm.OverCheck();
 
@@ -46,8 +48,6 @@ public class TotalResultManager : MonoBehaviour {
         _countText3 = _count3.GetComponent<Text>();
         _countText4 = _count4.GetComponent<Text>();
         _countText5 = _count5.GetComponent<Text>();
-
-        sm.Test();
 
         _clearText1.text = "Game Clear!!";
 

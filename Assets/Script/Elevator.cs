@@ -49,7 +49,11 @@ public class Elevator : MonoBehaviour
 			ScoreManager.Instance.SceneName = SceneManager.GetActiveScene().name;
 			FadeManager.Instance.LoadSceneNormalTrans("ResultScene", 1.5f);
             yield return new WaitForSeconds(1.45f);
-		}
+		} else if (SceneManager.GetActiveScene().name == "BossDeath") {
+            ScoreManager.Instance.SceneName = "Stage3";
+            FadeManager.Instance.LoadSceneNormalTrans("EndingScene", 1.5f);
+            yield return new WaitForSeconds(1.45f);
+        }
 		else
 		{
 			SaveManager.Instance.Save(pc.Hp, 2);
