@@ -12,7 +12,6 @@ public class Shutter : MonoBehaviour {
     private void Start()
     {
         cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
-        CloseShutter();
     }
 
     public void CloseShutter()
