@@ -48,6 +48,8 @@ public class PrologueScript : MonoBehaviour {
 
     private IEnumerator Prologue()
     {
+        SoundManagerV2.Instance.PlayBGM(4);
+        SoundManagerV2.Instance.PlaySE(48);
         int i = 0;
         foreach(var cut in _cut) {
             cut.SetActive(true);
