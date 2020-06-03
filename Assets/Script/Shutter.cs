@@ -12,6 +12,7 @@ public class Shutter : MonoBehaviour {
     private void Start()
     {
         cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
+        if (_isCameraShake) SoundManagerV2.Instance.PlayBGM(2);
     }
 
     public void CloseShutter()

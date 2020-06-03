@@ -79,8 +79,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     /*******************CallSpider*********************/
     [SerializeField] private float _callRate;   //呼ぶ時間
     private float CallTime;     //呼ぶ時間格納用
-    [SerializeField] private Vector2 _eneSpawnPo1;   //エネミースポーン1
-    [SerializeField] private Vector2 _eneSpawnPo2;   //エネミースポーン2
+    [SerializeField] private Transform _eneSpawnPo1;   //エネミースポーン1
+    [SerializeField] private Transform _eneSpawnPo2;   //エネミースポーン2
     /*******************BodyPress*********************/
     [SerializeField] private float _bodyPressRate = 3f;
     private float BodyPressTime;
@@ -106,8 +106,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     [SerializeField] private GameObject _ThreadObject;  //糸のオブジェクト
     [SerializeField] private GameObject _animeObject;   //アニメ用オブジェクト当たり判定
     [SerializeField] private GameObject _bossSpiderFront;   //ボスの正面オブジェクト
-    [SerializeField] private GameObject _SpiderObject1;  //子蜘蛛のオブジェクト1
-    [SerializeField] private GameObject _SpiderObject2;  //子蜘蛛のオブジェクト2
+    [SerializeField] private GameObject _ChildSpiderPrefab;   //子蜘蛛のオブジェクト　生成用
     /**********************************************/
     [SerializeField] private float _destroyTime = 2f;
 
@@ -132,6 +131,11 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private bool Threadflag;    //蜘蛛の糸 false:横のクモの糸につく　true:正面のクモの糸につく
     [SerializeField] private Shutter _shutter1;
     [SerializeField] private Shutter _shutter2;
+
+    [SerializeField, CustomLabel("回復薬投下ポイント1")] private Transform _medkitFallpoint1;
+    [SerializeField, CustomLabel("回復薬投下ポイント2")] private Transform _medkitFallpoint2;
+    [SerializeField, CustomLabel("回復薬プレハブ")] private GameObject _medkitPrefab;
+    
 
     // Use this for initialization
     void Start()
@@ -172,7 +176,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         Thread = _ThreadObject.transform.GetChild(0).GetComponent<Enemy_Boss_Thread>();
         cameraShake = GameObject.Find("Main Camera").GetComponent<CameraShake>();
         IntAnime();
-
 
     }
 
@@ -219,6 +222,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     InitActivityType((byte)_activityTypeCount[ActivityCount]);
                     AnimeSwitch = false;
                     _bossSpiderFront.SetActive(false);
+                    SoundManagerV2.Instance.PlayBGM(3);
                     return;
                 }
             }
@@ -451,10 +455,13 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 {
                     _switchObject.SetActive(true);
                     SwitchFlag = false;
-                    _SpiderObject1.transform.position = _eneSpawnPo1;
-                    _SpiderObject1.SetActive(true);
-                    _SpiderObject2.transform.position = _eneSpawnPo2;
-                    _SpiderObject2.SetActive(true);
+
+                    Instantiate(_ChildSpiderPrefab, _eneSpawnPo1.position, Quaternion.identity);
+                    Instantiate(_ChildSpiderPrefab, _eneSpawnPo2.position, Quaternion.identity);
+                    //_SpiderObject1.transform.position = _eneSpawnPo1;
+                    //_SpiderObject1.SetActive(true);
+                    //_SpiderObject2.transform.position = _eneSpawnPo2;
+                    //_SpiderObject2.SetActive(true);
                 }
             }
 
@@ -814,6 +821,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 {
                     ActivityCount = 0;
                 }
+                Instantiate(_medkitPrefab, _medkitFallpoint1.position, Quaternion.identity);
+                Instantiate(_medkitPrefab, _medkitFallpoint2.position, Quaternion.identity);
 
                 rb.velocity = new Vector2(0.0f, 0.0f);
                 InitActivityType((byte)_activityTypeCount[ActivityCount]);
