@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Live2D.Cubism.Rendering;
 
 public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
 
@@ -421,6 +422,7 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         }
         SoundManagerV2.Instance.PlaySE(26);
         SoundManagerV2.Instance.PlaySE(37);
+        gameObject.layer = LayerMask.NameToLayer("Fragment");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
