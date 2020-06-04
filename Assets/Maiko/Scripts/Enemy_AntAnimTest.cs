@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework;
+using Live2D.Cubism.Rendering;
 
 public class Enemy_AntAnimTest : MonoBehaviour {
 
@@ -368,6 +369,7 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                 else Instantiate(_deathEffectReverse, transform.position, Quaternion.identity);
                 SoundManagerV2.Instance.PlaySE(28);
                 SoundManagerV2.Instance.PlaySE(37);
+                gameObject.layer = LayerMask.NameToLayer("Fragment");
             } else {
                 if (0 < transform.localScale.x) {
                     GameObject obj = Instantiate(_hitEffect, transform.position, Quaternion.identity) as GameObject;

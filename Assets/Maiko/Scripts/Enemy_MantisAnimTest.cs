@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework;
+using Live2D.Cubism.Rendering;
 
 public class Enemy_MantisAnimTest : MonoBehaviour {
 
@@ -65,6 +66,8 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
     [SerializeField, CustomLabel("鎌の当たり判定")] private BoxCollider2D[] _sickle;
     private GameObject[] attackEffect = new GameObject[4];
 
+    private CubismRenderController cubismRender;
+
     // Use this for initialization
     void Start()
     {
@@ -97,7 +100,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             attackEffect[i++] = skl.transform.GetChild(0).gameObject;
             attackEffect[i++] = skl.transform.GetChild(1).gameObject;
         }
-
+        cubismRender = GetComponent<CubismRenderController>();
     }
 
     private void OnEnable()
@@ -142,12 +145,11 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
+                if (_destroyTime <= 0) {
+                    StartCoroutine("FadeOut");
+                }
             }
-            else
-            {
-                gameObject.SetActive(false);
-                enemyHpbar.hpbar.gameObject.SetActive(false);
-            }
+            
             //if (0 < transform.localScale.x)
             //{
             //    transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
@@ -384,6 +386,7 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         }
         SoundManagerV2.Instance.PlaySE(35);
         SoundManagerV2.Instance.PlaySE(37);
+        gameObject.layer = LayerMask.NameToLayer("Fragment");
     }
 
     private void AttackEffectDisable()
@@ -556,5 +559,13 @@ public class Enemy_MantisAnimTest : MonoBehaviour {
         }
     }
 
-
+    private IEnumerator FadeOut()
+    {
+        while (0 < cubismRender.Opacity) {
+            cubismRender.Opacity -= 1 / 1f * Time.deltaTime;
+            yield return 0;
+        }
+        gameObject.SetActive(false);
+        enemyHpbar.hpbar.gameObject.SetActive(false);
+    }
 }

@@ -8,6 +8,7 @@ using Live2D.Cubism.Core;
 using Live2D.Cubism.Framework;
 using Live2D.Cubism.Rendering;
 using UnityEngine.SceneManagement;
+using Live2D.Cubism.Framework.Json;
 
 /// <summary>
 /// プレイヤーのスクリプト
@@ -606,7 +607,7 @@ public class PlayerController : MonoBehaviour
             acidDamageTime -= Time.deltaTime;
             if(acidDamageTime <= 0) {
                 foreach (var dr in Drawables) {
-                    dr.Color = new Color(1,1,1,1);
+                    dr.Color = new Color(1,1,1,dr.Color.a);
                 }
             } else {
                 foreach (var dr in Drawables) {
@@ -622,6 +623,9 @@ public class PlayerController : MonoBehaviour
             if (invincibleTime <= 0)
             {
                 cubismRender.Opacity = 1f;
+                foreach(var da in Drawables) {
+                    da.Color = new Color(da.Color.r, da.Color.g, da.Color.b, 1f);
+                }
                 IsNotNockBack = false;
             }
         }
@@ -858,6 +862,9 @@ public class PlayerController : MonoBehaviour
             isGhost = true;
             capcol.enabled = false;
             boxcol.enabled = false;
+            foreach(var da in Drawables) {
+                da.Color = new Color(1, 1, 1, 0.3f);
+            }
             cubismRender.Opacity = 0.3f;
         }
         else
@@ -865,6 +872,9 @@ public class PlayerController : MonoBehaviour
             isGhost = false;
             capcol.enabled = true;
             boxcol.enabled = true;
+            foreach (var da in Drawables) {
+                da.Color = new Color(1, 1, 1, 1);
+            }
             cubismRender.Opacity = 1f;
         }
     }
@@ -884,12 +894,17 @@ public class PlayerController : MonoBehaviour
                 damageEffect.SetActive(true);
                 if(0 < HP) {
                     cubismRender.Opacity = 0.3f;
+                    foreach (var da in Drawables) {
+                        da.Color = new Color(da.Color.r, da.Color.g, da.Color.b, 0.3f);
+                    }
                 }
                 
             } else {
                 if(0 < HP) {
                     foreach (var dr in Drawables) {
-                        dr.Color = _colorInAcidDamage;
+                        var newColor = _colorInAcidDamage;
+                        newColor.a = dr.Color.a;
+                        dr.Color = newColor;
                     }
                 }
             }

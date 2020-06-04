@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Live2D.Cubism.Core;
+using Live2D.Cubism.Framework;
+using Live2D.Cubism.Rendering;
 
 public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
 
@@ -76,6 +79,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
 
     Rigidbody2D rb;
     Animator animator;
+    private CubismRenderController cubismRender;
 
     private void Awake()
     {
@@ -83,10 +87,10 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         playerHitBox = transform.GetChild((int)Child.PlayerHitBox).GetComponent<BoxCollider2D>();
         AttackObject = transform.GetChild((int)Child.AttackObject).GetComponent<BoxCollider2D>();
         WeakPointHitBox = transform.GetChild((int)Child.Hit_WeakPoint).GetComponent<BoxCollider2D>();
+        cubismRender = GetComponent<CubismRenderController>();
     }
 
 
-    // Use this for initialization
     void Start()
     {
         startPosition = transform.position;
@@ -223,9 +227,9 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         {
             if (0 < _destroyTime) {
                 _destroyTime -= Time.deltaTime;
-            } else {
-                gameObject.SetActive(false);
-                enemyHpbar.hpbar.gameObject.SetActive(false);
+                if(_destroyTime <= 0) {
+                    StartCoroutine("FadeOut");
+                }
             }
 
         }
@@ -445,6 +449,7 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
         }
         SoundManagerV2.Instance.PlaySE(26);
         SoundManagerV2.Instance.PlaySE(37);
+        gameObject.layer = LayerMask.NameToLayer("Fragment");
     }
 
 
@@ -604,5 +609,15 @@ public class Enemy_ChildSpider_Ceiling : MonoBehaviour {
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
         }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        while(0 < cubismRender.Opacity) {
+            cubismRender.Opacity -= 1 / 1f * Time.deltaTime;
+            yield return 0;
+        }
+        gameObject.SetActive(false);
+        enemyHpbar.hpbar.gameObject.SetActive(false);
     }
 }

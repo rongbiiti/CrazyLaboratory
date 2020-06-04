@@ -23,7 +23,8 @@ GameObject:
   - component: {fileID: 50894045463211032}
   - component: {fileID: 61568604811112850}
   - component: {fileID: 114791196731437882}
-  m_Layer: 20
+  - component: {fileID: 114216369001476112}
+  m_Layer: 17
   m_Name: BreakVent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +67,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1756223391107180}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 40.06, y: 16.03, z: 0}
+  m_LocalPosition: {x: 33.75, y: 23.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4233260127491776}
@@ -101,7 +102,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1138537292944768}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: fcfd5b6e2a637ac4b9b1cecf9f5d0541, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -118,6 +119,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 5.12, y: 5.12}
   m_EdgeRadius: 0
+--- !u!114 &114216369001476112
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1138537292944768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a62603ee6717a87458af02d14fbe9664, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114791196731437882
 MonoBehaviour:
   m_ObjectHideFlags: 1

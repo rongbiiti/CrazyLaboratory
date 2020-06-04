@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Live2D.Cubism.Rendering;
 
 public class Enemy_BeeAnimTest : MonoBehaviour {
 
@@ -59,6 +60,8 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
 
     private GameObject attackEffect;
 
+    private CubismRenderController cubismRender;
+
     // Use this for initialization
     void Start()
     {
@@ -110,6 +113,8 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
         }
 
         Direction(playerObject.transform.position);
+
+        cubismRender = GetComponent<CubismRenderController>();
 
     }
 
@@ -165,12 +170,12 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
+
+                if (_destroyTime <= 0) {
+                    StartCoroutine("FadeOut");
+                }
             }
-            else
-            {
-                gameObject.SetActive(false);
-                enemyHpbar.hpbar.gameObject.SetActive(false);
-            }
+            
 
             //if (0 < transform.localScale.x)
             //{
@@ -421,6 +426,7 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                 rb.freezeRotation = false;
                 SoundManagerV2.Instance.PlaySE(31);
                 SoundManagerV2.Instance.PlaySE(37);
+                gameObject.layer = LayerMask.NameToLayer("Fragment");
             }
         }
 
@@ -563,5 +569,15 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
         }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        while (0 < cubismRender.Opacity) {
+            cubismRender.Opacity -= 1 / 1f * Time.deltaTime;
+            yield return 0;
+        }
+        gameObject.SetActive(false);
+        enemyHpbar.hpbar.gameObject.SetActive(false);
     }
 }
