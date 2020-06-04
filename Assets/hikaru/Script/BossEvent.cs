@@ -43,10 +43,12 @@ public class BossEvent : MonoBehaviour {
         yield return new WaitForSeconds(_firstWaitTime);
         CameraZoomIn();
 
-        yield return new WaitForSeconds(7.5f);
+        yield return new WaitForSeconds(_cameraZoomTime + 1.5f);
         CameraZoomOut();
-        yield return new WaitForSeconds(_cameraZoomTime+0.2f);
         PlayerControllerSetActive();
+
+        //yield return new WaitForSeconds(0.2f);
+        
     }
 
     private void PlayerStop()
@@ -64,7 +66,7 @@ public class BossEvent : MonoBehaviour {
 
     private void CameraZoomOut()
     {
-        _cameracontroller.EventCameraEnd(_cameraZoomTime);
+        _cameracontroller.EventCameraEnd(_firstWaitTime);
         Debug.Log("カメラズームアウト");
     }
 
