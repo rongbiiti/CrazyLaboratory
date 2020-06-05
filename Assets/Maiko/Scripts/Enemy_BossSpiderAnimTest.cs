@@ -250,6 +250,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
+                if(_destroyTime <= 0)
                 FadeManager.Instance.LoadSceneNormalTrans("BossDeath", 0.5f);
             }
             else
