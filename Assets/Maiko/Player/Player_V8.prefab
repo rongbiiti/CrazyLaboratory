@@ -3500,19 +3500,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd2ed085d85b3f43b24486e83883113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Debug: 0
   _layerMask:
     serializedVersion: 2
     m_Bits: 33792
-  _debug: {fileID: 0}
-  isBGMMute: 0
   isStartGetGun: 0
   _HPbar: {fileID: 0}
-  _drwablOffsetNormal: {x: 0, y: 0, z: 0}
-  _drwablOffsetNormalRunning: {x: 0, y: 0, z: 0}
-  _drwablOffsetGetGun: {x: 0, y: 0, z: 0}
-  _drwablOffsetGetGunRunning: {x: 0, y: 0, z: 0}
-  _drwablOffsetGraunding: {x: 0, y: 0, z: 0}
   filter2d:
     useTriggers: 0
     useLayerMask: 1
@@ -3535,9 +3527,9 @@ MonoBehaviour:
     type: 2}
   _maxHP: 9999
   _resetInvincibleTime: 4
-  _acidDamage: 500
-  _acidDamageRate: 0.2
-  _bulletCapacity: 10
+  _acidDamage: 200
+  _acidDamageRate: 0.4
+  _bulletCapacity: 9999
   _fireRate: 0.8
   YStickUpDeadZone: 0.4
   ceilDeadZone: 0.5

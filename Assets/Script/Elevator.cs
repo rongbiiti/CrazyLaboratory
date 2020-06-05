@@ -37,8 +37,8 @@ public class Elevator : MonoBehaviour
 	{
         SoundManagerV2.Instance.PlaySE(40);
 		pc.AnimStop();
-		pc.enabled = false;
-		yield return new WaitForSeconds(1f);
+		pc.IsEvent = true;
+        yield return new WaitForSeconds(1f);
         SoundManagerV2.Instance.PlaySE(39);
         cc.enabled = false;
 		isPlayerEnter = true;

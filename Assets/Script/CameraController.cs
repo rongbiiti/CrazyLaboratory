@@ -9,7 +9,6 @@ using System.Collections;
 /// </summary>
 public class CameraController : MonoBehaviour
 {
-    [SerializeField, CustomLabel("カメラ移動速度")] private float _cameraSpeed = 5.0f;
     [SerializeField, CustomLabel("ポーズメニュー")] private GameObject _pauseMenu;
     [SerializeField, CustomLabel("ステージ左端のX座標")] private float _stage_edge_x;
     [SerializeField, CustomLabel("ステージ右端のX座標")] private float _stage_edge_x_right;

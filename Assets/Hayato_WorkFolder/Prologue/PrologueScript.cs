@@ -11,11 +11,13 @@ public class PrologueScript : MonoBehaviour {
     [SerializeField, CustomLabel("カットごとの待機秒数")] private float[] _cutDuration;
 
     [SerializeField, CustomLabel("スキップゲージ")] private Image _skipGuage;
+    [SerializeField, CustomLabel("スキップゲージ背景")] private Image _guageBackGroundImage;
     [SerializeField, CustomLabel("スキップ文字フェードまでの時間")] private float buttonTextFadeDuration = 2f;
     private Text buttonText;
     private Text buttonText2;
     private Color buttonTextStartColor;
     private Color buttonTextStartColor2;
+    private Color guageBuckGroundImageStartColor;
     private float notSkipButtonDownTime;
 
     private void Awake()
@@ -29,6 +31,7 @@ public class PrologueScript : MonoBehaviour {
         buttonText2 = _skipGuage.transform.GetChild(1).GetComponent<Text>();
         buttonTextStartColor = buttonText.color;
         buttonTextStartColor2 = buttonText2.color;
+        guageBuckGroundImageStartColor = _guageBackGroundImage.color;
 
         StartCoroutine("Prologue");
     }
@@ -71,6 +74,7 @@ public class PrologueScript : MonoBehaviour {
         if (Input.GetButton("Cancel")) {
             buttonText.color = buttonTextStartColor;
             buttonText2.color = buttonTextStartColor2;
+            _guageBackGroundImage.color = guageBuckGroundImageStartColor;
             notSkipButtonDownTime = 0;
             _skipGuage.fillAmount += Time.deltaTime / 1.5f;
             if(1f <= _skipGuage.fillAmount) {
@@ -96,6 +100,7 @@ public class PrologueScript : MonoBehaviour {
                         // 「ボタン押してない秒数」が規定の秒数を超えるとtextがフェードアウトし始める
                         buttonText.color -= new Color(0, 0, 0, Time.deltaTime * 1.5f);
                         buttonText2.color -= new Color(0, 0, 0, Time.deltaTime * 1.5f);
+                        _guageBackGroundImage.color -= new Color(0, 0, 0, Time.deltaTime * 1.5f);
                     }
                 }
             }

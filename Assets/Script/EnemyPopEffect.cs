@@ -11,14 +11,12 @@ public class EnemyPopEffect : MonoBehaviour {
     [SerializeField, CustomLabel("破片プレハブ")] private GameObject _fragmentTuukikou;
     [SerializeField, CustomLabel("検知距離")] private float _distance = 1f;
     [SerializeField, CustomLabel("通気口揺らす時間")] private float _ventShakeTime = 1.5f;     // 通気口が揺れる時間　設定用
-    private GameObject instantiatedPopEffect;   // 生成した出現エフェクトを参照するための変数
     private bool isPopEffectInstantiated;
     private GameObject player;
     private Enemy_ChildSpiderAnimTest enemy_ChildSpiderAnimTest;
     private EnemyHpbar enemyHpbar;
     private CubismRenderController cubismRender;
     private Rigidbody2D rb;
-    private Explodable explodable;
     private Vector3 fragmentPosition;
     private float ventshaketime;            // 通気口が揺れる時間　分岐用
     private bool isShakeVent;               // 通気口を揺らしたか。
@@ -30,9 +28,6 @@ public class EnemyPopEffect : MonoBehaviour {
         cubismRender.Opacity = 0f;
         rb.Sleep();
         enemy_ChildSpiderAnimTest.AllColliderDisable();
-        if (isPopEffectInstantiated) {
-            Destroy(instantiatedPopEffect);
-        }
     }
 
     private void Awake()
@@ -50,7 +45,6 @@ public class EnemyPopEffect : MonoBehaviour {
     void Start () {
         
         player = GameObject.FindGameObjectWithTag("Player").gameObject;
-        explodable = _tuukikou.transform.GetChild(0).GetComponent<Explodable>();
         fragmentPosition = _tuukikou.transform.GetChild(0).transform.position;
     }
 

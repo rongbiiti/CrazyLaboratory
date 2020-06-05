@@ -5,10 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using Live2D.Cubism.Core;
-using Live2D.Cubism.Framework;
 using Live2D.Cubism.Rendering;
 using UnityEngine.SceneManagement;
-using Live2D.Cubism.Framework.Json;
 
 /// <summary>
 /// プレイヤーのスクリプト
@@ -25,10 +23,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D boxcol;
     private CubismRenderController cubismRender;
     private CircleCollider2D headCollider;
-    public bool _Debug;
     [SerializeField] private LayerMask _layerMask;
-    [SerializeField, CustomLabel("デバッグテキスト")] private Text _debug;
-    [SerializeField, CustomLabel("BGMミュート")] private bool isBGMMute = false;
 
     [SerializeField, CustomLabel("最初から銃を所持")] private bool isStartGetGun = false;
     [SerializeField, CustomLabel("HPバー")] private Slider _HPbar;
@@ -64,14 +59,6 @@ public class PlayerController : MonoBehaviour
         Shot3,
         Shot4
     }
-    private GameObject drawables;    // キャラクターの見た目
-
-    [SerializeField, CustomLabel("ジャンプオフセット銃未取得")] private Vector3 _drwablOffsetNormal;
-    [SerializeField, CustomLabel("ジャンプオフセット銃未取得走り時")] private Vector3 _drwablOffsetNormalRunning;
-    [SerializeField, CustomLabel("ジャンプオフセット銃取得済")] private Vector3 _drwablOffsetGetGun;
-    [SerializeField, CustomLabel("ジャンプオフセット銃取得済走り")] private Vector3 _drwablOffsetGetGunRunning;
-    [SerializeField, CustomLabel("着地オフセット")] private Vector3 _drwablOffsetGraunding;
-    private Vector3 drwablsStartOffset;
 
     [SerializeField, CustomLabel("地面との当たり判定")] private ContactFilter2D filter2d;
     private bool isGrounded = true;
@@ -85,10 +72,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
     [SerializeField, Range(0.0167f, 10f), CustomLabel("酸の被ダメージレート")] private float _acidDamageRate = 0.5f;
     [SerializeField, Range(0, 999), CustomLabel("弾の最大所持数")] private int _bulletCapacity = 10;
-    [HideInInspector, CustomLabel("ホールメイカー弾最大所持数")] private int _hmBulletCapacity = 9999;
-    [HideInInspector, CustomLabel("ホールメイカー弾同時発射数")] private int _hmShotBullets = 6;
-    [HideInInspector, CustomLabel("ホールメイカー拡散範囲")] private float _hmSpreadRange = 45f;
-    [HideInInspector, CustomLabel("ホールメイカー発射間隔")] private float _hmFireRate = 2.5f;
+    private int _hmBulletCapacity = 9999;   // ホールメイカー弾最大所持数
+    private int _hmShotBullets = 6;         // ホールメイカー弾同時発射数
+    private float _hmSpreadRange = 45f;        // ホールメイカー拡散範囲
+    private float _hmFireRate = 2.5f;          // ホールメイカー発射間隔
     [SerializeField, Range(0f, 5f), CustomLabel("弾の発射間隔")] private float _fireRate = 0f;
 
     [SerializeField, Range(0.001f, 1f), CustomLabel("スティック上向きの閾値")] private float YStickUpDeadZone = 0.4f;
@@ -277,6 +264,8 @@ public class PlayerController : MonoBehaviour
         get { return isGhost; }
     }
 
+    public bool IsEvent { get; set; }
+
     private void Awake()
     {
         // 弾のオブジェクトプールを作成
@@ -304,6 +293,12 @@ public class PlayerController : MonoBehaviour
             _hmShotBullets--;
         }
 
+        restartPosition = transform.position;
+        startPosition = transform.position;
+        restartHP = _maxHP;
+
+        HP = _maxHP;
+
         //アニメーション関連
         Model = this.FindCubismModel();
         animator = GetComponent<Animator>();
@@ -318,8 +313,6 @@ public class PlayerController : MonoBehaviour
         weight3 = 0f;
         weight4 = 0f;
         SetState(State.None, first: true);
-        drawables = transform.GetChild(5).gameObject;
-        drwablsStartOffset = drawables.transform.localPosition;
     }
 
     private void Start()
@@ -329,25 +322,14 @@ public class PlayerController : MonoBehaviour
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
         cam = GameObject.Find("Main Camera");
-        
-        jumpTimeCounter = pm.JumpTime;
-
-        if (!isBGMMute) {
-
-        }
-
-        
 
         if (_isUIDisplay) {
             _bulletsRemain.text = " ∞ ";
             _bulletsRemain.enabled = false;
         }
-
-        restartPoints = GameObject.FindGameObjectsWithTag("RestartPoint");
-        restartPosition = transform.position;
-        startPosition = transform.position;
-        restartHP = _maxHP;
+        jumpTimeCounter = pm.JumpTime;
         restartCameraPosition = cam.transform.position;
+        restartPoints = GameObject.FindGameObjectsWithTag("RestartPoint");
 
         if (isStartGetGun)
         {
@@ -366,7 +348,6 @@ public class PlayerController : MonoBehaviour
 
         startMoveSpeed = pm.MoveSpeed;
 
-        HP = _maxHP;
         if (!SaveManager.Instance.IsNewGame) {
             HP = SaveManager.Instance.save.playerHP;
         }
@@ -382,7 +363,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!(0 < HP)) return;
+        if (!(0 < HP) || IsEvent) return;
 
         // 真上に発射
         if (ceilDeadZone < im.Trigger && isGetGun)
@@ -596,6 +577,87 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        if (IsEvent) {
+            
+            // 地面と当たり判定をしている
+            rb.AddForce(new Vector2(0, Physics.gravity.y * pm.GravityRate));
+            isGrounded = rb.IsTouching(filter2d);
+
+            if (isGetGun) {
+                weight2 = 1f;
+                weight0 = 0f;
+                weight1 = 0f;
+                weight3 = 0f;
+                weight4 = 0f;
+
+                animator.SetLayerWeight(Shot0Layer, weight0);
+                animator.SetLayerWeight(Shot1Layer, weight1);
+                animator.SetLayerWeight(Shot2Layer, weight2);
+                animator.SetLayerWeight(Shot3Layer, weight3);
+                animator.SetLayerWeight(Shot4Layer, weight4);
+            }
+            
+            //{11(6),3(7),手前}{15(11),14(12)奥側} 手のパーツ
+            if (isGetGun && flip) {                             //銃を持ってるとき、右手に銃を持たす
+                Model.Parts[6].Opacity = 0;
+                Model.Parts[7].Opacity = 1;
+                Model.Parts[11].Opacity = 1;
+                Model.Parts[12].Opacity = 0;
+            } else if (isGetGun && !flip) {                             //銃を持ってるとき、左手に銃を持たす
+                Model.Parts[6].Opacity = 1;
+                Model.Parts[7].Opacity = 0;
+                Model.Parts[11].Opacity = 0;
+                Model.Parts[12].Opacity = 1;
+            }
+
+            if (isGrounded) {
+                if (groundingTime < pm.MaxLandingTime) {
+                    groundingTime++;
+                }
+                isJumpingCheck = false;
+                if (0 < groundingTime && groundingTime < pm.MaxLandingTime && jumpWaitTime < 0) {
+                    anicount = 0.0f;
+                    animator.SetBool("Stand", false);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("JumpStart", false);
+                    animator.SetBool("JumpStart-run", false);
+                    animator.SetBool("JumpUp", false);
+                    animator.SetBool("JumpStart-run", false);
+                    animator.SetBool("JumpUp-run", false);
+                    animator.SetBool("JumpDown", false);
+                    animator.SetBool("JumpEnd", true);
+                    animator.SetBool("Death1", false);
+                    animator.SetBool("Death2", false);
+                    // ここに着地した瞬間の処理書くといいかも
+                } else {  // 停止中
+                  
+                    animator.SetBool("Stand", true);
+                    animator.SetBool("Run", false);
+                    animator.SetBool("JumpStart", false);
+                    animator.SetBool("JumpUp", false);
+                    animator.SetBool("JumpStart-run", false);
+                    animator.SetBool("JumpUp-run", false);
+                    animator.SetBool("JumpDown", false);
+                    animator.SetBool("JumpEnd", false);
+                    animator.SetBool("Wait", false);
+                    animator.SetBool("Death1", false);
+                    animator.SetBool("Death2", false);
+                }
+            } else {
+                groundingTime = 0;
+                isJumping = false;
+                animator.SetBool("JumpStart", false);
+                animator.SetBool("JumpUp", false);
+                animator.SetBool("JumpStart-run", false);
+                animator.SetBool("JumpUp-run", false);
+                animator.SetBool("JumpDown", true);
+                animator.SetBool("JumpEnd", false);
+                animator.SetBool("Run", false);
+                
+            }
+            return;
+        }
+
         sm.PlayTime += Time.deltaTime;
         sm.GameClearTime += Time.deltaTime;
         
@@ -652,11 +714,6 @@ public class PlayerController : MonoBehaviour
             PlayerMove();
         }
         
-    }
-
-    private void LateUpdate()
-    {
-        StartCoroutine("DrawablesControl");
     }
 
     private void PlayerMove()
@@ -826,24 +883,6 @@ public class PlayerController : MonoBehaviour
 
         if (im.JumpKey == 0 && jumpWaitTime < 0) {
             isJumpingCheck = true;
-        }
-
-        if (_Debug) _debug.text = animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpStart")).ToString();
-    }
-
-    private IEnumerator DrawablesControl()
-    {
-        if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpStart-run"))) {
-            yield return new WaitForSeconds(0.02f);
-            drawables.transform.localPosition = _drwablOffsetNormalRunning;
-        } else if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpStart"))) {
-            yield return new WaitForSeconds(0.02f);
-            drawables.transform.localPosition = _drwablOffsetNormal;
-        } else if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash.Equals(Animator.StringToHash("JumpEnd"))) {
-            yield return new WaitForSeconds(0.02f);
-            drawables.transform.localPosition = _drwablOffsetGraunding;
-        } else {
-            drawables.transform.localPosition = drwablsStartOffset;
         }
     }
 

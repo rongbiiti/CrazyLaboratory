@@ -45,6 +45,7 @@ public class PausePanel : MonoBehaviour
 
 	public void OpenPausePanel()
 	{
+        if (pc.IsEvent) return;
 		_pauseMenu.SetActive(true);
 		panel.enabled = true;
 		Time.timeScale = 0;

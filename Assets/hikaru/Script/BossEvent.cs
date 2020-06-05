@@ -54,7 +54,7 @@ public class BossEvent : MonoBehaviour {
     private void PlayerStop()
     {
         _playercontroller.AnimStop();
-        _playercontroller.enabled = false;
+        _playercontroller.IsEvent = true;
         Debug.Log("プレイヤーストップ");
     }
 
@@ -72,7 +72,7 @@ public class BossEvent : MonoBehaviour {
 
     private void PlayerControllerSetActive()
     {
-        _playercontroller.enabled = true;
+        _playercontroller.IsEvent = false;
         Debug.Log("プレイヤーコントローラーアクティブ");
     }
 }
