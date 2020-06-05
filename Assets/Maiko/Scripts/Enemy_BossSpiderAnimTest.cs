@@ -56,12 +56,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private byte AttackType;    //攻撃のタイプ 0:Wait 1:攻撃前befor 2:攻撃attack 3:攻撃後after
     [SerializeField] private int _rangeMin = 2;     //ランダムの最小値
     [SerializeField] private int _rangeMax = 4;     //ランダムの最大値
-    [SerializeField] private float _beforeAttackRate = 0.7f;    //攻撃前の硬直時間
-    //private float BeforeAttackTime;     //攻撃前の時間の格納用
-    [SerializeField] private float _AttackRate = 1f; //攻撃の時間
     private float AttackTime;           //攻撃の時間の格納用  
-    [SerializeField] private float _afterAttackRate = 1f;    //攻撃後の硬直時間
-    //private float AfterAttackTime;      //攻撃後の時間の格納用
     [SerializeField] private float _playerY;    //playerのｙにプラス　降下時点の微調整用
     [SerializeField] private float _playerX;    //playerのｘにプラスかマイナスする　効果時点の微調整用
     [SerializeField] private float _fallSpeed = 30f;  //降下スピード
@@ -101,7 +96,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
     private int ActivityCount;     //カウントによって行動を登録
     /*******************GameObject**********************/
     [SerializeField] private GameObject _switchObject;   //上昇して行動を切り替えさせるためのオブジェクト
-    [SerializeField] private GameObject _attackObject;   //攻撃のオブジェクト
     [SerializeField] private GameObject _bodyPressEndObject;    //ボディプレスを止めるためのオブジェクト
     [SerializeField] private GameObject _ThreadObject;  //糸のオブジェクト
     [SerializeField] private GameObject _animeObject;   //アニメ用オブジェクト当たり判定
@@ -156,7 +150,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
         _switchObject.transform.parent = null;
         _bodyPressEndObject.transform.parent = null;
         _bodyPressEndObject.SetActive(false);
-        _attackObject.SetActive(false);
         _ThreadObject.transform.position = new Vector3(-75f, 77f, 0.0f);
         _ThreadObject.SetActive(false);
         //_animeObject.transform.parent = null;
@@ -298,7 +291,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 InitActivityType((byte)e_ActivityType.Stan);
                 AttackTime = 0.0f;
                 _bodyPressEndObject.SetActive(true);
-                _attackObject.SetActive(false);
                 //StanTime = _stanRate;
             }
 
@@ -373,30 +365,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                             }
 
                             transform.position = BossP;
-                            break;
-                        //case (byte)e_AttackType.horizontalmove:
-                        //    //
-                        //    break;
-                        case (byte)e_AttackType.BeforAttack:
-                            animator.SetBool("Stand2", false);
-                            animator.SetBool("Atack", true);
-
-                            AttackType = (byte)e_AttackType.Attack;
-                            AttackTime = _AttackRate;
-                            _attackObject.SetActive(true);
-                            break;
-                        case (byte)e_AttackType.Attack:
-
-                            AttackType = (byte)e_AttackType.AfterAttack;
-                            AttackTime = _afterAttackRate;
-                            _attackObject.SetActive(false);
-                            break;
-                        case (byte)e_AttackType.AfterAttack:
-                            animator.SetBool("Stand2", true);
-                            animator.SetBool("Atack", false);
-                            moveSpeed = _ascentSpeed;   //上昇するスピードを格納
-                            _switchObject.SetActive(true);
-                            SwitchFlag = false;
                             break;
                     }
                 }
@@ -531,8 +499,6 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                                         var ls = startScale;
                                         transform.localScale = new Vector2(ls.x, ls.y);
                                     }
-                                    //AttackType = (byte)e_AttackType.BeforAttack;
-                                    //AttackTime += _beforeAttackRate;
                                     FallLocationY = transform.position.y;
                                     Debug.Log(FallLocationY);
                                     rb.velocity = new Vector2(0.0f, 0.0f);
@@ -589,20 +555,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                                     }
                                 }
                             }
-
-                            break;
-
-                        case (byte)e_AttackType.AfterAttack:
-                            if (AttackTime <= 0)
-                            {
-                                Vector2 speed = new Vector2(0.0f, moveSpeed);
-                                rb.velocity = speed;
-                                animator.SetBool("Stand2", true);
-                                animator.SetBool("Atack", false);
-                            }
                             break;
                     }
-
                     break;
 
                 case (byte)e_ActivityType.CallSpider:
