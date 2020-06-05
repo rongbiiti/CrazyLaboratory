@@ -76,6 +76,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
 
     Animator animator;
 
+    private CubismRenderController cubismRender;
+
     private void Awake()
     {
         bodyCollider = GetComponent<BoxCollider2D>();
@@ -122,6 +124,8 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         
 
         animator = GetComponent<Animator>();
+
+        cubismRender = GetComponent<CubismRenderController>();
     }
 
     private void OnEnable()
@@ -172,12 +176,11 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
+                if (_destroyTime <= 0) {
+                    StartCoroutine("FadeOut");
+                }
             }
-            else
-            {
-                gameObject.SetActive(false);
-                enemyHpbar.hpbar.gameObject.SetActive(false);
-            }
+            
             //if (0 < transform.localScale.x)
             //{
             //    transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
@@ -570,5 +573,15 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
             Count = 0;
             Debug.Log(gameObject.name + "にガレキがヒットしてスタンした");
         }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        while (0 < cubismRender.Opacity) {
+            cubismRender.Opacity -= 1 / 1f * Time.deltaTime;
+            yield return 0;
+        }
+        gameObject.SetActive(false);
+        enemyHpbar.hpbar.gameObject.SetActive(false);
     }
 }
