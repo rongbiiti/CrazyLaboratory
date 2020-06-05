@@ -627,6 +627,7 @@ public class PlayerController : MonoBehaviour
                     da.Color = new Color(da.Color.r, da.Color.g, da.Color.b, 1f);
                 }
                 IsNotNockBack = false;
+                gameObject.layer = LayerMask.NameToLayer("Player");
             }
         }
         
@@ -898,6 +899,7 @@ public class PlayerController : MonoBehaviour
                         da.Color = new Color(da.Color.r, da.Color.g, da.Color.b, 0.3f);
                     }
                 }
+                gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
                 
             } else {
                 if(0 < HP) {

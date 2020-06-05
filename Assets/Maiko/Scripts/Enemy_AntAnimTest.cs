@@ -60,6 +60,7 @@ public class Enemy_AntAnimTest : MonoBehaviour {
     Animator animator;
     private CubismModel Model;
     private float anitime = 0f;
+    private CubismRenderController cubismRender;
 
     // Use this for initialization
     void Start()
@@ -92,6 +93,7 @@ public class Enemy_AntAnimTest : MonoBehaviour {
 
         animator = GetComponent<Animator>();
         Model = this.FindCubismModel();
+        cubismRender = GetComponent<CubismRenderController>();
 
     }
 
@@ -141,12 +143,11 @@ public class Enemy_AntAnimTest : MonoBehaviour {
             if (0 < _destroyTime)
             {
                 _destroyTime -= Time.deltaTime;
+                if (_destroyTime <= 0) {
+                    StartCoroutine("FadeOut");
+                }
             }
-            else
-            {
-                gameObject.SetActive(false);
-                enemyHpbar.hpbar.gameObject.SetActive(false);
-            }
+            
             //if (0 < transform.localScale.x)
             //{
             //    transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
@@ -466,5 +467,15 @@ public class Enemy_AntAnimTest : MonoBehaviour {
             }
 
         }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        while (0 < cubismRender.Opacity) {
+            cubismRender.Opacity -= 1 / 1f * Time.deltaTime;
+            yield return 0;
+        }
+        gameObject.SetActive(false);
+        enemyHpbar.hpbar.gameObject.SetActive(false);
     }
 }

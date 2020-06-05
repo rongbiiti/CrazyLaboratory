@@ -824,7 +824,7 @@ GameObject:
   - component: {fileID: 4783039755345640}
   - component: {fileID: 114081522326088762}
   - component: {fileID: 58292564964536208}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: DrawableTracker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -910,7 +910,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4414722358111268}
   - component: {fileID: 61417073942261026}
-  m_Layer: 9
+  m_Layer: 14
   m_Name: FootCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1789,7 +1789,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1643303850178182}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -100.0478, y: 6.2, z: 0}
+  m_LocalPosition: {x: -95.35001, y: 12.72, z: 0}
   m_LocalScale: {x: -4, y: 4, z: 1}
   m_Children:
   - {fileID: 4184913247081586}
@@ -2335,7 +2335,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 02ccb0de1b300f9479fde7273c0f07f1, type: 2}
+  - {fileID: 2100000, guid: dd6873ae7e203b74bb668af926c791d1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3506,7 +3506,7 @@ MonoBehaviour:
     m_Bits: 33792
   _debug: {fileID: 0}
   isBGMMute: 0
-  isStartGetGun: 1
+  isStartGetGun: 0
   _HPbar: {fileID: 0}
   _drwablOffsetNormal: {x: 0, y: 0, z: 0}
   _drwablOffsetNormalRunning: {x: 0, y: 0, z: 0}
