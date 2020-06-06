@@ -38,6 +38,8 @@ public class Elevator : MonoBehaviour
         SoundManagerV2.Instance.PlaySE(40);
 		pc.AnimStop();
 		pc.IsEvent = true;
+        ScoreManager.Instance.RestartPosNum = 0;
+        ScoreManager.Instance.IsStage2RestartPointReached = false;
         yield return new WaitForSeconds(1f);
         SoundManagerV2.Instance.PlaySE(39);
         cc.enabled = false;

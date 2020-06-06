@@ -206,7 +206,6 @@ public class PlayerController : MonoBehaviour
     Equipment equipment;
 
     private List<float> hmSpreadAngle = new List<float>();
-    private GameObject[] restartPoints;
     private float muzzleVelocity = 5f;
     private bool isGetGun = false;
     private bool isGetHoleMaker = false;
@@ -234,11 +233,6 @@ public class PlayerController : MonoBehaviour
     private float jumpTimeCounter;
     private float _jumpPower;
     private float jumpMinTime;
-
-    private Vector3 restartPosition;
-    private float restartHP;
-    private Vector3 startPosition;
-    private Vector3 restartCameraPosition;
 
     private GameObject damageEffect;
 
@@ -293,10 +287,6 @@ public class PlayerController : MonoBehaviour
             _hmShotBullets--;
         }
 
-        restartPosition = transform.position;
-        startPosition = transform.position;
-        restartHP = _maxHP;
-
         HP = _maxHP;
 
         //アニメーション関連
@@ -327,9 +317,8 @@ public class PlayerController : MonoBehaviour
             _bulletsRemain.text = " ∞ ";
             _bulletsRemain.enabled = false;
         }
+
         jumpTimeCounter = pm.JumpTime;
-        restartCameraPosition = cam.transform.position;
-        restartPoints = GameObject.FindGameObjectsWithTag("RestartPoint");
 
         if (isStartGetGun)
         {
@@ -355,6 +344,16 @@ public class PlayerController : MonoBehaviour
         _HPbar.maxValue = _maxHP;
         _HPbar.value = HP;
         _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = true;
+
+        if(0 < ScoreManager.Instance.RestartPosNum) {
+            Stage1RestartValueLoad();
+            isGetGun = true;
+            if (state != State.Shot2) {
+                SetState(State.Shot2);
+            }
+            equipment = Equipment.Handgun;
+            return;
+        }
 
         if (ScoreManager.Instance.IsStage2RestartPointReached) {
             Stage2RestartValueLoad();
@@ -973,17 +972,10 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine("SlowMotion");
                 headCollider.enabled = true;
 
-                // リスタートするときの位置が初期位置のままだったらシーンリロードさせる。
-                // でなければ（リスタートを一度でも通過していれば）リスタートコルーチン発動。
-                if (startPosition == restartPosition)
-                {
-                    FadeManager.Instance.LoadScene(SceneManager.GetActiveScene().name, 1f);
-                }
-                else
-                {
-                    FadeManager.Instance.FadeScreen(1f);
-                    StartCoroutine(Restart(1f));
-                }
+                // 現在のシーンをリロードする。
+                // リトライ回数を増加させる。
+                RetryCntUp();
+                FadeManager.Instance.LoadScene(SceneManager.GetActiveScene().name, 1f);
                 
             }
         }
@@ -1228,10 +1220,6 @@ public class PlayerController : MonoBehaviour
             equipment = Equipment.HoleMaker;
             hmBullets += 100;
             
-        } else if (collision.CompareTag("RestartPoint")) {
-            restartPosition = transform.position;
-            restartHP = HP;
-            restartCameraPosition = cam.transform.position;
         }
     }
 
@@ -1306,56 +1294,29 @@ public class PlayerController : MonoBehaviour
 
 
     // リスタート時の処理
-    private IEnumerator Restart(float interval)
+    private void RetryCntUp()
     {
-        yield return new WaitForSeconds(interval);
         // リトライ回数足す
         sm.RetryCnt++;
         sm.TotalRetryCnt++;
 
-        // startで取得しておいたリスタートポイントたちのメソッド実行
-        foreach (var rps in restartPoints)
-        {
-            RestartPoint rp = rps.GetComponent<RestartPoint>();
-            rp.TurnOnSpawner();
-        }
+    }
 
-        // 頭のコライダーをオフにする
-        headCollider.enabled = false;
+    public void Stage1RestartValueSave()
+    {
+        ScoreManager.Instance.S1_RestartPos = transform.position;
+        ScoreManager.Instance.S1_RestartHP = HP;
+        ScoreManager.Instance.S1_RestartCamPos = cam.transform.position;
+    }
 
-        // 位置を最後に通ったリスタートポイントの位置に転送、カメラもその位置に。
-        transform.position = restartPosition;
-        cam.transform.position = restartCameraPosition;
-
-        // リジッドボディの加速度もゼロにする
-        rb.velocity = Vector2.zero;
-
-        // HPをリスタートポイント通過時のHPに戻し、HPバーのvalueにその値を代入する。
+    public void Stage1RestartValueLoad()
+    {
+        transform.position = ScoreManager.Instance.S1_RestartPos;
+        cam.transform.position = ScoreManager.Instance.S1_RestartCamPos;
         _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = false;
-        HP = restartHP;
+        HP = ScoreManager.Instance.S1_RestartHP;
         _HPbar.value = HP;
         _HPbar.GetComponent<PlayerHPbarScript>().isStartFunctionCalledAfter = true;
-
-        // リスタートを一度でも通ったことがあったら銃をもたせる。
-        // でなければ（Stage1でリスタートポイント通過前に死亡）銃未所持状態に戻す
-        if (startPosition != restartPosition || isStartGetGun)
-        {
-            isGetGun = true;
-            equipment = Equipment.Handgun;
-        }
-        else
-        {
-            isGetGun = false;
-            equipment = Equipment.None;
-            weight0 = 0f;
-            weight1 = 0f;
-            weight2 = 0f;
-            weight3 = 0f;
-            weight4 = 0f;
-            SetState(State.None, first: true);
-            AnimStop();
-            
-        }
     }
 
     public void Stage2RestartValueSave()

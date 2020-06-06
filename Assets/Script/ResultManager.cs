@@ -98,7 +98,7 @@ public class ResultManager : MonoBehaviour
 			case 2:
 				switch (sm.SceneName)
 				{
-					case "Stage2":
+					case "Stage 2 ":
 						FadeManager.Instance.LoadSceneNormalTrans("Stage3", 1.5f);
                         ScoreManager.Instance.IsStage2RestartPointReached = false;
                         StartCoroutine(PlayBGM(2));

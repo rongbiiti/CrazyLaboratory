@@ -160,6 +160,42 @@ public class ScoreManager : MonoBehaviour
 		set { sceneName = value; }
 	}
 
+    // ステージ1のリスタート座標
+    private Vector3 s1_RestartPos;
+
+    public Vector3 S1_RestartPos
+    {
+        get { return s1_RestartPos; }
+        set { s1_RestartPos = value; }
+    }
+
+    // ステージ1のリスタート時カメラ座標
+    private Vector3 s1_RestartCamPos;
+
+    public Vector3 S1_RestartCamPos
+    {
+        get { return s1_RestartCamPos; }
+        set { s1_RestartCamPos = value; }
+    }
+
+    // Stage1のリスタート時HP
+    private float s1_RestartHP;
+
+    public float S1_RestartHP
+    {
+        get { return s1_RestartHP; }
+        set { s1_RestartHP = value; }
+    }
+
+    // Stage1の通過したリスタートポイントの番号
+    private int restartPosNum;
+
+    public int RestartPosNum
+    {
+        get { return restartPosNum; }
+        set { restartPosNum = value; }
+    }
+
     // ステージ2のリスタートポイントに到達したか
     private bool isStage2RestartPointReached;
 
@@ -241,6 +277,8 @@ public class ScoreManager : MonoBehaviour
 		totalRetryCnt = 0;
 		totalStunCnt = 0;
 		totalMedGetCnt = 0;
+        restartPosNum = 0;
+        isStage2RestartPointReached = false;
 	}
 	
 }
