@@ -36,6 +36,8 @@ public class TitleSceneManagerTest : MonoBehaviour {
     [SerializeField, CustomLabel("Stage3")]
     private GameObject _stage3;
 
+    private float anitime = 0f;
+
     private void Start()
     {
         SoundManagerV2.Instance.StopBGM();
@@ -59,14 +61,15 @@ public class TitleSceneManagerTest : MonoBehaviour {
 
     public void NewGame()
     {
-        FadeManager.Instance.LoadSceneNormalTrans("PrologueScene", 2f);
         _animator.SetTrigger("Decision2");
-        SoundManagerV2.Instance.PlaySE(16);
-        _startMenu.SetActive(false);
-        SaveManager.Instance.IsNewGame = true;
-        SaveManager.Instance.Save(9999, 1);
-        isDicide = true;
-        ScoreManager.Instance.AllReset();
+
+        FadeManager.Instance.LoadSceneNormalTrans("PrologueScene", 2f);
+            SoundManagerV2.Instance.PlaySE(16);
+            _startMenu.SetActive(false);
+            SaveManager.Instance.IsNewGame = true;
+            SaveManager.Instance.Save(9999, 1);
+            isDicide = true;
+            ScoreManager.Instance.AllReset();
     }
 
     public void StageSelectOpen()
