@@ -902,9 +902,9 @@ public class PlayerController : MonoBehaviour
             capcol.enabled = false;
             boxcol.enabled = false;
             foreach(var da in Drawables) {
-                da.Color = new Color(1, 1, 1, 0.3f);
+                da.Color = new Color(1, 1, 1, 0.6f);
             }
-            cubismRender.Opacity = 0.3f;
+            cubismRender.Opacity = 0.6f;
         }
         else
         {
@@ -932,9 +932,9 @@ public class PlayerController : MonoBehaviour
                 damageEffect.transform.position = transform.position;
                 damageEffect.SetActive(true);
                 if(0 < HP) {
-                    cubismRender.Opacity = 0.3f;
+                    cubismRender.Opacity = 0.6f;
                     foreach (var da in Drawables) {
-                        da.Color = new Color(da.Color.r, da.Color.g, da.Color.b, 0.3f);
+                        da.Color = new Color(da.Color.r, da.Color.g, da.Color.b, 0.6f);
                     }
                 }
                 gameObject.layer = LayerMask.NameToLayer("PlayerInvincible");
@@ -1304,9 +1304,7 @@ public class PlayerController : MonoBehaviour
 
     public void Stage1RestartValueSave()
     {
-        ScoreManager.Instance.S1_RestartPos = transform.position;
         ScoreManager.Instance.S1_RestartHP = HP;
-        ScoreManager.Instance.S1_RestartCamPos = cam.transform.position;
     }
 
     public void Stage1RestartValueLoad()

@@ -19,6 +19,8 @@ public class RestartPoint : MonoBehaviour {
 		if (other.CompareTag("Player"))
 		{
             other.GetComponent<PlayerController>().Stage1RestartValueSave();
+            ScoreManager.Instance.S1_RestartPos = transform.position;
+            ScoreManager.Instance.S1_RestartCamPos = new Vector3(transform.position.x, transform.position.y + 6.85f, -10f);
             ScoreManager.Instance.RestartPosNum = _num;
             gameObject.SetActive(false);
 		}
