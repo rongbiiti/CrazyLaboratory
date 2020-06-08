@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngineInternal;
-
 using System.Collections;
 
 public class TitleSceneManager : MonoBehaviour {
@@ -20,7 +19,7 @@ public class TitleSceneManager : MonoBehaviour {
 
     [SerializeField, CustomLabel("StageSelect")]
     private GameObject _stageSelect;
-    
+
     [SerializeField, CustomLabel("Option")]
     private GameObject _option;
 
@@ -29,34 +28,37 @@ public class TitleSceneManager : MonoBehaviour {
 
     [SerializeField, CustomLabel("Stage1")]
     private GameObject _stage1;
-    
+
     [SerializeField, CustomLabel("Stage2")]
     private GameObject _stage2;
-    
+
     [SerializeField, CustomLabel("Stage3")]
     private GameObject _stage3;
+
+    private float anitime = 0f;
 
     private void Start()
     {
         SoundManagerV2.Instance.StopBGM();
     }
 
-    void Update () {
-		if(Input.anyKey && !isAnyKeyPress) {
-            _animator.SetTrigger("Decide");
+    void Update()
+    {
+        if (Input.anyKey && !isAnyKeyPress) {
+            _animator.SetTrigger("Decision1");
             SoundManagerV2.Instance.PlaySE(21);
             _plsAnyKey.SetActive(false);
             StartMenuOpen();
             isAnyKeyPress = true;
-        } else if (InputManager.Instance.JumpKey == 1 && isAnyKeyPress && !_startMenu.activeSelf && !isDicide)
-        {
+        } else if (InputManager.Instance.JumpKey == 1 && isAnyKeyPress && !_startMenu.activeSelf && !isDicide) {
             StartMenuOpen();
         }
-	}
+    }
 
     public void NewGame()
     {
-        FadeManager.Instance.LoadSceneNormalTrans("PrologueScene", 2f);
+        _animator.SetTrigger("Decision2");
+        StartCoroutine(TransScene("PrologueScene"));
         SoundManagerV2.Instance.PlaySE(16);
         _startMenu.SetActive(false);
         SaveManager.Instance.IsNewGame = true;
@@ -68,8 +70,7 @@ public class TitleSceneManager : MonoBehaviour {
     public void StageSelectOpen()
     {
         SoundManagerV2.Instance.PlaySE(21);
-        switch (SaveManager.Instance.save.stage)
-        {
+        switch (SaveManager.Instance.save.stage) {
             case 1:
                 _stage1.SetActive(true);
                 break;
@@ -95,7 +96,7 @@ public class TitleSceneManager : MonoBehaviour {
         _option.SetActive(false);
         _quit.SetActive(false);
     }
-    
+
     public void OptionOpen()
     {
         SoundManagerV2.Instance.PlaySE(21);
@@ -113,30 +114,33 @@ public class TitleSceneManager : MonoBehaviour {
     public void Stage1()
     {
         SoundManagerV2.Instance.PlaySE(21);
+        _animator.SetTrigger("Decision2");
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadSceneNormalTrans("Stage1", 2f);
+        StartCoroutine(TransScene("Stage1"));
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();
         StartCoroutine(PlayBGM(1));
     }
-    
+
     public void Stage2()
     {
         SoundManagerV2.Instance.PlaySE(21);
+        _animator.SetTrigger("Decision2");
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadSceneNormalTrans("Stage2", 2f);
+        StartCoroutine(TransScene("Stage2"));
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();
         StartCoroutine(PlayBGM(0));
     }
-    
+
     public void Stage3()
     {
         SoundManagerV2.Instance.PlaySE(21);
+        _animator.SetTrigger("Decision2");
         _stageSelect.SetActive(false);
-        FadeManager.Instance.LoadSceneNormalTrans("Stage3", 2f);
+        StartCoroutine(TransScene("Stage3"));
         SaveManager.Instance.IsNewGame = false;
         isDicide = true;
         ScoreManager.Instance.AllReset();
@@ -144,16 +148,22 @@ public class TitleSceneManager : MonoBehaviour {
 
     public void Quit()
     {
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #elif UNITY_STANDALONE
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_STANDALONE
               UnityEngine.Application.Quit();
-        #endif
+#endif
     }
 
     private IEnumerator PlayBGM(int i)
     {
         yield return new WaitForSeconds(2.1f);
         SoundManagerV2.Instance.PlayBGM(i);
+    }
+
+    private IEnumerator TransScene(string sceneName)
+    {
+        yield return new WaitForSeconds(3f);
+        FadeManager.Instance.LoadSceneNormalTrans(sceneName, 1.5f);
     }
 }
