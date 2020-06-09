@@ -523,6 +523,34 @@ public class Enemy_BeeAnimTest : MonoBehaviour {
                 playerController.Damage(_PlayerDamage);
             }
         }
+
+        if (collision.gameObject.CompareTag("WaitingPoint"))
+        {
+            if (patrolType == 0 && waitType == false)
+            {
+                waitType = true;
+                gameObject.transform.position = waitingPosition;
+                gameObject.transform.eulerAngles = waitingRotion;
+                gameObject.transform.localScale = startScale;
+                rb.velocity = new Vector2(0.0f, 0.0f);
+                _player_Hit_Patrol.SetActive(true);
+
+                int z = (int)Start_Rotation_Z;
+                switch (z)
+                {
+                    case 0:
+                    case 90:
+                        _directionChange = false;
+                        break;
+                    case 180:
+                    case 270:
+                        _directionChange = true;
+                        break;
+                }
+                Direction(playerObject.transform.position);
+                return;
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
