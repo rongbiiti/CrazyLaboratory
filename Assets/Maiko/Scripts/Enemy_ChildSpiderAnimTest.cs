@@ -180,20 +180,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                     StartCoroutine("FadeOut");
                 }
             }
-            
-            //if (0 < transform.localScale.x)
-            //{
-            //    transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            //}
-            //else if (transform.localScale.x < 0)
-            //{
-            //    transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            //}
-            //if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
-            //{
-            //    gameObject.SetActive(false);
-            //    enemyHpbar.hpbar.gameObject.SetActive(false);
-            //}
 
         }
         else
@@ -226,16 +212,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 animator.SetBool("Death", false);
             }
 
-            //if (patrolType == 1 && 0 < trackingTime)
-            //{
-                
-            //    trackingTime -= Time.deltaTime;
-            //    if (trackingTime <= 0)
-            //    {
-            //        Debug.Log("追跡解除");
-            //        patrolType = 0;
-            //    }
-            //}
 
             if (directionChangeFlag && 0 < directionTime)
             {
@@ -243,7 +219,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 
                 if (directionTime <= 0)
                 {
-                    Debug.Log("方向転換準備");
                     directionChangeFlag = false;
                     _direction *= -1;
                     gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
@@ -278,7 +253,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
 
             // transformを取得
             Transform myTransform = this.transform;
-            Debug.Log(patrolType);
             switch (patrolType)
             {
                 case 0:
@@ -318,17 +292,12 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                         directionChangeFlag = true;
                         directionTime = _directionRate;
                         directionChange = true;    //右
-                        //_direction *= -1;
-                        //_directionChange = true;
-                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
                     else if (playerObject.transform.position.x <= transform.position.x && directionChange && AttackPhase == 0 && stanTimeRemain <= 0)
                     {
                         directionChangeFlag = true;
                         directionTime = _directionRate;
                         directionChange = false;     //左
-                        //_direction *= -1;
-                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
 
                     if (AttackPhase == 0 && stanTimeRemain <= 0)
@@ -342,8 +311,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
                 case 2:
                     if (AttackPhase == 1 && stanTimeRemain <= 0)   //敵を捉えた時 攻撃までの硬直
                     {
-                        // 現在の座標からのxyz を1ずつ加算して移動
-                        //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
                         Count += Time.deltaTime;
                         if (Count >= _AttackWait)
                         {
@@ -453,7 +420,6 @@ public class Enemy_ChildSpiderAnimTest : MonoBehaviour {
         if (collision.CompareTag("Player") && patrolType == 0)   //パトロール中にplayerを見つけた時
         {
             patrolType = 1;     //敵を見つけて追いかけるモード
-            //trackingTime = _trackingRate;
             AttackObject.enabled = true;
             playerHitBox.enabled = false;
         }
