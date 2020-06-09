@@ -61,12 +61,17 @@ public class Enemy_AntAnimTest : MonoBehaviour {
     private CubismModel Model;
     private float anitime = 0f;
     private CubismRenderController cubismRender;
+    [SerializeField] private bool _tracking_cancellationflag;    //追いかけるのを解除するオブジェクトが必要かどうか
+    [SerializeField] private GameObject _tracking_cancellation;  //↑のオブジェクト用
+    private Vector2 startTracking_cancellationPo;
+
 
     // Use this for initialization
     void Start()
     {
         startPosition = transform.position;
         startScale = transform.localScale;
+        startTracking_cancellationPo = _tracking_cancellation.transform.position;
         PointA_Position = transform.GetChild(0).gameObject.transform.position;
         PointB_Position = transform.GetChild(1).gameObject.transform.position;
         transform.GetChild(0).gameObject.SetActive(false);
@@ -94,6 +99,11 @@ public class Enemy_AntAnimTest : MonoBehaviour {
         animator = GetComponent<Animator>();
         Model = this.FindCubismModel();
         cubismRender = GetComponent<CubismRenderController>();
+        _tracking_cancellation.transform.parent = null;
+        if (!_tracking_cancellationflag)
+        {
+            _tracking_cancellation.SetActive(false);
+        }
 
     }
 
@@ -130,6 +140,11 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                 _direction = -1;
                 gameObject.transform.localScale = new Vector2(gameObject.transform.localScale.x, gameObject.transform.localScale.y);
             }
+            if (_tracking_cancellationflag)
+            {
+                _tracking_cancellation.SetActive(true);
+                _tracking_cancellation.transform.parent = null;
+            }
         }
 
     }
@@ -148,19 +163,6 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                 }
             }
             
-            //if (0 < transform.localScale.x)
-            //{
-            //    transform.localScale -= new Vector3(startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            //}
-            //else if (transform.localScale.x < 0)
-            //{
-            //    transform.localScale -= new Vector3(-startScale.x / _destroyTime * Time.deltaTime, startScale.y / _destroyTime * Time.deltaTime);
-            //}
-            //if (Mathf.Abs(transform.localScale.x) <= startScale.x / 95)
-            //{
-            //    gameObject.SetActive(false);
-            //    enemyHpbar.hpbar.gameObject.SetActive(false);
-            //}
 
         }
         else
@@ -265,24 +267,20 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                     {
                         directionChangeFlag = true;
                         directionTime = _directionRate;
-                        //_direction *= -1;
                         _directionChange = true;
-                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
                     else if (playerObject.transform.position.x <= transform.position.x && AttackPhase == 0 && _directionChange && stanTimeRemain <= 0)
                     {
                         directionChangeFlag = true;
                         directionTime = _directionRate;
-
-                        //_direction *= -1;
                         _directionChange = false;
-                        //gameObject.transform.localScale = new Vector2(-gameObject.transform.localScale.x, gameObject.transform.localScale.y);
                     }
 
                     if (AttackPhase == 0 && stanTimeRemain <= 0)
                     {
                         // 現在の座標からのxyz を _MoveSpeed ずつ加算して移動
                         myTransform.Translate(_MoveSpeed * _direction, 0.0f, 0.0f, Space.World);
+                        _tracking_cancellation.transform.position = startTracking_cancellationPo;
                     }
 
                     var difference = playerObject.transform.position.x - gameObject.transform.position.x;
@@ -305,8 +303,6 @@ public class Enemy_AntAnimTest : MonoBehaviour {
                         animator.SetBool("Stun", false);
                         animator.SetBool("Death", false);
 
-                        // 現在の座標からのxyz を1ずつ加算して移動
-                        //myTransform.Translate(0.001f * gameObject.transform.localScale.x, 0.0f, 0.0f, Space.World);
                         Count += Time.deltaTime;
                         if (Count >= _AttackWait)
                         {
@@ -394,6 +390,11 @@ public class Enemy_AntAnimTest : MonoBehaviour {
             AttackPhase = 1;
             patrolType = 2;
             SoundManagerV2.Instance.PlaySE(27);
+        }
+
+        if (collision.gameObject.CompareTag("PatrolPoint"))
+        {
+            patrolType = 0;
         }
 
     }
