@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, CustomLabel("残留酸プール")] private GameObject _rsdAcdPool;
     [SerializeField, CustomLabel("弾のプレハブ")] private GameObject _acidbulletPrefab;
     [SerializeField, CustomLabel("ダメージエフェクト")] private GameObject _damageEffect;
+    [SerializeField, CustomLabel("???")] private Sprite _crab;
     [SerializeField, Range(0.001f, 9999f), CustomLabel("最大HP")] private float _maxHP = 9999f;
     [SerializeField, CustomLabel("無敵時間")] private float _resetInvincibleTime = 4f;
     [SerializeField, Range(0f, 9999f), CustomLabel("酸に触れたときの被ダメージ")] private float _acidDamage = 500f;
@@ -259,6 +260,8 @@ public class PlayerController : MonoBehaviour
     }
 
     public bool IsEvent { get; set; }
+
+    public bool IsCrab { get; set; }
 
     private void Awake()
     {
@@ -564,6 +567,20 @@ public class PlayerController : MonoBehaviour
             SoundManagerV2.Instance.PlaySE(12);
             equipment = Equipment.HoleMaker;
             hmBullets += _hmBulletCapacity;
+        }
+
+        if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.K)) {
+            Debug.Log("かに");
+            if (IsCrab) {
+                transform.GetChild(6).gameObject.SetActive(true);
+                Destroy(GetComponent<SpriteRenderer>());
+                IsCrab = false;
+            } else {                
+                gameObject.AddComponent<SpriteRenderer>().sprite = _crab;
+                transform.GetChild(6).gameObject.SetActive(false);
+                IsCrab = true;
+            }
+            
         }
  
     }
