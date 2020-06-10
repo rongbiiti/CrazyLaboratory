@@ -630,6 +630,7 @@ public class PlayerController : MonoBehaviour
                 if (groundingTime < pm.MaxLandingTime) {
                     groundingTime++;
                 }
+                StartCoroutine("JumpStartCheck");
                 isJumpingCheck = false;
                 if (0 < groundingTime && groundingTime < pm.MaxLandingTime && jumpWaitTime < 0) {
                     anicount = 0.0f;
@@ -650,9 +651,9 @@ public class PlayerController : MonoBehaviour
                     animator.SetBool("Stand", true);
                     animator.SetBool("Run", false);
                     animator.SetBool("JumpStart", false);
-                    animator.SetBool("JumpUp", false);
+                    animator.SetBool("JumpUp", true);
                     animator.SetBool("JumpStart-run", false);
-                    animator.SetBool("JumpUp-run", false);
+                    animator.SetBool("JumpUp-run", true);
                     animator.SetBool("JumpDown", false);
                     animator.SetBool("JumpEnd", false);
                     animator.SetBool("Wait", false);
@@ -1372,6 +1373,29 @@ public class PlayerController : MonoBehaviour
         }
         SoundManagerV2.Instance.PlaySE(12);
         equipment = Equipment.Handgun;
+    }
+
+    private IEnumerator JumpStartCheck()
+    {
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("JumpStart-run") || animator.GetCurrentAnimatorStateInfo(0).IsName("JumpStart")) {
+            yield return null;
+            animator.SetBool("JumpStart", false);
+            animator.SetBool("JumpStart-run", false);
+            animator.SetBool("JumpUp-run", true);
+            animator.SetBool("JumpUp", true);
+            jumpWaitTime = -1f;
+            yield return null;
+            animator.SetBool("JumpDown", true);
+            animator.SetBool("JumpUp-run", false);
+            animator.SetBool("JumpUp", false);
+            yield return null;
+            animator.SetBool("JumpDown", false);
+            animator.SetBool("JumpEnd", true);
+            yield return null;
+            animator.SetBool("JumpEnd", false);
+            animator.SetBool("Stand", true);
+        }
+        
     }
 
 }
