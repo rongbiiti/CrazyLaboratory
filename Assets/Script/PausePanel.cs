@@ -35,11 +35,7 @@ public class PausePanel : MonoBehaviour
 			{
 				OpenPausePanel();
 			}
-		} else if (Input.GetButtonDown("Cancel")) {
-            if (_pauseMenu.activeSelf) {
-                ClosePausePanel();
-            }
-        }
+		}
 		
 	}
 
