@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour
     [SerializeField, CustomLabel("ステージ左端のX座標")] private float _stage_edge_x;
     [SerializeField, CustomLabel("ステージ右端のX座標")] private float _stage_edge_x_right;
     [SerializeField, CustomLabel("チートON")] private bool _isCheatEnable;
+    private bool isEnableCheat;
     private GameObject player;
     private PlayerController pc;
     private Camera cam;
@@ -34,10 +35,6 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
-        if (!_isCheatEnable)
-        {
-            Destroy(GetComponent<CheatMenu>());
-        }
         if (!GetComponent<CameraShake>()) {
             gameObject.AddComponent<CameraShake>();
         }
@@ -50,6 +47,10 @@ public class CameraController : MonoBehaviour
         cam = GetComponent<Camera>();
         pc = player.GetComponent<PlayerController>();
         prb = player.GetComponent<Rigidbody2D>();
+
+        if (!_isCheatEnable) {
+            GetComponent<CheatMenu>().enabled = false;
+        }
     }
 
     private void Update()
@@ -57,7 +58,10 @@ public class CameraController : MonoBehaviour
         //if (Input.GetKeyUp(KeyCode.Space)) {
         //    GetComponent<RadialBlurSc>().RadialBlur(1.5f, 0.3f);
         //}
-        
+        if (!isEnableCheat && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.T)) {
+            GetComponent<CheatMenu>().enabled = true;
+            isEnableCheat = true;
+        }
     }
 
     private void LateUpdate()

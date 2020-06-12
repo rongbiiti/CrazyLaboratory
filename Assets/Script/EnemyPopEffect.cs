@@ -89,9 +89,12 @@ public class EnemyPopEffect : MonoBehaviour {
         //ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
         //ef.doExplosion(transform.position);
         Rigidbody2D rb = _tuukikou.transform.GetChild(0).GetComponent<Rigidbody2D>();
-        rb.gravityScale = 2;
+        rb.gravityScale = 4;
         rb.velocity = new Vector2(0, 6);
         _tuukikou.transform.GetChild(0).gameObject.AddComponent<AutoDestroy>().time = 5f;
+
+        // 通気口が壊れてから少し待ってから子グモON
+        yield return new WaitForSeconds(0.6f);
         enemy_ChildSpiderAnimTest.enabled = true;
         enemyHpbar.hpbar.gameObject.SetActive(true);
         cubismRender.Opacity = 1f;

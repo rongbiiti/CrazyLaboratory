@@ -68,6 +68,7 @@ public class Stage1Event : MonoBehaviour {
 
         yield return new WaitForSeconds(_ventShakeTime);
         VentBrake();
+        yield return new WaitForSeconds(0.6f);
         StartCoroutine("EnemySetActive");
 
         yield return new WaitForSeconds(_enemySpawnAfterWaitTime);
@@ -107,7 +108,7 @@ public class Stage1Event : MonoBehaviour {
         //ExplosionForce ef = GameObject.FindObjectOfType<ExplosionForce>();
         //ef.doExplosion(_explodable.gameObject.transform.position);
         Rigidbody2D rb = _vent.GetChild(0).GetComponent<Rigidbody2D>();
-        rb.gravityScale = 2;
+        rb.gravityScale = 4;
         rb.velocity = new Vector2(0, 6);
         _vent.GetChild(0).gameObject.AddComponent<AutoDestroy>().time = 5f;
         SoundManagerV2.Instance.PlaySE(8);
@@ -115,6 +116,7 @@ public class Stage1Event : MonoBehaviour {
 
     private IEnumerator EnemySetActive()
     {
+        
         _enemys[enemycount++].SetActive(true);
         SoundManagerV2.Instance.PlaySE(25);
         Debug.Log("敵" + enemycount + "体目スポーン");
