@@ -311,7 +311,6 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         sm = ScoreManager.Instance;
-        sm.StageScoreReset();
         im = InputManager.Instance;
         pm = PlayerManager.Instance;
         cam = GameObject.Find("Main Camera");
@@ -360,7 +359,10 @@ public class PlayerController : MonoBehaviour
 
         if (ScoreManager.Instance.IsStage2RestartPointReached) {
             Stage2RestartValueLoad();
+            return;
         }
+
+        sm.StageScoreReset();
     }
 
     private void Update()

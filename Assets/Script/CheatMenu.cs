@@ -24,17 +24,45 @@ public class CheatMenu : MonoBehaviour
 
 	void Start ()
 	{
-		GameObject canvas = GameObject.Find("Canvas");
-		_inputManager = InputManager.Instance;
-		panel = Instantiate(_cheatPanel, canvas.transform, false);
-		god = Instantiate(_godText, canvas.transform, false);
-		nockback = Instantiate(_nockBackText, canvas.transform, false);
-		machine = Instantiate(_machineGunText, canvas.transform, false);
-		guide = Instantiate(_buttonGuide, canvas.transform, false);
-		superJump = Instantiate(_superJumpText, canvas.transform, false);
+        if (panel == null) {
+            GameObject canvas = GameObject.Find("Canvas");
+            _inputManager = InputManager.Instance;
+            panel = Instantiate(_cheatPanel, canvas.transform, false);
+            god = Instantiate(_godText, canvas.transform, false);
+            nockback = Instantiate(_nockBackText, canvas.transform, false);
+            machine = Instantiate(_machineGunText, canvas.transform, false);
+            guide = Instantiate(_buttonGuide, canvas.transform, false);
+            superJump = Instantiate(_superJumpText, canvas.transform, false);
+        }
 	}
-	
-	void Update ()
+
+    private void OnEnable()
+    {
+        if(panel == null) {
+            GameObject canvas = GameObject.Find("Canvas");
+            _inputManager = InputManager.Instance;
+            panel = Instantiate(_cheatPanel, canvas.transform, false);
+            god = Instantiate(_godText, canvas.transform, false);
+            nockback = Instantiate(_nockBackText, canvas.transform, false);
+            machine = Instantiate(_machineGunText, canvas.transform, false);
+            guide = Instantiate(_buttonGuide, canvas.transform, false);
+            superJump = Instantiate(_superJumpText, canvas.transform, false);
+        }
+       
+        panel.enabled = true;
+        guide.enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        if (panel == null) {
+            return;
+        }
+        panel.enabled = false;
+        guide.enabled = false;
+    }
+
+    void Update ()
 	{
 		if (_inputManager.CheatKey == 1)
 		{
