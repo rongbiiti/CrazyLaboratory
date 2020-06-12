@@ -256,7 +256,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             else
             {
                 //FadeManager.Instance.LoadSceneNormalTrans("", 0.3f);
-                gameObject.SetActive(false);
+                //gameObject.SetActive(false);
                 enemyHpbar.hpbar.gameObject.SetActive(false);
 
             }
@@ -588,6 +588,14 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             }
         }
     }
+    //スローモーション
+    private IEnumerator SlowMotion()
+    {
+        yield return new WaitForSeconds(0.1f);
+        Time.timeScale = 0.2f;
+        yield return new WaitForSeconds(0.18f);
+        Time.timeScale = 1f;
+    }
 
     void IntAnime()
     {
@@ -744,6 +752,8 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             if (nowHP <= 0)
             {
                 isZeroHP = true;
+                StartCoroutine("SlowMotion");
+                
             }
         }
 
