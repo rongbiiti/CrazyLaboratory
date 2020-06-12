@@ -194,6 +194,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             animator.SetBool("Atack", false);
             animator.SetBool("Jump", false);
             animator.SetBool("Stun", false);
+            animator.SetBool("BeforeDeath", false);
             animator.SetBool("Death", false);
             animetorFront.SetBool("Stand", false);
             animetorFront.SetBool("Roar", false);
@@ -304,6 +305,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 animator.SetBool("Atack", false);
                 animator.SetBool("Jump", false);
                 animator.SetBool("Stun", true);
+                animator.SetBool("BeforeDeath", false);
                 animator.SetBool("Death", false);
                 if (StanTime <= 0)
                 {
@@ -335,6 +337,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 animator.SetBool("BodyPress", false);
                 animator.SetBool("Jump", false);
                 animator.SetBool("Stun", false);
+                animator.SetBool("BeforeDeath", false);
                 animator.SetBool("Death", false);
                 if (AttackTime <= 0)
                 {
@@ -387,6 +390,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                         animator.SetBool("Atack", false);
                         animator.SetBool("Jump", false);
                         animator.SetBool("Stun", false);
+                        animator.SetBool("BeforeDeath", false);
                         animator.SetBool("Death", false);
 
                         var ls = gameObject.transform.localScale;   //localscaleの格納
@@ -408,6 +412,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                 animator.SetBool("Atack", false);
                 animator.SetBool("Jump", false);
                 animator.SetBool("Stun", false);
+                animator.SetBool("BeforeDeath", false);
                 animator.SetBool("Death", false);
 
                 if (JumpTime <= 0)
@@ -455,6 +460,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                         animator.SetBool("Atack", false);
                         animator.SetBool("Jump", true);
                         animator.SetBool("Stun", false);
+                        animator.SetBool("BeforeDeath", false);
                         animator.SetBool("Death", false);
                     }
                     if (JumpTime <= 0)
@@ -476,6 +482,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                                 animator.SetBool("Atack", false);
                                 animator.SetBool("Jump", false);
                                 animator.SetBool("Stun", false);
+                                animator.SetBool("BeforeDeath", false);
                                 animator.SetBool("Death", false);
 
                                 Vector2 speed = new Vector2(0.0f, moveSpeed);
@@ -582,6 +589,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                         animator.SetBool("Atack", false);
                         animator.SetBool("Jump", false);
                         animator.SetBool("Stun", false);
+                        animator.SetBool("BeforeDeath", false);
                         animator.SetBool("Death", false);
                     }
                     break;
@@ -662,6 +670,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
                     animator.SetBool("Atack", false);
                     animator.SetBool("Jump", false);
                     animator.SetBool("Stun", false);
+                    animator.SetBool("BeforeDeath", false);
                     animator.SetBool("Death", false);
 
                     //端まで移動したら反転する
@@ -753,7 +762,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             {
                 isZeroHP = true;
                 StartCoroutine("SlowMotion");
-                
+                animator.SetBool("BeforeDeath", true);
             }
         }
 
@@ -864,6 +873,7 @@ public class Enemy_BossSpiderAnimTest : MonoBehaviour {
             animator.SetBool("Atack", false);
             animator.SetBool("Jump", false);
             animator.SetBool("Stun", true);
+            animator.SetBool("BeforeDeath", false);
             animator.SetBool("Death", false);
 
             StanTime += _stanRate;

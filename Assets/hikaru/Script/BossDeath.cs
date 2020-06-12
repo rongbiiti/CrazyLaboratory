@@ -19,6 +19,7 @@ public class BossDeath : MonoBehaviour {
         animator.SetBool("Atack", false);
         animator.SetBool("Jump", false);
         animator.SetBool("Stun", false);
+        animator.SetBool("BeforeDeath", false);
         animator.SetBool("Death", false);
     }
 	
